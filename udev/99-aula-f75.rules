@@ -1,0 +1,4 @@
+# AULA F75 (and F87/F99 family, SinoWealth 258A) — allow Chromium/WebHID
+# to open the keyboard's /dev/hidraw node without root.
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="258a", MODE="0660", GROUP="input"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3554", ATTRS{idProduct}=="fa09", MODE="0660", GROUP="input"
