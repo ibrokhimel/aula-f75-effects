@@ -214,10 +214,10 @@ describe("f75-keymap.json", () => {
     expect(keymap.source).toContain("KB.ini");
   });
 
-  it("contains 116 physical keys with unique matrix indices", () => {
+  it("contains 81 physical keys with unique matrix indices", () => {
     const idx = keymap.keys.map((k) => k.index);
-    expect(idx).toHaveLength(116);
-    expect(new Set(idx).size).toBe(116);
+    expect(idx).toHaveLength(81);
+    expect(new Set(idx).size).toBe(81);
   });
 
   it("all indices are valid slot numbers (< 128) and non-negative", () => {
@@ -374,7 +374,7 @@ nix shell nixpkgs#bun -c bun tools/gen-keymap.mjs
 nix shell nixpkgs#bun -c node -e "const k=require('./web/src/data/f75-keymap.json'); console.log(k.keys.length, k.keys[0], k.keys.filter(x=>x.locked).length)"
 ```
 
-Expected: `116 keys -> web/src/data/f75-keymap.json`, first key `esc` index 0 vk 0x1B, 12 locked.
+Expected: `80 keys -> web/src/data/f75-keymap.json`, first key `esc` index 0 vk 0x1B, 12 locked. (KB.ini has 81 `[KEY]` entries — one phantom `0,0,0,0` matrix node at index 84 is dropped — and 35 in `[FN1]`; the plan's original "116" figure counted both sections.)
 
 - [ ] **Step 4: Run tests to verify they pass**
 
@@ -392,6 +392,12 @@ cd /home/cloudglides/aula-f75-linux-drivers
 git add tools/gen-keymap.mjs web/src/data/f75-keymap.json web/src/data/f75-keymap.test.ts
 git commit --no-gpg-sign -m "feat: generate F75 key map from official KB.ini"
 ```
+
+> **Corrections found during execution (authoritative generator = `tools/gen-keymap.mjs`):**
+> - The F75 has **80** physical keys (81 `[KEY]` entries minus one `0,0,0,0` phantom matrix node at index 84), plus 35 `[FN1]` overrides. The plan's "116" double-counted both sections.
+> - Names/labels are now derived from **Windows VK codes** (standard VK table), not the guesswork index map: the real matrix has `82=Up, 83=Down, 77=Left, 89=Right, 70=RShift, 86=PgUp, 87=PgDn, 85=Del, 88=End`; there is no Insert/Home/App key on this board.
+> - `[FN1]` 32-bit packing is `prefix(1) 0x00 usageHi usageLo` (16-bit usage), e.g. `0x020000b6` → consumer `0x00B6` (Prev Track); short lines `0x02,0x2D,0x00` carry page + 1-byte usage directly. Prefix→wire page: `0x07`/`0x00`→`0x00` (keyboard), `0x02`→`0x02` (consumer); `0x08`/vendor `>0xFF` usages are unsupported → `fnHid: null`. 24 keys carry a supported `fnHid`.
+> - `section()` must match the last section in the file (`[FN1]` sits at EOF and its `(?=^\[[A-Z])` lookahead never matched — parse now scans to `"\n["` or EOF).
 
 ---
 
