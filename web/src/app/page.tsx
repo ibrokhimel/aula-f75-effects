@@ -7,9 +7,10 @@ import { EffectsPanel } from '@/components/EffectsPanel';
 import { PerKeyPanel } from '@/components/PerKeyPanel';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { AnimationsPanel } from '@/components/AnimationsPanel';
+import { RemapPanel } from '@/components/RemapPanel';
 import { LogPanel } from '@/components/LogPanel';
 
-type Tab = 'effects' | 'perkey' | 'animations' | 'settings';
+type Tab = 'effects' | 'perkey' | 'animations' | 'settings' | 'remap';
 
 export default function Home() {
   const kb = useKeyboard();
@@ -20,6 +21,7 @@ export default function Home() {
     { id: 'perkey', label: 'Per-Key Colors' },
     { id: 'animations', label: 'Animations' },
     { id: 'settings', label: 'Settings' },
+    { id: 'remap', label: 'Remap' },
   ];
 
   return (
@@ -67,6 +69,7 @@ export default function Home() {
           />
         )}
         {tab === 'settings' && <SettingsPanel onSetSleep={kb.doSetSleep} onSetDebounce={kb.doSetDebounce} onFactoryReset={kb.doFactoryReset} />}
+        {tab === 'remap' && <RemapPanel onWriteKeybind={kb.doWriteKeybind} />}
       </div>
 
       {/* Log */}

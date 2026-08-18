@@ -62,6 +62,11 @@ export function defaultBlob(layer: Layer, keys: F75Key[]): Uint8Array {
   return b;
 }
 
+export function defaultForKey(layer: Layer, k: F75Key, vkToOutput: (vk: number) => Output | null): Output {
+    if (layer === LAYER_BASE) return vkToOutput(k.vk) ?? { page: 0x00, usage: 0x00 };
+    return k.fnHid ? { page: k.fnHid[0], usage: k.fnHid[1] } : { page: 0x00, usage: 0x00 };
+}
+
 export function setSlot(blob: Uint8Array, index: number, out: Output): void {
   if (!slotInRange(index)) throw new BlobError(`Slot index ${index} out of range.`);
   const { page, usage } = slotOffset(index);

@@ -1,7 +1,8 @@
 'use client';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { WIRED_VID, WIRED_PID, WIRELESS_VID, WIRELESS_PID } from '@/lib/protocol';
-import { setEffect, applyPerKey, setSleepTimer, setDebounce, factoryReset, type EffectOptions } from '@/lib/webhid';
+import { setEffect, applyPerKey, setSleepTimer, setDebounce, factoryReset, writeKeybindBlob, type EffectOptions } from '@/lib/webhid';
+import { type Layer } from '@/lib/keybind';
 
 export function useKeyboard() {
     const [device, setDevice] = useState<HIDDevice | null>(null);
@@ -137,8 +138,14 @@ export function useKeyboard() {
         catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
     }, [device, log]);
 
+    const doWriteKeybind = useCallback(async (layer: Layer, blob: Uint8Array) => {
+        if (!device?.opened) { log('Not connected!'); return; }
+        try { await writeKeybindBlob(device, layer, blob, log); log('Keybind layer written to flash'); }
+        catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
+    }, [device, log]);
+
     return {
         device, connected, status, logs, log,
-        connect, doSetEffect, doApplyPerKey, doSetSleep, doSetDebounce, doFactoryReset,
+        connect, doSetEffect, doApplyPerKey, doSetSleep, doSetDebounce, doFactoryReset, doWriteKeybind,
     };
 }
