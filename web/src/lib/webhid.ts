@@ -19,7 +19,14 @@ export type LogFn = (msg: string) => void;
 export async function sendReport(device: HIDDevice, data: Uint8Array, log: LogFn) {
     const reportId = data[0];
     const body = data.slice(1);
-    await device.sendReport(reportId, body);
+    try {
+        await device.sendReport(reportId, body);
+    } catch (err: unknown) {
+        const pages = device.collections
+            .map(c => `0x${(c.usagePage ?? 0).toString(16).padStart(2, '0')} out=[${(c.outputReports ?? []).map(r => `0x${(r.reportId ?? 0).toString(16)}`).join(',')}]`)
+            .join(' | ');
+        throw new Error(`${err instanceof Error ? err.message : String(err)} (report 0x${reportId.toString(16).padStart(2, '0')}; collections: ${pages})`);
+    }
     log(`TX: ${hex(data)}`);
 }
 

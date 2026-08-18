@@ -1,6 +1,6 @@
 'use client';
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { WIRED_VID, WIRED_PID, WIRELESS_VID, WIRELESS_PID } from '@/lib/protocol';
+import { WIRED_VID, WIRED_PID, WIRELESS_VID, WIRELESS_PID, REPORT_ID } from '@/lib/protocol';
 import { setEffect, applyPerKey, setSleepTimer, setDebounce, factoryReset, readConfig, writeKeybindBlob, type EffectOptions } from '@/lib/webhid';
 import { type Layer } from '@/lib/keybind';
 
@@ -68,10 +68,17 @@ export function useKeyboard() {
             const pid = dev.productId.toString(16).padStart(4, '0');
             const model = dev.productName || 'AULA F75';
             log(`Selected: ${model} (${vid}:${pid})`);
-            const pages = dev.collections.length > 0
-                ? dev.collections.map(c => `0x${(c.usagePage ?? 0).toString(16).padStart(2, '0')}`).join(',')
-                : '(none)';
-            log(`Collections: ${pages}`);
+            for (const c of dev.collections) {
+                const cp = `0x${(c.usagePage ?? 0).toString(16).padStart(2, '0')}`;
+                const out = c.outputReports?.map(r => `0x${(r.reportId ?? 0).toString(16)}`).join(',') ?? '';
+                const feat = c.featureReports?.map(r => `0x${(r.reportId ?? 0).toString(16)}`).join(',') ?? '';
+                log(`Collection page ${cp}: out=[${out}] feat=[${feat}]`);
+            }
+            const has13 = dev.collections.some(c => (c.outputReports ?? []).some(r => (r.reportId ?? 0) === REPORT_ID));
+            if (!has13) {
+                log('WARNING: none of the opened collections has an output report 0x13 — light/remap writes will fail. Pick the vendor interface.');
+                setStatus('⚠ Interface without report 0x13 — reconnect and pick the vendor collection');
+            }
 
             try {
                 await dev.open();
