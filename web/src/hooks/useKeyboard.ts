@@ -63,21 +63,45 @@ export function useKeyboard() {
 
             const [dev] = await hid.requestDevice({ filters });
             if (!dev) { log('No device selected'); return; }
-            await dev.open();
-            setDevice(dev);
-            setConnected(true);
 
             const vid = dev.vendorId.toString(16).padStart(4, '0');
             const pid = dev.productId.toString(16).padStart(4, '0');
-            log(`Connected: ${dev.productName || 'AULA F75'} (${vid}:${pid})`);
+            const model = dev.productName || 'AULA F75';
+            log(`Selected: ${model} (${vid}:${pid})`);
+            const pages = dev.collections.length > 0
+                ? dev.collections.map(c => `0x${(c.usagePage ?? 0).toString(16).padStart(2, '0')}`).join(',')
+                : '(none)';
+            log(`Collections: ${pages}`);
+
+            try {
+                await dev.open();
+            } catch (err: unknown) {
+                const msg = err instanceof Error ? err.message : String(err);
+                log(`Error: Failed to open ${model} (${vid}:${pid}): ${msg}`);
+                log('Hint: on Linux this means the browser cannot access the keyboard\'s /dev/hidraw node.');
+                log('  Install the udev rule, reload it, then replug the keyboard:');
+                log('    sudo cp udev/99-aula-f75.rules /etc/udev/rules.d/');
+                log('    sudo udevadm control --reload-rules && sudo udevadm trigger');
+                log('  Also close any other tab/app that has the keyboard open (only one page can hold it).');
+                setStatus(`Error: failed to open ${model}`);
+                return;
+            }
+
+            setDevice(dev);
+            setConnected(true);
+            log(`Connected: ${model} (${vid}:${pid})`);
 
             const hasVendor = dev.collections.some(c => (c.usagePage ?? 0) >= 0xff00);
             setStatus(hasVendor
-                ? `Connected: ${dev.productName || 'AULA F75'} (${vid}:${pid})`
+                ? `Connected: ${model} (${vid}:${pid})`
                 : '⚠ Wrong interface — no vendor collection'
             );
         } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : String(err);
+            if (err instanceof DOMException && (err.name === 'NotFoundError' || err.name === 'AbortError')) {
+                log('Connect cancelled — no device selected');
+                return;
+            }
             log(`Error: ${msg}`);
             setStatus(`Error: ${msg}`);
         }
@@ -107,6 +131,18 @@ export function useKeyboard() {
         hid.addEventListener('disconnect', onDisconnect);
         return () => hid.removeEventListener('disconnect', onDisconnect);
     }, [log]);
+
+    useEffect(() => {
+        if (!device) return;
+        const onAccessLost = () => {
+            log('Access lost — the device was handed off to another page (close it and reconnect here)');
+            setDevice(null);
+            setConnected(false);
+            setStatus('Device handed off to another page');
+        };
+        device.addEventListener('accesslost', onAccessLost as EventListener);
+        return () => device.removeEventListener('accesslost', onAccessLost as EventListener);
+    }, [device, log]);
 
     const doSetEffect = useCallback(async (effectNum: number, opts: EffectOptions) => {
         if (!device?.opened) { log('Not connected!'); return; }

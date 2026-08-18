@@ -23,7 +23,11 @@ sudo udevadm control --reload-rules
 sudo udevadm trigger
 ```
 
-Re-plug the keyboard after installing the rule.
+Re-plug the keyboard after installing the rule. The default rule grants
+Chromium read/write on the keyboard's `/dev/hidraw` node (`MODE="0666"` for
+the SinoWealth chip); the file header notes the tighter
+`GROUP="input"` alternative if you prefer. If Connect still fails with
+"Failed to open the device", close any other tab/app holding the keyboard.
 
 ## Run
 
