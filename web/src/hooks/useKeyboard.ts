@@ -1,7 +1,7 @@
 'use client';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { WIRED_VID, WIRED_PID, WIRELESS_VID, WIRELESS_PID } from '@/lib/protocol';
-import { setEffect, applyPerKey, setSleepTimer, setDebounce, factoryReset, writeKeybindBlob, type EffectOptions } from '@/lib/webhid';
+import { setEffect, applyPerKey, setSleepTimer, setDebounce, factoryReset, readConfig, writeKeybindBlob, type EffectOptions } from '@/lib/webhid';
 import { type Layer } from '@/lib/keybind';
 
 export function useKeyboard() {
@@ -69,11 +69,11 @@ export function useKeyboard() {
 
             const vid = dev.vendorId.toString(16).padStart(4, '0');
             const pid = dev.productId.toString(16).padStart(4, '0');
-            log(`Connected: ${dev.productName || 'AULA F87'} (${vid}:${pid})`);
+            log(`Connected: ${dev.productName || 'AULA F75'} (${vid}:${pid})`);
 
             const hasVendor = dev.collections.some(c => (c.usagePage ?? 0) >= 0xff00);
             setStatus(hasVendor
-                ? `Connected: ${dev.productName || 'AULA F87'} (${vid}:${pid})`
+                ? `Connected: ${dev.productName || 'AULA F75'} (${vid}:${pid})`
                 : '⚠ Wrong interface — no vendor collection'
             );
         } catch (err: unknown) {
@@ -138,6 +138,19 @@ export function useKeyboard() {
         catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
     }, [device, log]);
 
+    const doReadConfig = useCallback(async () => {
+        if (!device?.opened) { log('Not connected!'); return 0; }
+        try {
+            const frames = await readConfig(device, log, 3);
+            const n = frames.filter((f) => f !== null).length;
+            log(`Config read: ${n}/10 frames`);
+            return n;
+        } catch (err: unknown) {
+            log(`ERROR: ${err instanceof Error ? err.message : String(err)}`);
+            return 0;
+        }
+    }, [device, log]);
+
     const doWriteKeybind = useCallback(async (layer: Layer, blob: Uint8Array) => {
         if (!device?.opened) { log('Not connected!'); return; }
         try { await writeKeybindBlob(device, layer, blob, log); log('Keybind layer written to flash'); }
@@ -146,6 +159,6 @@ export function useKeyboard() {
 
     return {
         device, connected, status, logs, log,
-        connect, doSetEffect, doApplyPerKey, doSetSleep, doSetDebounce, doFactoryReset, doWriteKeybind,
+        connect, doSetEffect, doApplyPerKey, doSetSleep, doSetDebounce, doFactoryReset, doReadConfig, doWriteKeybind,
     };
 }

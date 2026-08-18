@@ -30,7 +30,7 @@ export default function Home() {
     <main className="flex flex-col items-center px-4 py-8 min-h-screen">
       {/* Header */}
       <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-        AULA F87
+        AULA F75
       </h1>
       <p className="text-xs text-zinc-600 mt-1 mb-6">WebHID Keyboard Controller</p>
 
@@ -70,7 +70,16 @@ export default function Home() {
             log={kb.log}
           />
         )}
-        {tab === 'settings' && <SettingsPanel onSetSleep={kb.doSetSleep} onSetDebounce={kb.doSetDebounce} onFactoryReset={kb.doFactoryReset} />}
+        {tab === 'settings' && (
+          <SettingsPanel
+            onSetSleep={kb.doSetSleep}
+            onSetDebounce={kb.doSetDebounce}
+            onFactoryReset={kb.doFactoryReset}
+            device={kb.device}
+            onReadConfig={kb.doReadConfig}
+            onWriteKeybind={kb.doWriteKeybind}
+          />
+        )}
         {tab === 'remap' && <RemapPanel onWriteKeybind={kb.doWriteKeybind} />}
         {tab === 'macros' && <MacrosPanel device={kb.device} log={kb.log} />}
       </div>

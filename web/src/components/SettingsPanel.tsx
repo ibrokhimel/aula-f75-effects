@@ -1,13 +1,19 @@
 'use client';
 import { useState } from 'react';
+import { DeviceInfoCard } from './DeviceInfoCard';
+import { ProfilesCard } from './ProfilesCard';
+import type { Layer } from '@/lib/keybind';
 
 interface SettingsPanelProps {
+    device: HIDDevice | null;
     onSetSleep: (minutes: number) => Promise<void>;
     onSetDebounce: (level: number) => Promise<void>;
     onFactoryReset: () => Promise<void>;
+    onReadConfig: () => Promise<number>;
+    onWriteKeybind: (layer: Layer, blob: Uint8Array) => Promise<void>;
 }
 
-export function SettingsPanel({ onSetSleep, onSetDebounce, onFactoryReset }: SettingsPanelProps) {
+export function SettingsPanel({ device, onSetSleep, onSetDebounce, onFactoryReset, onReadConfig, onWriteKeybind }: SettingsPanelProps) {
     const [sleepMinutes, setSleepMinutes] = useState(0);
     const [debounceLevel, setDebounceLevel] = useState(3);
     const [applyingSleep, setApplyingSleep] = useState(false);
@@ -99,6 +105,9 @@ export function SettingsPanel({ onSetSleep, onSetDebounce, onFactoryReset }: Set
                     {resetting ? 'Resetting...' : 'Factory Reset'}
                 </button>
             </div>
+
+            <DeviceInfoCard device={device} onReadConfig={onReadConfig} />
+            <ProfilesCard onWriteKeybind={onWriteKeybind} />
         </div>
     );
 }
