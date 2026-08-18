@@ -1,0 +1,1038 @@
+{
+  "version": "1",
+  "source": "assets/oem/Dev/kb/1/KB.ini",
+  "keys": [
+    {
+      "index": 0,
+      "vk": 27,
+      "x": 30,
+      "y": 30,
+      "w": 55,
+      "h": 57,
+      "fnHid": [
+        0,
+        4
+      ],
+      "locked": false,
+      "name": "esc",
+      "label": "Esc"
+    },
+    {
+      "index": 12,
+      "vk": 112,
+      "x": 107,
+      "y": 30,
+      "w": 132,
+      "h": 57,
+      "fnHid": null,
+      "locked": true,
+      "name": "f1",
+      "label": "F1"
+    },
+    {
+      "index": 18,
+      "vk": 113,
+      "x": 144,
+      "y": 30,
+      "w": 169,
+      "h": 57,
+      "fnHid": null,
+      "locked": true,
+      "name": "f2",
+      "label": "F2"
+    },
+    {
+      "index": 24,
+      "vk": 114,
+      "x": 183,
+      "y": 30,
+      "w": 208,
+      "h": 57,
+      "fnHid": [
+        0,
+        43
+      ],
+      "locked": true,
+      "name": "f3",
+      "label": "F3"
+    },
+    {
+      "index": 30,
+      "vk": 115,
+      "x": 222,
+      "y": 30,
+      "w": 247,
+      "h": 57,
+      "fnHid": [
+        0,
+        8
+      ],
+      "locked": true,
+      "name": "f4",
+      "label": "F4"
+    },
+    {
+      "index": 36,
+      "vk": 116,
+      "x": 269,
+      "y": 30,
+      "w": 294,
+      "h": 57,
+      "fnHid": null,
+      "locked": true,
+      "name": "f5",
+      "label": "F5"
+    },
+    {
+      "index": 42,
+      "vk": 117,
+      "x": 305,
+      "y": 30,
+      "w": 330,
+      "h": 57,
+      "fnHid": null,
+      "locked": true,
+      "name": "f6",
+      "label": "F6"
+    },
+    {
+      "index": 48,
+      "vk": 118,
+      "x": 343,
+      "y": 30,
+      "w": 368,
+      "h": 57,
+      "fnHid": [
+        2,
+        182
+      ],
+      "locked": true,
+      "name": "f7",
+      "label": "F7"
+    },
+    {
+      "index": 54,
+      "vk": 119,
+      "x": 388,
+      "y": 30,
+      "w": 413,
+      "h": 57,
+      "fnHid": [
+        2,
+        205
+      ],
+      "locked": true,
+      "name": "f8",
+      "label": "F8"
+    },
+    {
+      "index": 60,
+      "vk": 120,
+      "x": 439,
+      "y": 30,
+      "w": 464,
+      "h": 57,
+      "fnHid": [
+        2,
+        181
+      ],
+      "locked": true,
+      "name": "f9",
+      "label": "F9"
+    },
+    {
+      "index": 66,
+      "vk": 121,
+      "x": 477,
+      "y": 30,
+      "w": 502,
+      "h": 57,
+      "fnHid": [
+        2,
+        226
+      ],
+      "locked": true,
+      "name": "f10",
+      "label": "F10"
+    },
+    {
+      "index": 72,
+      "vk": 122,
+      "x": 516,
+      "y": 30,
+      "w": 541,
+      "h": 57,
+      "fnHid": [
+        2,
+        234
+      ],
+      "locked": true,
+      "name": "f11",
+      "label": "F11"
+    },
+    {
+      "index": 78,
+      "vk": 123,
+      "x": 555,
+      "y": 30,
+      "w": 580,
+      "h": 57,
+      "fnHid": [
+        2,
+        233
+      ],
+      "locked": true,
+      "name": "f12",
+      "label": "F12"
+    },
+    {
+      "index": 88,
+      "vk": 35,
+      "x": 605,
+      "y": 195,
+      "w": 630,
+      "h": 222,
+      "fnHid": [
+        2,
+        36
+      ],
+      "locked": false,
+      "name": "end",
+      "label": "End"
+    },
+    {
+      "index": 1,
+      "vk": 192,
+      "x": 31,
+      "y": 81,
+      "w": 56,
+      "h": 108,
+      "fnHid": [
+        0,
+        8
+      ],
+      "locked": false,
+      "name": "grave",
+      "label": "`"
+    },
+    {
+      "index": 7,
+      "vk": 49,
+      "x": 70,
+      "y": 81,
+      "w": 95,
+      "h": 108,
+      "fnHid": [
+        0,
+        5
+      ],
+      "locked": false,
+      "name": "d1",
+      "label": "1"
+    },
+    {
+      "index": 13,
+      "vk": 50,
+      "x": 108,
+      "y": 81,
+      "w": 133,
+      "h": 108,
+      "fnHid": [
+        0,
+        6
+      ],
+      "locked": false,
+      "name": "d2",
+      "label": "2"
+    },
+    {
+      "index": 19,
+      "vk": 51,
+      "x": 147,
+      "y": 81,
+      "w": 172,
+      "h": 108,
+      "fnHid": [
+        0,
+        7
+      ],
+      "locked": false,
+      "name": "d3",
+      "label": "3"
+    },
+    {
+      "index": 25,
+      "vk": 52,
+      "x": 184,
+      "y": 81,
+      "w": 209,
+      "h": 108,
+      "fnHid": null,
+      "locked": false,
+      "name": "d4",
+      "label": "4"
+    },
+    {
+      "index": 31,
+      "vk": 53,
+      "x": 223,
+      "y": 81,
+      "w": 248,
+      "h": 108,
+      "fnHid": null,
+      "locked": false,
+      "name": "d5",
+      "label": "5"
+    },
+    {
+      "index": 37,
+      "vk": 54,
+      "x": 262,
+      "y": 81,
+      "w": 287,
+      "h": 108,
+      "fnHid": null,
+      "locked": false,
+      "name": "d6",
+      "label": "6"
+    },
+    {
+      "index": 43,
+      "vk": 55,
+      "x": 300,
+      "y": 80,
+      "w": 325,
+      "h": 107,
+      "fnHid": null,
+      "locked": false,
+      "name": "d7",
+      "label": "7"
+    },
+    {
+      "index": 49,
+      "vk": 56,
+      "x": 338,
+      "y": 81,
+      "w": 363,
+      "h": 108,
+      "fnHid": null,
+      "locked": false,
+      "name": "d8",
+      "label": "8"
+    },
+    {
+      "index": 55,
+      "vk": 57,
+      "x": 377,
+      "y": 81,
+      "w": 402,
+      "h": 108,
+      "fnHid": null,
+      "locked": false,
+      "name": "d9",
+      "label": "9"
+    },
+    {
+      "index": 61,
+      "vk": 48,
+      "x": 416,
+      "y": 81,
+      "w": 441,
+      "h": 108,
+      "fnHid": null,
+      "locked": false,
+      "name": "d0",
+      "label": "0"
+    },
+    {
+      "index": 67,
+      "vk": 189,
+      "x": 453,
+      "y": 81,
+      "w": 478,
+      "h": 108,
+      "fnHid": null,
+      "locked": false,
+      "name": "minus",
+      "label": "-"
+    },
+    {
+      "index": 73,
+      "vk": 187,
+      "x": 491,
+      "y": 81,
+      "w": 516,
+      "h": 108,
+      "fnHid": null,
+      "locked": false,
+      "name": "equals",
+      "label": "="
+    },
+    {
+      "index": 79,
+      "vk": 8,
+      "x": 531,
+      "y": 81,
+      "w": 591,
+      "h": 108,
+      "fnHid": null,
+      "locked": false,
+      "name": "bksp",
+      "label": "Bksp"
+    },
+    {
+      "index": 85,
+      "vk": 46,
+      "x": 604,
+      "y": 81,
+      "w": 629,
+      "h": 108,
+      "fnHid": [
+        2,
+        45
+      ],
+      "locked": false,
+      "name": "del",
+      "label": "Del"
+    },
+    {
+      "index": 2,
+      "vk": 9,
+      "x": 34,
+      "y": 120,
+      "w": 78,
+      "h": 147,
+      "fnHid": null,
+      "locked": false,
+      "name": "tab",
+      "label": "Tab"
+    },
+    {
+      "index": 8,
+      "vk": 81,
+      "x": 89,
+      "y": 119,
+      "w": 114,
+      "h": 146,
+      "fnHid": [
+        0,
+        25
+      ],
+      "locked": false,
+      "name": "q",
+      "label": "Q"
+    },
+    {
+      "index": 14,
+      "vk": 87,
+      "x": 127,
+      "y": 119,
+      "w": 152,
+      "h": 146,
+      "fnHid": [
+        0,
+        24
+      ],
+      "locked": false,
+      "name": "w",
+      "label": "W"
+    },
+    {
+      "index": 20,
+      "vk": 69,
+      "x": 165,
+      "y": 119,
+      "w": 190,
+      "h": 146,
+      "fnHid": [
+        0,
+        26
+      ],
+      "locked": false,
+      "name": "e",
+      "label": "E"
+    },
+    {
+      "index": 26,
+      "vk": 82,
+      "x": 204,
+      "y": 119,
+      "w": 229,
+      "h": 146,
+      "fnHid": null,
+      "locked": false,
+      "name": "r",
+      "label": "R"
+    },
+    {
+      "index": 32,
+      "vk": 84,
+      "x": 242,
+      "y": 119,
+      "w": 267,
+      "h": 146,
+      "fnHid": null,
+      "locked": false,
+      "name": "t",
+      "label": "T"
+    },
+    {
+      "index": 38,
+      "vk": 89,
+      "x": 280,
+      "y": 119,
+      "w": 305,
+      "h": 146,
+      "fnHid": null,
+      "locked": false,
+      "name": "y",
+      "label": "Y"
+    },
+    {
+      "index": 44,
+      "vk": 85,
+      "x": 318,
+      "y": 119,
+      "w": 343,
+      "h": 146,
+      "fnHid": [
+        2,
+        44
+      ],
+      "locked": false,
+      "name": "u",
+      "label": "U"
+    },
+    {
+      "index": 50,
+      "vk": 73,
+      "x": 356,
+      "y": 119,
+      "w": 381,
+      "h": 146,
+      "fnHid": [
+        2,
+        145
+      ],
+      "locked": false,
+      "name": "i",
+      "label": "I"
+    },
+    {
+      "index": 56,
+      "vk": 79,
+      "x": 395,
+      "y": 119,
+      "w": 420,
+      "h": 146,
+      "fnHid": [
+        2,
+        19
+      ],
+      "locked": false,
+      "name": "o",
+      "label": "O"
+    },
+    {
+      "index": 62,
+      "vk": 80,
+      "x": 433,
+      "y": 119,
+      "w": 458,
+      "h": 146,
+      "fnHid": null,
+      "locked": false,
+      "name": "p",
+      "label": "P"
+    },
+    {
+      "index": 68,
+      "vk": 219,
+      "x": 471,
+      "y": 120,
+      "w": 496,
+      "h": 147,
+      "fnHid": null,
+      "locked": false,
+      "name": "lbracket",
+      "label": "["
+    },
+    {
+      "index": 74,
+      "vk": 221,
+      "x": 509,
+      "y": 119,
+      "w": 534,
+      "h": 146,
+      "fnHid": null,
+      "locked": false,
+      "name": "rbracket",
+      "label": "]"
+    },
+    {
+      "index": 80,
+      "vk": 220,
+      "x": 549,
+      "y": 119,
+      "w": 593,
+      "h": 146,
+      "fnHid": null,
+      "locked": false,
+      "name": "backslash",
+      "label": "\\"
+    },
+    {
+      "index": 86,
+      "vk": 33,
+      "x": 605,
+      "y": 120,
+      "w": 630,
+      "h": 147,
+      "fnHid": null,
+      "locked": false,
+      "name": "pgup",
+      "label": "PgUp"
+    },
+    {
+      "index": 3,
+      "vk": 20,
+      "x": 33,
+      "y": 158,
+      "w": 85,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "caps",
+      "label": "Caps"
+    },
+    {
+      "index": 9,
+      "vk": 65,
+      "x": 98,
+      "y": 158,
+      "w": 123,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "a",
+      "label": "A"
+    },
+    {
+      "index": 15,
+      "vk": 83,
+      "x": 136,
+      "y": 158,
+      "w": 161,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "s",
+      "label": "S"
+    },
+    {
+      "index": 21,
+      "vk": 68,
+      "x": 174,
+      "y": 158,
+      "w": 199,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "d",
+      "label": "D"
+    },
+    {
+      "index": 27,
+      "vk": 70,
+      "x": 213,
+      "y": 158,
+      "w": 238,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "f",
+      "label": "F"
+    },
+    {
+      "index": 33,
+      "vk": 71,
+      "x": 252,
+      "y": 158,
+      "w": 277,
+      "h": 185,
+      "fnHid": [
+        0,
+        10
+      ],
+      "locked": false,
+      "name": "g",
+      "label": "G"
+    },
+    {
+      "index": 39,
+      "vk": 72,
+      "x": 290,
+      "y": 158,
+      "w": 315,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "h",
+      "label": "H"
+    },
+    {
+      "index": 45,
+      "vk": 74,
+      "x": 327,
+      "y": 158,
+      "w": 352,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "j",
+      "label": "J"
+    },
+    {
+      "index": 51,
+      "vk": 75,
+      "x": 366,
+      "y": 158,
+      "w": 391,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "k",
+      "label": "K"
+    },
+    {
+      "index": 57,
+      "vk": 76,
+      "x": 405,
+      "y": 158,
+      "w": 430,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "l",
+      "label": "L"
+    },
+    {
+      "index": 63,
+      "vk": 186,
+      "x": 443,
+      "y": 158,
+      "w": 468,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "semicolon",
+      "label": ";"
+    },
+    {
+      "index": 69,
+      "vk": 222,
+      "x": 481,
+      "y": 158,
+      "w": 506,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "apostrophe",
+      "label": "'"
+    },
+    {
+      "index": 81,
+      "vk": 13,
+      "x": 521,
+      "y": 158,
+      "w": 591,
+      "h": 185,
+      "fnHid": null,
+      "locked": false,
+      "name": "enter",
+      "label": "Enter"
+    },
+    {
+      "index": 4,
+      "vk": 160,
+      "x": 33,
+      "y": 195,
+      "w": 105,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "lshift",
+      "label": "LShift"
+    },
+    {
+      "index": 10,
+      "vk": 90,
+      "x": 116,
+      "y": 195,
+      "w": 141,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "z",
+      "label": "Z"
+    },
+    {
+      "index": 16,
+      "vk": 88,
+      "x": 155,
+      "y": 195,
+      "w": 180,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "x",
+      "label": "X"
+    },
+    {
+      "index": 22,
+      "vk": 67,
+      "x": 193,
+      "y": 195,
+      "w": 218,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "c",
+      "label": "C"
+    },
+    {
+      "index": 28,
+      "vk": 86,
+      "x": 232,
+      "y": 195,
+      "w": 257,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "v",
+      "label": "V"
+    },
+    {
+      "index": 34,
+      "vk": 66,
+      "x": 270,
+      "y": 196,
+      "w": 295,
+      "h": 223,
+      "fnHid": [
+        0,
+        17
+      ],
+      "locked": false,
+      "name": "b",
+      "label": "B"
+    },
+    {
+      "index": 40,
+      "vk": 78,
+      "x": 309,
+      "y": 195,
+      "w": 334,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "n",
+      "label": "N"
+    },
+    {
+      "index": 46,
+      "vk": 77,
+      "x": 347,
+      "y": 195,
+      "w": 372,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "m",
+      "label": "M"
+    },
+    {
+      "index": 52,
+      "vk": 188,
+      "x": 384,
+      "y": 195,
+      "w": 409,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "comma",
+      "label": ","
+    },
+    {
+      "index": 58,
+      "vk": 190,
+      "x": 424,
+      "y": 195,
+      "w": 449,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "period",
+      "label": "."
+    },
+    {
+      "index": 64,
+      "vk": 191,
+      "x": 463,
+      "y": 195,
+      "w": 488,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "slash",
+      "label": "/"
+    },
+    {
+      "index": 70,
+      "vk": 161,
+      "x": 502,
+      "y": 195,
+      "w": 558,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "rshift",
+      "label": "RShift"
+    },
+    {
+      "index": 82,
+      "vk": 38,
+      "x": 567,
+      "y": 195,
+      "w": 592,
+      "h": 222,
+      "fnHid": null,
+      "locked": false,
+      "name": "up",
+      "label": "↑"
+    },
+    {
+      "index": 5,
+      "vk": 162,
+      "x": 34,
+      "y": 234,
+      "w": 69,
+      "h": 261,
+      "fnHid": null,
+      "locked": false,
+      "name": "lctrl",
+      "label": "LCtrl"
+    },
+    {
+      "index": 11,
+      "vk": 91,
+      "x": 79,
+      "y": 234,
+      "w": 114,
+      "h": 261,
+      "fnHid": [
+        0,
+        1
+      ],
+      "locked": false,
+      "name": "lwin",
+      "label": "Win"
+    },
+    {
+      "index": 17,
+      "vk": 164,
+      "x": 122,
+      "y": 235,
+      "w": 157,
+      "h": 262,
+      "fnHid": null,
+      "locked": false,
+      "name": "lalt",
+      "label": "LAlt"
+    },
+    {
+      "index": 35,
+      "vk": 32,
+      "x": 174,
+      "y": 235,
+      "w": 400,
+      "h": 262,
+      "fnHid": null,
+      "locked": false,
+      "name": "space",
+      "label": "Space"
+    },
+    {
+      "index": 59,
+      "vk": 163,
+      "x": 463,
+      "y": 236,
+      "w": 497,
+      "h": 263,
+      "fnHid": null,
+      "locked": false,
+      "name": "fn",
+      "label": "Fn"
+    },
+    {
+      "index": 53,
+      "vk": 250,
+      "x": 414,
+      "y": 235,
+      "w": 449,
+      "h": 262,
+      "fnHid": null,
+      "locked": false,
+      "name": "ralt",
+      "label": "RAlt"
+    },
+    {
+      "index": 77,
+      "vk": 37,
+      "x": 529,
+      "y": 234,
+      "w": 554,
+      "h": 261,
+      "fnHid": null,
+      "locked": false,
+      "name": "left",
+      "label": "←"
+    },
+    {
+      "index": 83,
+      "vk": 40,
+      "x": 568,
+      "y": 234,
+      "w": 593,
+      "h": 261,
+      "fnHid": null,
+      "locked": false,
+      "name": "down",
+      "label": "↓"
+    },
+    {
+      "index": 89,
+      "vk": 39,
+      "x": 605,
+      "y": 234,
+      "w": 630,
+      "h": 261,
+      "fnHid": null,
+      "locked": false,
+      "name": "right",
+      "label": "→"
+    },
+    {
+      "index": 87,
+      "vk": 34,
+      "x": 604,
+      "y": 159,
+      "w": 629,
+      "h": 186,
+      "fnHid": null,
+      "locked": false,
+      "name": "pgdn",
+      "label": "PgDn"
+    }
+  ]
+}
