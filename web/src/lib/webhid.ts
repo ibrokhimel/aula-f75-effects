@@ -8,6 +8,10 @@ import {
     EFFECTS, CFG_TEMPLATE, PAL_TEMPLATE, PAL_ZEROS, PAL_LAST,
     buildFrame, checksum, effectTableLoc, encodeSpeedByte, decodeSpeedByte, hex,
 } from './protocol';
+import {
+    FEATURE_REPORT_ID, LAYER_BASE, LAYER_OFFSET, validateBlob,
+    type Layer,
+} from './keybind';
 
 export type LogFn = (msg: string) => void;
 
@@ -36,6 +40,16 @@ export async function readReport(device: HIDDevice, timeoutMs = 200): Promise<Ui
             if (!resolved) { resolved = true; device.removeEventListener('inputreport', handler); resolve(null); }
         }, timeoutMs);
     });
+}
+
+export async function writeKeybindBlob(device: HIDDevice, layer: Layer, blob: Uint8Array, log: LogFn) {
+    validateBlob(blob);
+    if (blob[LAYER_OFFSET] !== layer) {
+        throw new Error(`Layer byte mismatch: blob=${blob[LAYER_OFFSET]}, requested=${layer}`);
+    }
+    log(`TX-FEATURE 0x${FEATURE_REPORT_ID.toString(16)} layer=${layer === LAYER_BASE ? 'base' : 'fn'} (520 bytes)`);
+    // WebHID sendFeatureReport takes (reportId, data-without-its-byte-0).
+    await device.sendFeatureReport(FEATURE_REPORT_ID, blob.slice(1));
 }
 
 async function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
