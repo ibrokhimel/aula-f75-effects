@@ -53,7 +53,42 @@ See `web/src/lib/keybind.ts` (`BLOB_SIZE`, `LAYER_*`, `validateBlob`,
 `emptyBlob`, `defaultBlob`, `setSlot`/`getSlot`) and the F87 factory
 cross-check fixtures in `web/tests/fixtures/`.
 
-## Lighting protocol (output report 0x13)
+## Lighting protocol
+
+Two transports, dispatched per PID in `web/src/lib/f75.ts`
+(`isFeatureTransport`): the wired F75 (`258A:010C`) speaks 520-byte
+feature report `0x06` frames; the dongle (`3554:FA09`) keeps the
+output-report `0x13` protocol below.
+
+### Wired (`258A:010C`) — feature report `0x06`, 520-byte frames
+
+Header (8 bytes): `06 CMD A0 A1 A2 A3 L0 L1` — `0x06` report id, `CMD`,
+4-byte address `A0..A3`, 2-byte little-endian length `L0 L1`; payload
+follows at offset 8. As with the keybind blob above, WebHID strips byte
+0, so the on-wire body is `frame.slice(1)`.
+
+| name | cmd | addr | len | use |
+| --- | --- | --- | --- | --- |
+| Read config region | `0x84` | `00 00 01 00` | `0x0080` | SET-then-GET read of the 128-byte config region |
+| Write config region | `0x04` | `00 00 01 00` | `0x0080` | write the 128-byte config region |
+| Read color table | `0x8a` | `00 00 01 00` | `0x0200` | SET-then-GET read of the 512-byte color table |
+| Write color table | `0x0a` | `00 00 01 00` | `0x0200` | write per-key color table (`RR GG BB 00` × 128) |
+| Live per-key | `0x08` | — | — | live direct per-key packet; needs a keepalive stream or the board reverts out of direct mode |
+
+- **Config region** (addr `00 00 01 00`, 128 bytes): a per-effect
+  `(brightness, speed|color)` pair table. Brightness `0x09`=full …
+  `0x01`=dim; `speed|color = (speed << 4) | color`. Ripple (effect id 7)
+  at offsets 78-79 is a verified anchor; the rest of the pair table
+  (`EFFECT_TABLE_BASE` = 64, offset = base + id·2) and the effect-select,
+  debounce, and sleep offsets are calibration-derived — see
+  `calibrate()`/`loadLayout()` in `web/src/lib/f75-layout.ts`.
+- **Writes apply live** — there is no persist command (contrast the
+  dongle's `0x0A` Save below).
+- **Reads are SET-then-GET**: `sendFeatureReport`(request) followed by
+  `receiveFeatureReport`. A bare GET (no preceding request) returns
+  flash/status noise, never config data.
+
+### Dongle (`3554:FA09`) — output report `0x13`, 20-byte frames
 
 All frames are 20 bytes: `[0]=0x13 reportId, [1]=cmd, [2]=subcmd,
 [3]=seq, [4..18]=15-byte payload, [19]=checksum`.
