@@ -1,4 +1,4 @@
-import { hex } from "./protocol";
+import { hex, WIRELESS_PID } from "./protocol";
 import type { LogFn } from "./webhid";
 
 export const FEATURE_REPORT_ID = 0x06;
@@ -92,4 +92,8 @@ export async function writeColorTable(device: HIDDevice, data: Uint8Array, log: 
   const frame = buildFrame(CMD_WRITE_COLORS, CFG_ADDR, COLOR_LEN);
   frame.set(data, HEADER_SIZE);
   await sendFeature(device, frame, log);
+}
+
+export function isFeatureTransport(pid: number): boolean {
+  return pid !== WIRELESS_PID;
 }

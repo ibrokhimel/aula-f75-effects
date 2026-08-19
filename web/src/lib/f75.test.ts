@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildFrame, extractData, readConfigRegion, writeConfigRegion, readRegion } from "./f75";
+import { buildFrame, extractData, readConfigRegion, writeConfigRegion, readRegion, isFeatureTransport } from "./f75";
 import { FEATURE_REPORT_ID, CMD_READ_REGION, CMD_WRITE_REGION, CFG_LEN } from "./f75";
+import { WIRED_PID, WIRELESS_PID } from "./protocol";
 
 class FakeDevice {
   opened = true;
@@ -84,5 +85,12 @@ describe("readRegion", () => {
     const d = new FakeStuckDevice() as unknown as FakeStuckHID;
     const out = await readRegion(d, CMD_READ_REGION, [0, 0, 1, 0], CFG_LEN, log, 50);
     expect(out).toBeNull();
+  });
+});
+
+describe("isFeatureTransport", () => {
+  it("routes the wired F75 to feature reports and the dongle to output 0x13", () => {
+    expect(isFeatureTransport(WIRED_PID)).toBe(true);
+    expect(isFeatureTransport(WIRELESS_PID)).toBe(false);
   });
 });
