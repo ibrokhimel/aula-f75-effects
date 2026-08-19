@@ -12,6 +12,8 @@ import {
     FEATURE_REPORT_ID, LAYER_BASE, LAYER_OFFSET, validateBlob,
     type Layer,
 } from './keybind';
+import { isFeatureTransport, readConfigRegion, writeConfigRegion, readColorTable, writeColorTable } from './f75';
+import { loadLayout, effectOffsetsFor, encodeBrightness, EFFECT_TABLE_BASE } from './f75-layout';
 
 export type LogFn = (msg: string) => void;
 
@@ -80,7 +82,10 @@ export async function txBulk(device: HIDDevice, frames: Uint8Array[], label: str
     return echoes;
 }
 
-export async function readConfig(device: HIDDevice, log: LogFn, retries = 3): Promise<(Uint8Array | null)[]> {
+export async function readConfig(device: HIDDevice, log: LogFn, retries = 3): Promise<Uint8Array | (Uint8Array | null)[] | null> {
+    if (isFeatureTransport(device.productId)) {
+        return readConfigRegion(device, log, retries); // Uint8Array | null (128 bytes)
+    }
     // Buffer ALL incoming reports before sending the read request so no
     // fragments are dropped while JS is awaiting between readReport calls.
     const buffer: Uint8Array[] = [];
@@ -139,6 +144,34 @@ export interface EffectOptions {
 }
 
 export async function setEffect(device: HIDDevice, effectNum: number, opts: EffectOptions, log: LogFn) {
+    if (isFeatureTransport(device.productId)) {
+        const eff = EFFECTS[effectNum];
+        if (!eff) { log(`Unknown effect ${effectNum}`); return; }
+        if (effectNum === SELF_DEFINE_EFFECT) { log('Self-define is per-key mode. Use the Per-Key tab.'); return; }
+
+        const layout = loadLayout();
+        const sel = layout?.effectSelectOffset ?? null;
+        const offs = effectOffsetsFor(effectNum);
+        const region = await readConfigRegion(device, log);
+        if (!region) { log('ERROR: could not read config region'); return; }
+
+        let desc = `── Setting #${effectNum}: ${effectNum === 0 ? 'OFF' : eff.name}`;
+        if (opts.brightness !== null && opts.brightness !== undefined) desc += `  bright=${opts.brightness}`;
+        if (opts.speed !== null && opts.speed !== undefined) desc += `  speed=${opts.speed}`;
+        if (opts.colorful) desc += '  [colorful]';
+        log(desc + ' ──');
+
+        if (sel !== null) region[sel] = effectNum;
+        const curPair = decodeSpeedByte(region[offs.speedColor]);
+        if (opts.brightness !== null && opts.brightness !== undefined) region[offs.bright] = encodeBrightness(opts.brightness);
+        region[offs.speedColor] = opts.colorful
+            ? encodeSpeedByte(opts.speed ?? curPair.speed, true)
+            : (opts.speed !== null && opts.speed !== undefined ? encodeSpeedByte(opts.speed, !!opts.colorRgb) : region[offs.speedColor]);
+        await writeConfigRegion(device, region, log);
+        log(`✓ ${eff.name} active!\n`);
+        return;
+    }
+
     const isOff = effectNum === 0;
     if (effectNum === SELF_DEFINE_EFFECT) {
         log('Self-define is per-key mode. Use the Per-Key tab.');
@@ -162,7 +195,7 @@ export async function setEffect(device: HIDDevice, effectNum: number, opts: Effe
     log(desc + ' ──');
 
     log('Phase 1: Reading config...');
-    const config = await readConfig(device, log);
+    const config = await readConfig(device, log) as (Uint8Array | null)[];
     const gotConfig = config.every(c => c !== null);
     if (gotConfig) log(`  Current: #${config[0]![15]} (${EFFECTS[config[0]![15]]?.name || '?'})`);
     else log('  Using template');
@@ -216,10 +249,27 @@ export async function setEffect(device: HIDDevice, effectNum: number, opts: Effe
 }
 
 export async function applyPerKey(device: HIDDevice, keyColors: Record<number, [number, number, number]>, log: LogFn) {
+    if (isFeatureTransport(device.productId)) {
+        log('── Applying per-key colors (feature transport) ──');
+        const region = await readConfigRegion(device, log);
+        if (!region) { log('ERROR: could not read config region'); return; }
+        const layout = loadLayout();
+        const sel = layout?.effectSelectOffset ?? null;
+        if (sel !== null) { region[sel] = SELF_DEFINE_EFFECT; await writeConfigRegion(device, region, log); }
+        const table = new Uint8Array(512);
+        for (const [idx, rgb] of Object.entries(keyColors)) {
+            const i = parseInt(idx);
+            if (i >= 0 && i < 128) { table[i * 4] = rgb[0]; table[i * 4 + 1] = rgb[1]; table[i * 4 + 2] = rgb[2]; }
+        }
+        await writeColorTable(device, table, log);
+        log(`✓ Per-key colors written (${Object.keys(keyColors).length} keys). If LEDs don't refresh, use the live per-key stream (direct mode).\n`);
+        return;
+    }
+
     log('── Applying per-key colors ──');
 
     log('Phase 1: Reading config...');
-    const config = await readConfig(device, log);
+    const config = await readConfig(device, log) as (Uint8Array | null)[];
     const gotConfig = config.every(c => c !== null);
 
     log('Phase 2: Writing config (self-define mode)...');
@@ -273,14 +323,27 @@ export async function setSleepTimer(device: HIDDevice, minutes: number, log: Log
     const label = minutes ? `${minutes} min` : 'Off';
     log(`── Setting sleep timer: ${label} ──`);
 
+    if (isFeatureTransport(device.productId)) {
+        const region = await readConfigRegion(device, log);
+        if (!region) { log('ERROR: could not read config region'); return; }
+        const layout = loadLayout();
+        // provisional: real offset comes from calibration (Task 7 refines it)
+        const off = layout?.sleepOffset ?? 80;
+        const value = Math.min(0xff, Math.round(minutes * 2));
+        region[off] = value;
+        await writeConfigRegion(device, region, log);
+        log(`✓ Sleep timer set to ${label} (region offset 0x${off.toString(16)})\n`);
+        return;
+    }
+
     log('Phase 1: Reading config...');
-    let config = await readConfig(device, log);
+    let config = await readConfig(device, log) as (Uint8Array | null)[];
     let gotConfig = config.every(c => c !== null);
 
     if (!gotConfig) {
         log('  Could not read config, retrying...');
         await sleep(150);
-        config = await readConfig(device, log);
+        config = await readConfig(device, log) as (Uint8Array | null)[];
         gotConfig = config.every(c => c !== null);
     }
 
@@ -309,17 +372,27 @@ export async function setSleepTimer(device: HIDDevice, minutes: number, log: Log
 }
 
 export async function setDebounce(device: HIDDevice, level: number, log: LogFn) {
+    if (isFeatureTransport(device.productId)) {
+        const region = await readConfigRegion(device, log);
+        if (!region) { log('ERROR: could not read config region'); return; }
+        const layout = loadLayout();
+        region[layout?.debounceOffset ?? EFFECT_TABLE_BASE + 9] = level - 1;
+        await writeConfigRegion(device, region, log);
+        log(`✓ Debounce set to ${level}ms\n`);
+        return;
+    }
+
     const debounceByte = level - 1;
     log(`── Setting debounce: ${level}ms ──`);
 
     log('Phase 1: Reading config...');
-    let config = await readConfig(device, log);
+    let config = await readConfig(device, log) as (Uint8Array | null)[];
     let gotConfig = config.every(c => c !== null);
 
     if (!gotConfig) {
         log('  Could not read config, retrying...');
         await sleep(100);
-        config = await readConfig(device, log);
+        config = await readConfig(device, log) as (Uint8Array | null)[];
         gotConfig = config.every(c => c !== null);
     }
 
@@ -356,7 +429,7 @@ export async function setDebounce(device: HIDDevice, level: number, log: LogFn) 
 
     // Phase 4: Verify (optional)
     await sleep(50);
-    const verifyConfig = await readConfig(device, log);
+    const verifyConfig = await readConfig(device, log) as (Uint8Array | null)[];
     if (verifyConfig.every(c => c !== null)) {
         const vVal = verifyConfig[0]![8];
         const vLevel = vVal <= 4 ? vVal + 1 : '?';
@@ -371,6 +444,19 @@ export async function setDebounce(device: HIDDevice, level: number, log: LogFn) 
 }
 
 export async function factoryReset(device: HIDDevice, log: LogFn) {
+    if (isFeatureTransport(device.productId)) {
+        log('── Factory resetting lighting config ──');
+        const region = new Uint8Array(128);
+        for (let id = 0; id < 19; id++) {
+            const offs = effectOffsetsFor(id);
+            region[offs.bright] = 9;
+            region[offs.speedColor] = (id === 0 ? 0 : 0x47);
+        }
+        await writeConfigRegion(device, region, log);
+        log('✓ Factory config baseline written (effect table).\n');
+        return;
+    }
+
     log('── Factory resetting keyboard lighting ──');
 
     log('Phase 1: Writing factory default config...');

@@ -184,9 +184,9 @@ export function useKeyboard() {
     const doReadConfig = useCallback(async () => {
         if (!device?.opened) { log('Not connected!'); return 0; }
         try {
-            const frames = await readConfig(device, log, 3);
-            const n = frames.filter((f) => f !== null).length;
-            log(`Config read: ${n}/10 frames`);
+            const frame = await readConfig(device, log, 3); // now Uint8Array | null on wired
+            const n = frame instanceof Uint8Array ? 1 : (frame?.filter(f => f !== null).length ?? 0);
+            log(`Config read: ${n}${frame instanceof Uint8Array ? ' region (128 bytes)' : '/10 frames'}`);
             return n;
         } catch (err: unknown) {
             log(`ERROR: ${err instanceof Error ? err.message : String(err)}`);
