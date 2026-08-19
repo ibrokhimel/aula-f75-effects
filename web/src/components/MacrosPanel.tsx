@@ -5,7 +5,16 @@ import { MACRO_SUPPORTED, type Macro, type MacroStep } from "../lib/macros";
 import { sendRaw } from "../lib/debug";
 import type { LogFn } from "../lib/webhid";
 
-export function MacrosPanel({ device, log }: { device: HIDDevice | null; log: LogFn }) {
+type MacrosPanelProps = {
+  device: HIDDevice | null;
+  log: LogFn;
+  onDumpConfig?: () => void;
+  onDumpColors?: () => void;
+  onCalibrate?: () => void;
+  onClearLayout?: () => void;
+};
+
+export function MacrosPanel({ device, log, onDumpConfig, onDumpColors, onCalibrate, onClearLayout }: MacrosPanelProps) {
   const [macros, setMacros] = useState<Macro[]>([]);
   const [recording, setRecording] = useState(false);
   const [steps, setSteps] = useState<MacroStep[]>([]);
@@ -81,6 +90,10 @@ export function MacrosPanel({ device, log }: { device: HIDDevice | null; log: Lo
         <h2 className="text-sm font-medium text-zinc-300">Raw HID (debug)</h2>
         <textarea className="w-full h-14 rounded-lg bg-black border border-zinc-800 p-2 text-green-300 font-mono text-xs focus:outline-none" value={rawIn} onChange={(e) => setRawIn(e.target.value)} />
         <button onClick={sendRawFrame} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Send 20-byte frame</button>
+        <button onClick={onDumpConfig} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Dump config region</button>
+        <button onClick={onDumpColors} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Dump color table</button>
+        <button onClick={onCalibrate} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Calibrate layout</button>
+        <button onClick={onClearLayout} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Clear layout map</button>
         <p className="font-mono text-xs text-zinc-500">{rawOut}</p>
       </section>
     </div>

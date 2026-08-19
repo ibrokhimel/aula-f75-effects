@@ -3,6 +3,8 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { WIRED_VID, WIRED_PID, WIRELESS_VID, WIRELESS_PID } from '@/lib/protocol';
 import { setEffect, applyPerKey, setSleepTimer, setDebounce, factoryReset, readConfig, writeKeybindBlob, type EffectOptions } from '@/lib/webhid';
 import { type Layer } from '@/lib/keybind';
+import { isFeatureTransport, readConfigRegion, readColorTable } from '@/lib/f75';
+import { calibrate, clearLayout } from '@/lib/f75-layout';
 
 export function useKeyboard() {
     const [device, setDevice] = useState<HIDDevice | null>(null);
@@ -200,8 +202,40 @@ export function useKeyboard() {
         catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
     }, [device, log]);
 
+    const doDumpConfig = useCallback(async () => {
+        if (!device?.opened) { log("Not connected!"); return; }
+        try {
+            if (!isFeatureTransport(device.productId)) { log("Dump config is wired-only."); return; }
+            const r = await readConfigRegion(device, log);
+            log(r ? `Config region (128B): ${Array.from(r).map(b => b.toString(16).padStart(2, "0")).join(" ")}` : "Dump failed");
+        } catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
+    }, [device, log]);
+
+    const doDumpColors = useCallback(async () => {
+        if (!device?.opened) { log("Not connected!"); return; }
+        try {
+            if (!isFeatureTransport(device.productId)) { log("Dump color table is wired-only."); return; }
+            const t = await readColorTable(device, log);
+            log(t ? `Color table (512B): ${Array.from(t).map(b => b.toString(16).padStart(2, "0")).join(" ")}` : "Dump failed");
+        } catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
+    }, [device, log]);
+
+    const doCalibrate = useCallback(async () => {
+        if (!device?.opened) { log("Not connected!"); return; }
+        try {
+            if (!isFeatureTransport(device.productId)) { log("Calibration is wired-only."); return; }
+            await calibrate(device, log);
+        } catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
+    }, [device, log]);
+
+    const doClearLayout = useCallback(() => {
+        clearLayout();
+        log("Calibrated layout map cleared.");
+    }, [log]);
+
     return {
         device, connected, status, logs, log,
         connect, doSetEffect, doApplyPerKey, doSetSleep, doSetDebounce, doFactoryReset, doReadConfig, doWriteKeybind,
+        doDumpConfig, doDumpColors, doCalibrate, doClearLayout,
     };
 }
