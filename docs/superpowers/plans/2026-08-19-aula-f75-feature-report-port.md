@@ -594,7 +594,7 @@ Add at the top a helper:
 
 ```ts
 import { isFeatureTransport, readConfigRegion, writeConfigRegion, readColorTable, writeColorTable } from "./f75";
-import { loadLayout, effectOffsetsFor, encodeBrightness } from "./f75-layout";
+import { loadLayout, effectOffsetsFor, encodeBrightness, EFFECT_TABLE_BASE } from "./f75-layout";
 ```
 
 **`readConfig`** — keep the existing 10-frame implementation as the wireless branch, but at the top:
@@ -605,7 +605,7 @@ if (isFeatureTransport(device.productId)) {
 }
 ```
 
-**`setSleepTimer`** — at the top:
+**`setSleepTimer`** — hoist the `sleepByte`/`label` computation and its log line to the very top of the function (above the feature branch) so both branches share them, remove the now-duplicate log line from the top of the wireless branch, then:
 
 ```ts
 if (isFeatureTransport(device.productId)) {
