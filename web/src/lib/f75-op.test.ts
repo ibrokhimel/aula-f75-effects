@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { setSleepTimer, setDebounce } from "./webhid";
+import { setSleepTimer, setDebounce, applyPerKey } from "./webhid";
 import { isFeatureTransport } from "./f75";
-import { WIRED_PID } from "./protocol";
+import { WIRED_PID, SELF_DEFINE_EFFECT } from "./protocol";
 
 class FakeFeatureDevice {
   productId = WIRED_PID;
@@ -34,5 +34,18 @@ describe("feature branch dispatch", () => {
     await setDebounce(d as unknown as FH, 2, log);
     expect(d.writes.every(cmd => cmd === 0x04 || cmd === 0x84)).toBe(true);
     expect(d.writes.some(cmd => cmd === 0x04)).toBe(true);
+  });
+
+  it("refuses to write an empty per-key map (would black the board out)", async () => {
+    const d = new FakeFeatureDevice();
+    await applyPerKey(d as unknown as FH, {}, log);
+    expect(d.writes).toHaveLength(0);
+  });
+
+  it("per-key apply enters the self-define slot (22) before uploading colors", async () => {
+    const d = new FakeFeatureDevice();
+    d.region[10] = 3;
+    await applyPerKey(d as unknown as FH, { 5: [255, 0, 0] }, log);
+    expect(d.region[10]).toBe(SELF_DEFINE_EFFECT + 1);
   });
 });

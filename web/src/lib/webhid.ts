@@ -14,6 +14,7 @@ import {
 } from './keybind';
 import { isFeatureTransport, readConfigRegion, writeConfigRegion, readColorTable, writeColorTable } from './f75';
 import { loadLayout, effectOffsetsFor, encodeBrightness, EFFECT_TABLE_BASE, DEFAULT_EFFECT_SELECT_OFFSET } from './f75-layout';
+import { enableDirectMode, disableDirectMode, sendDirectFrame, buildDirectFrame, startPreviewKeepalive, stopPreviewKeepalive } from './direct-mode';
 
 export type LogFn = (msg: string) => void;
 
@@ -145,6 +146,8 @@ export interface EffectOptions {
 
 export async function setEffect(device: HIDDevice, effectNum: number, opts: EffectOptions, log: LogFn) {
     if (isFeatureTransport(device.productId)) {
+        stopPreviewKeepalive();
+        await disableDirectMode(device, log);
         const eff = EFFECTS[effectNum];
         if (!eff) { log(`Unknown effect ${effectNum}`); return; }
         if (effectNum === SELF_DEFINE_EFFECT) { log('Self-define is per-key mode. Use the Per-Key tab.'); return; }
@@ -250,19 +253,48 @@ export async function setEffect(device: HIDDevice, effectNum: number, opts: Effe
 
 export async function applyPerKey(device: HIDDevice, keyColors: Record<number, [number, number, number]>, log: LogFn) {
     if (isFeatureTransport(device.productId)) {
-        log('── Applying per-key colors (feature transport) ──');
-        const region = await readConfigRegion(device, log);
-        if (!region) { log('ERROR: could not read config region'); return; }
-        const layout = loadLayout();
-        const sel = layout?.effectSelectOffset ?? DEFAULT_EFFECT_SELECT_OFFSET;
-        if (sel !== null) { region[sel] = SELF_DEFINE_EFFECT; await writeConfigRegion(device, region, log); }
+        const count = Object.keys(keyColors).length;
+        if (count === 0) { log('No keys painted yet — click keys in the Per-Key tab first (nothing was sent).'); return; }
+        log(`── Applying per-key colors to ${count} key(s) ──`);
+
         const table = new Uint8Array(512);
         for (const [idx, rgb] of Object.entries(keyColors)) {
             const i = parseInt(idx);
             if (i >= 0 && i < 128) { table[i * 4] = rgb[0]; table[i * 4 + 1] = rgb[1]; table[i * 4 + 2] = rgb[2]; }
         }
+
+        // Raw-hidraw experiments (2026-08-24) proved the color table only
+        // retains while the board sits in its self-define slot — enter it
+        // BEFORE uploading. Hardware ids run one ahead of EFFECTS, so the
+        // display slot should be 22.
+        const region = await readConfigRegion(device, log);
+        if (!region) { log('ERROR: could not read config region'); return; }
+        const layout = loadLayout();
+        const sel = layout?.effectSelectOffset ?? DEFAULT_EFFECT_SELECT_OFFSET;
+        region[sel] = SELF_DEFINE_EFFECT + 1;
+        await writeConfigRegion(device, region, log);
+
         await writeColorTable(device, table, log);
-        log(`✓ Per-key colors written (${Object.keys(keyColors).length} keys). If LEDs don't refresh, use the live per-key stream (direct mode).\n`);
+
+        let stuck: number | null = null;
+        const rb = await readColorTable(device, log);
+        if (rb) {
+            stuck = Object.keys(keyColors).filter(k => {
+                const i = parseInt(k);
+                return rb[i * 4] === table[i * 4] && rb[i * 4 + 1] === table[i * 4 + 1] && rb[i * 4 + 2] === table[i * 4 + 2];
+            }).length;
+            log(stuck === count
+                ? `Color table verified on device (${stuck}/${count} keys).`
+                : `Note: only ${stuck}/${count} key colors persisted — slot entry may have failed.`);
+        }
+
+        await enableDirectMode(device, log);
+        const map = new Map<number, [number, number, number]>(
+            Object.entries(keyColors).map(([k, v]) => [parseInt(k), v]));
+        const frame = buildDirectFrame(map);
+        await sendDirectFrame(device, frame);
+        startPreviewKeepalive(device, frame);
+        log(`✓ Displaying live (heartbeat on). On disconnect the board falls back to self-define slot ${SELF_DEFINE_EFFECT + 1} — if colors survive, native per-key works.\n`);
         return;
     }
 

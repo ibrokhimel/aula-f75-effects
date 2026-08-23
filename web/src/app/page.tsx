@@ -82,6 +82,7 @@ export default function Home() {
             device={kb.device}
             onReadConfig={kb.doReadConfig}
             onWriteKeybind={kb.doWriteKeybind}
+            log={kb.log}
           />
         )}
         {tab === 'remap' && <RemapPanel onWriteKeybind={kb.doWriteKeybind} />}
@@ -96,6 +97,7 @@ export default function Home() {
                 onProbeSelect={kb.doProbeSelect}
                 onSnapshotDefaults={kb.doSnapshotDefaults}
                 onRestoreDefaults={kb.doRestoreDefaults}
+                onPerKeyLab={kb.doPerKeyLab}
             />
         )}
       </div>

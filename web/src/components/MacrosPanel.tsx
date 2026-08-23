@@ -15,9 +15,10 @@ type MacrosPanelProps = {
   onProbeSelect?: () => void;
   onSnapshotDefaults?: () => void;
   onRestoreDefaults?: () => void;
+  onPerKeyLab?: () => void;
 };
 
-export function MacrosPanel({ device, log, onDumpConfig, onDumpColors, onCalibrate, onClearLayout, onProbeSelect, onSnapshotDefaults, onRestoreDefaults }: MacrosPanelProps) {
+export function MacrosPanel({ device, log, onDumpConfig, onDumpColors, onCalibrate, onClearLayout, onProbeSelect, onSnapshotDefaults, onRestoreDefaults, onPerKeyLab }: MacrosPanelProps) {
   const [macros, setMacros] = useState<Macro[]>([]);
   const [recording, setRecording] = useState(false);
   const [steps, setSteps] = useState<MacroStep[]>([]);
@@ -99,6 +100,7 @@ export function MacrosPanel({ device, log, onDumpConfig, onDumpColors, onCalibra
         <button onClick={onProbeSelect} className="px-3 py-1 text-sm rounded-md border border-violet-500/40 text-violet-300">Probe select (read-only)</button>
         <button onClick={onSnapshotDefaults} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Snapshot defaults</button>
         <button onClick={onRestoreDefaults} className="px-3 py-1 text-sm rounded-md border border-green-500/40 text-green-300">Restore defaults</button>
+        <button onClick={onPerKeyLab} className="px-3 py-1 text-sm rounded-md border border-amber-500/40 text-amber-300">Per-key lab (watch LEDs)</button>
         <button onClick={onClearLayout} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Clear layout map</button>
         <p className="font-mono text-xs text-zinc-500">{rawOut}</p>
       </section>

@@ -98,6 +98,39 @@ export async function calibrate(device: HIDDevice, log: LogFn): Promise<F75Layou
   return layout;
 }
 
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+/**
+ * Visual sweep for the board's self-define DISPLAY slot. Raw-hidraw testing
+ * proved the color table retains in slots 21 and 22, but whether either
+ * actually RENDERS custom colors needs eyes. Paints three marker keys
+ * (indices 2-4: red/green/blue) per candidate slot with a pause each.
+ */
+export async function probeSelfDefineSlots(device: HIDDevice, log: LogFn): Promise<void> {
+  const baseline = await readConfigRegion(device, log);
+  if (baseline === null) { log("LAB aborted: could not read config region"); return; }
+
+  const table = new Uint8Array(512);
+  const markers: Array<[number, [number, number, number]]> = [
+    [2, [255, 0, 0]], [3, [0, 255, 0]], [4, [0, 0, 255]],
+  ];
+  for (const [i, [r, g, b]] of markers) { table[i * 4] = r; table[i * 4 + 1] = g; table[i * 4 + 2] = b; }
+
+  log("LAB: watch keys 2-4 of row 1 (Tab/Q/W-ish). Each slot lights them red/green/blue IF it renders.");
+  try {
+    for (const v of [20, 21, 22, 23]) {
+      const r = new Uint8Array(baseline); r[10] = v;
+      await writeConfigRegion(device, r, log);
+      await writeColorTable(device, table, log);
+      log(`LAB: slot ${v} active — LOOK NOW (3.5s)...`);
+      await sleep(3500);
+    }
+  } finally {
+    await writeConfigRegion(device, baseline, log);
+    log("LAB done, original state restored. Report which slot number lit the three keys.");
+  }
+}
+
 export function diffSamples(samples: Uint8Array[]): Map<number, number[]> {
   const out = new Map<number, number[]>();
   if (samples.length < 2) return out;

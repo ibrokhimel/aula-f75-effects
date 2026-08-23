@@ -14,14 +14,24 @@ export function PerKeyPanel({ onApply }: PerKeyPanelProps) {
     const [paintColor, setPaintColor] = useState('#ff0000');
     const [applying, setApplying] = useState(false);
 
-    const toggleKey = useCallback((ledIdx: number, shift: boolean) => {
+    const toggleKey = useCallback((ledIdx: number) => {
         setSelectedKeys(prev => {
-            const next = shift ? new Set(prev) : new Set<number>();
+            const next = new Set(prev);
             if (next.has(ledIdx)) next.delete(ledIdx);
             else next.add(ledIdx);
             return next;
         });
     }, []);
+
+    const paintKey = useCallback((ledIdx: number) => {
+        const rgb = hexToRgb(paintColor);
+        setKeyColors(prev => ({ ...prev, [ledIdx]: rgb }));
+    }, [paintColor]);
+
+    const clickKey = useCallback((ledIdx: number, shift: boolean) => {
+        if (shift) toggleKey(ledIdx);
+        else { setSelectedKeys(new Set()); paintKey(ledIdx); }
+    }, [toggleKey, paintKey]);
 
     const selectAll = useCallback(() => {
         const all = new Set<number>();
@@ -78,13 +88,17 @@ export function PerKeyPanel({ onApply }: PerKeyPanelProps) {
                 </button>
                 <button
                     onClick={handleApply}
-                    disabled={applying}
-                    className="ml-auto px-4 py-1.5 text-xs font-semibold rounded-md bg-violet-600 text-white hover:bg-violet-500
-                     disabled:opacity-40 disabled:cursor-default transition-all shadow-md shadow-violet-600/20"
+                    disabled={applying || Object.keys(keyColors).length === 0}
+                    title={Object.keys(keyColors).length === 0 ? 'Paint at least one key first' : undefined}
+                    className="ml-auto px-4 py-1.5 text-xs font-semibold rounded-md bg-zinc-100 text-zinc-900 hover:bg-white
+                     disabled:opacity-40 disabled:cursor-default transition-colors"
                 >
-                    {applying ? 'Applying...' : 'Apply Per-Key'}
+                    {applying ? 'Applying...' : `Apply Per-Key (${Object.keys(keyColors).length})`}
                 </button>
             </div>
+            <p className="text-[0.7rem] text-zinc-600 -mt-2">
+                Click a key to paint it. Shift-click to select several, then use Paint Selected.
+            </p>
 
             {/* Keyboard */}
             <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-4 overflow-x-auto backdrop-blur-sm">
@@ -106,7 +120,7 @@ export function PerKeyPanel({ onApply }: PerKeyPanelProps) {
                                 return (
                                     <div
                                         key={ci}
-                                        onClick={(e) => toggleKey(ledIdx, e.shiftKey)}
+                                        onClick={(e) => clickKey(ledIdx, e.shiftKey)}
                         className={[
                             'h-[34px] flex items-center justify-center rounded text-[0.65rem]',
                             'cursor-pointer select-none transition-all duration-100 px-1 whitespace-nowrap',
