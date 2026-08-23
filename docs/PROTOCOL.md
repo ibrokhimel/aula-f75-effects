@@ -58,10 +58,10 @@ cross-check fixtures in `web/tests/fixtures/`.
 Two transports, dispatched per PID in `web/src/lib/f75.ts`
 (`isFeatureTransport`): the wired F75 (`258A:010C`) speaks 520-byte
 feature report `0x06` frames; the dongle (`3554:FA09`) keeps the
-output-report `0x13` protocol below.
+output-report `0x13` protocol below. Items marked **VERIFIED** were
+confirmed against live hardware (2026-08-24 sessions).
 
-### Wired (`258A:010C`) — feature report `0x06`, 520-byte frames
-
+Wired transport (**VERIFIED**): feature report `0x06`, 520-byte frames.
 Header (8 bytes): `06 CMD A0 A1 A2 A3 L0 L1` — `0x06` report id, `CMD`,
 4-byte address `A0..A3`, 2-byte little-endian length `L0 L1`; payload
 follows at offset 8. As with the keybind blob above, WebHID strips byte
@@ -73,20 +73,80 @@ follows at offset 8. As with the keybind blob above, WebHID strips byte
 | Write config region | `0x04` | `00 00 01 00` | `0x0080` | write the 128-byte config region |
 | Read color table | `0x8a` | `00 00 01 00` | `0x0200` | SET-then-GET read of the 512-byte color table |
 | Write color table | `0x0a` | `00 00 01 00` | `0x0200` | write per-key color table (`RR GG BB 00` × 128) |
-| Live per-key | `0x08` | — | — | live direct per-key packet; needs a keepalive stream or the board reverts out of direct mode |
+| Live per-key stream | `0x08` | — | — | direct-mode RGB stream; needs continuous frames (see Direct mode stream below) |
 
-- **Config region** (addr `00 00 01 00`, 128 bytes): a per-effect
-  `(brightness, speed|color)` pair table. Brightness `0x09`=full …
-  `0x01`=dim; `speed|color = (speed << 4) | color`. Ripple (effect id 7)
-  at offsets 78-79 is a verified anchor; the rest of the pair table
-  (`EFFECT_TABLE_BASE` = 64, offset = base + id·2) and the effect-select,
-  debounce, and sleep offsets are calibration-derived — see
-  `calibrate()`/`loadLayout()` in `web/src/lib/f75-layout.ts`.
-- **Writes apply live** — there is no persist command (contrast the
-  dongle's `0x0A` Save below).
-- **Reads are SET-then-GET**: `sendFeatureReport`(request) followed by
-  `receiveFeatureReport`. A bare GET (no preceding request) returns
-  flash/status noise, never config data.
+- **Reads are SET-then-GET (VERIFIED)**: `sendFeatureReport`(request)
+  followed by `receiveFeatureReport`. A bare GET (no preceding request)
+  returns flash/status noise, never config data.
+- **Shared address, length-disambiguated (VERIFIED)**: config region and
+  color table both live at `[0x00, 0x00, 0x01, 0x00]`; the little-endian
+  length in header bytes 6–7 (`0x0080` vs `0x0200`) selects the region
+  the firmware serves.
+- **Write reliability (VERIFIED)**: per-effect table writes echo and
+  persist reliably — confirmed via read-back diffs across sessions.
+
+### Config region (wired) — addr `00 00 01 00`, len `0x0080` — VERIFIED
+
+Layout (offsets 0-based within the 128-byte region):
+
+| offsets | contents |
+| --- | --- |
+| 0–63 | control bytes; current-effect select byte at offset 10 (see Effect select below) |
+| 64 + 2n | effect n brightness — `0x09`=full … `0x01`=dim |
+| 65 + 2n | effect n speed/color — `speed\|color = (speed << 4) \| colorful` |
+| 78–79 | ripple pair (app id 7) — verified anchor |
+| 126–127 | trailer `5A A5` |
+
+- Effect table starts at offset 64 (`EFFECT_TABLE_BASE` in
+  `web/src/lib/f75-layout.ts`); the debounce and sleep offsets there
+  remain calibration-derived — see `calibrate()`/`loadLayout()`.
+- **Writes apply live (VERIFIED)**: switching effects by writing the
+  select byte + slot settings takes effect immediately. No save command
+  observed or needed for the config region (contrast the dongle's
+  `0x0A` Save below).
+
+### Color table (wired) — addr `00 00 01 00`, len `0x0200`
+
+- Layout: `RR GG BB 00` × 128 keys.
+- **Persistence VERIFIED**: writes persist and read back byte-exact
+  (3/3 probed keys).
+- **Display UNSOLVED**: pointing the select byte at `21` (F87-style
+  SELF_DEFINE) blanks the LEDs instead of showing the custom colors.
+  Working hypothesis (**UNCONFIRMED, in test**): the hardware
+  self-define slot is `22` (`21 + 1`, per the numbering quirk below).
+
+### Effect select — offset 10 (+ hardware numbering quirk)
+
+- Current-effect select byte = **config-region offset 10**
+  (**VERIFIED**) via a read-only knob-diff probe: the byte tracked
+  `2→3→4→5` across knob effect cycles. Offset 12 is *not* the select —
+  it stays frozen during cycling.
+- **Hardware numbering quirk (PARTIALLY VERIFIED — needs
+  confirmation)**: hardware ids appear to run one ahead of the app's
+  `EFFECTS` table — steady single-color showed select `0x02` while the
+  app maps Fixed-on to `1`.
+
+### Direct mode stream (cmd `0x08`) — heartbeat required — VERIFIED
+
+Live per-key RGB streaming over feature report `0x06`, cmd `0x08`:
+
+- Payload: 122 LEDs × `R G B` at payload offset 8; zone byte
+  `d[4] = 0x01`; LED count `0x7A` (122) at `d[6]`.
+
+Enable sequence — three small feature reports (body shown after the
+report id byte):
+
+| step | report id | body |
+| --- | --- | --- |
+| 1 | `0x39` | `20 06 00 01 00` |
+| 2 | `0x3c` | `20 01 00` |
+| 3 | `0x39` | `20 06 01 01 00` |
+
+- Disable: report `0x3c`, body `20 00 00`.
+- **Heartbeat requirement (critical — VERIFIED by experiment)**: direct
+  mode holds ONLY while frames keep arriving. Sustained ~20 fps keeps
+  it indefinitely; sparse frames (a one-shot write, or even a 400 ms
+  heartbeat) let the firmware revert to the configured effect.
 
 ### Dongle (`3554:FA09`) — output report `0x13`, 20-byte frames
 
@@ -133,3 +193,10 @@ locally (`MACRO_SUPPORTED = false`) and exposes a Raw HID debug tab
 - No firmware-version byte is documented anywhere (F87 master or F75 keybind);
   the Device Info card reports only real data (productName, VID:PID, and
   config-frames health from `readConfig`).
+- Recovery / enumeration notes (**VERIFIED**, live sessions 2026-08-24):
+  - Holding `Fn+Esc` for ~5 s performs a board-wide factory reset.
+  - The tri-mode side switch position gates wired enumeration: wireless
+    positions mux the USB data lines off, so nothing enumerates over USB
+    until wired is selected.
+  - USB hub ports caused flaky enumeration; direct root ports enumerated
+    reliably.
