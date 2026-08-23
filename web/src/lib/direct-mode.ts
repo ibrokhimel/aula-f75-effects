@@ -93,3 +93,25 @@ export function isDirectModeCapable(device: HIDDevice): boolean {
     return c.featureReports.some(r => r.reportId === DIRECT_REPORT_ID);
   });
 }
+
+// Static per-key previews hold only while frames keep arriving — the
+// firmware falls back to the configured effect after an idle timeout. A slow
+// heartbeat of the same frame keeps the painting on screen.
+let previewTimer: ReturnType<typeof setInterval> | null = null;
+
+export function startPreviewKeepalive(device: HIDDevice, frame: Uint8Array) {
+  stopPreviewKeepalive();
+  // The Animations panel streams at ~20 fps and holds indefinitely; a static
+  // frame needs the same sustained traffic or the firmware reverts to the
+  // configured effect.
+  previewTimer = setInterval(() => {
+    sendDirectFrame(device, frame).catch(() => {});
+  }, 50);
+}
+
+export function stopPreviewKeepalive() {
+  if (previewTimer !== null) {
+    clearInterval(previewTimer);
+    previewTimer = null;
+  }
+}
