@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import {
     deleteProfile, listProfiles, profileFromBase64, profileToBase64,
-    saveProfile, type Profile,
+    saveProfile, withLighting, type Profile,
 } from '@/lib/profiles';
+import { isFeatureTransport, readConfigRegion, writeConfigRegion } from '@/lib/f75';
 import type { Layer } from '@/lib/keybind';
 
 const REMAP_KEY = 'aula-f75.remap';
@@ -21,7 +22,9 @@ function currentLayers(): { base: Uint8Array; fn: Uint8Array } {
     }
 }
 
-export function ProfilesCard({ onWriteKeybind }: {
+export function ProfilesCard({ device, log, onWriteKeybind }: {
+    device: HIDDevice | null;
+    log: (msg: string) => void;
     onWriteKeybind: (layer: Layer, blob: Uint8Array) => Promise<void>;
 }) {
     const [profiles, setProfiles] = useState<Profile[]>(listProfiles);
@@ -30,14 +33,19 @@ export function ProfilesCard({ onWriteKeybind }: {
 
     const refresh = () => setProfiles(listProfiles());
 
-    function capture() {
+    async function capture() {
         if (!name.trim()) { setStatus('Name the profile first'); return; }
-        saveProfile({
+        let profile: Profile = {
             id: `p${Date.now()}`, name: name.trim(), createdAt: Date.now(),
             layers: currentLayers(), colors: {},
             effect: { num: 3, speed: null, brightness: null, colorful: true, color: null },
             sleepMinutes: 0, debounceMs: 3, raw: '',
-        });
+        };
+        if (device?.opened && isFeatureTransport(device.productId)) {
+            const region = await readConfigRegion(device, log).catch(() => null);
+            if (region) profile = withLighting(profile, region);
+        }
+        saveProfile(profile);
         refresh();
         setName('');
         setStatus('Saved');
@@ -47,6 +55,12 @@ export function ProfilesCard({ onWriteKeybind }: {
         try {
             await onWriteKeybind(0, p.layers.base);
             await onWriteKeybind(1, p.layers.fn);
+            if (p.lighting && device?.opened && isFeatureTransport(device.productId)) {
+                await writeConfigRegion(device, Uint8Array.from(p.lighting), log);
+                log(`Restored lighting snapshot for "${p.name}"`);
+            } else {
+                log(`No lighting snapshot applied for "${p.name}"`);
+            }
             setStatus(`Applied "${p.name}"`);
         } catch (e) {
             setStatus(`Error: ${e instanceof Error ? e.message : String(e)}`);

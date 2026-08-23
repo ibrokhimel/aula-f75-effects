@@ -6,6 +6,7 @@ import type { Layer } from '@/lib/keybind';
 
 interface SettingsPanelProps {
     device: HIDDevice | null;
+    log?: (msg: string) => void;
     onSetSleep: (minutes: number) => Promise<void>;
     onSetDebounce: (level: number) => Promise<void>;
     onFactoryReset: () => Promise<void>;
@@ -13,7 +14,7 @@ interface SettingsPanelProps {
     onWriteKeybind: (layer: Layer, blob: Uint8Array) => Promise<void>;
 }
 
-export function SettingsPanel({ device, onSetSleep, onSetDebounce, onFactoryReset, onReadConfig, onWriteKeybind }: SettingsPanelProps) {
+export function SettingsPanel({ device, log, onSetSleep, onSetDebounce, onFactoryReset, onReadConfig, onWriteKeybind }: SettingsPanelProps) {
     const [sleepMinutes, setSleepMinutes] = useState(0);
     const [debounceLevel, setDebounceLevel] = useState(3);
     const [applyingSleep, setApplyingSleep] = useState(false);
@@ -107,7 +108,7 @@ export function SettingsPanel({ device, onSetSleep, onSetDebounce, onFactoryRese
             </div>
 
             <DeviceInfoCard device={device} onReadConfig={onReadConfig} />
-            <ProfilesCard onWriteKeybind={onWriteKeybind} />
+            <ProfilesCard device={device} log={log ?? ((msg) => console.log(msg))} onWriteKeybind={onWriteKeybind} />
         </div>
     );
 }
