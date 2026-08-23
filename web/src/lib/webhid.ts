@@ -13,7 +13,7 @@ import {
     type Layer,
 } from './keybind';
 import { isFeatureTransport, readConfigRegion, writeConfigRegion, readColorTable, writeColorTable } from './f75';
-import { loadLayout, effectOffsetsFor, encodeBrightness, EFFECT_TABLE_BASE } from './f75-layout';
+import { loadLayout, effectOffsetsFor, encodeBrightness, EFFECT_TABLE_BASE, DEFAULT_EFFECT_SELECT_OFFSET } from './f75-layout';
 
 export type LogFn = (msg: string) => void;
 
@@ -150,7 +150,7 @@ export async function setEffect(device: HIDDevice, effectNum: number, opts: Effe
         if (effectNum === SELF_DEFINE_EFFECT) { log('Self-define is per-key mode. Use the Per-Key tab.'); return; }
 
         const layout = loadLayout();
-        const sel = layout?.effectSelectOffset ?? null;
+        const sel = layout?.effectSelectOffset ?? DEFAULT_EFFECT_SELECT_OFFSET;
         const offs = effectOffsetsFor(effectNum);
         const region = await readConfigRegion(device, log);
         if (!region) { log('ERROR: could not read config region'); return; }
@@ -254,7 +254,7 @@ export async function applyPerKey(device: HIDDevice, keyColors: Record<number, [
         const region = await readConfigRegion(device, log);
         if (!region) { log('ERROR: could not read config region'); return; }
         const layout = loadLayout();
-        const sel = layout?.effectSelectOffset ?? null;
+        const sel = layout?.effectSelectOffset ?? DEFAULT_EFFECT_SELECT_OFFSET;
         if (sel !== null) { region[sel] = SELF_DEFINE_EFFECT; await writeConfigRegion(device, region, log); }
         const table = new Uint8Array(512);
         for (const [idx, rgb] of Object.entries(keyColors)) {

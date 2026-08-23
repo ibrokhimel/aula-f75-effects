@@ -12,9 +12,12 @@ type MacrosPanelProps = {
   onDumpColors?: () => void;
   onCalibrate?: () => void;
   onClearLayout?: () => void;
+  onProbeSelect?: () => void;
+  onSnapshotDefaults?: () => void;
+  onRestoreDefaults?: () => void;
 };
 
-export function MacrosPanel({ device, log, onDumpConfig, onDumpColors, onCalibrate, onClearLayout }: MacrosPanelProps) {
+export function MacrosPanel({ device, log, onDumpConfig, onDumpColors, onCalibrate, onClearLayout, onProbeSelect, onSnapshotDefaults, onRestoreDefaults }: MacrosPanelProps) {
   const [macros, setMacros] = useState<Macro[]>([]);
   const [recording, setRecording] = useState(false);
   const [steps, setSteps] = useState<MacroStep[]>([]);
@@ -93,6 +96,9 @@ export function MacrosPanel({ device, log, onDumpConfig, onDumpColors, onCalibra
         <button onClick={onDumpConfig} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Dump config region</button>
         <button onClick={onDumpColors} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Dump color table</button>
         <button onClick={onCalibrate} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Calibrate layout</button>
+        <button onClick={onProbeSelect} className="px-3 py-1 text-sm rounded-md border border-violet-500/40 text-violet-300">Probe select (read-only)</button>
+        <button onClick={onSnapshotDefaults} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Snapshot defaults</button>
+        <button onClick={onRestoreDefaults} className="px-3 py-1 text-sm rounded-md border border-green-500/40 text-green-300">Restore defaults</button>
         <button onClick={onClearLayout} className="px-3 py-1 text-sm rounded-md border border-zinc-700 text-zinc-300">Clear layout map</button>
         <p className="font-mono text-xs text-zinc-500">{rawOut}</p>
       </section>

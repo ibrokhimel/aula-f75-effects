@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AULA F87 Controller",
-  description: "WebHID keyboard lighting controller for AULA F87",
+  title: "AULA F75 Controller",
+  description: "Configure the AULA F75 keyboard from Linux over WebHID — effects, remapping, per-key colors.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

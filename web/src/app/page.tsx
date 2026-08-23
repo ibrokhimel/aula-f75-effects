@@ -19,20 +19,24 @@ export default function Home() {
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'effects', label: 'Effects' },
-    { id: 'perkey', label: 'Per-Key Colors' },
+    { id: 'perkey', label: 'Per-Key' },
     { id: 'animations', label: 'Animations' },
-    { id: 'settings', label: 'Settings' },
     { id: 'remap', label: 'Remap' },
     { id: 'macros', label: 'Macros' },
+    { id: 'settings', label: 'Settings' },
   ];
 
   return (
     <main className="flex flex-col items-center px-4 py-8 min-h-screen">
       {/* Header */}
-      <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-        AULA F75
-      </h1>
-      <p className="text-xs text-zinc-600 mt-1 mb-6">WebHID Keyboard Controller</p>
+      <header className="w-full max-w-[920px] mb-6">
+        <div className="flex items-baseline justify-between border-b border-zinc-800 pb-4">
+          <h1 className="text-lg font-semibold tracking-tight text-zinc-100">
+            AULA F75 <span className="font-normal text-zinc-500">controller</span>
+          </h1>
+          <p className="font-mono text-[0.7rem] text-zinc-600">258A:010C · WebHID · local only</p>
+        </div>
+      </header>
 
       {/* Connection */}
       <ConnectionBar
@@ -42,22 +46,22 @@ export default function Home() {
       />
 
       {/* Tab bar */}
-      <div className="w-full max-w-[920px] flex gap-1 mb-4 bg-zinc-900/60 rounded-lg p-1 border border-zinc-800">
+      <nav className="w-full max-w-[920px] flex gap-1 mb-5 bg-zinc-900 rounded-lg p-1 border border-zinc-800" aria-label="Sections">
         {tabs.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
               className={[
-                'flex-1 py-2 text-sm rounded-md font-medium transition-all duration-200',
+                'flex-1 py-1.5 text-sm rounded-md transition-colors duration-150',
                 tab === t.id
-                  ? 'bg-violet-600/20 text-violet-300 border border-violet-500/40'
-                  : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
+                  ? 'bg-zinc-200 text-zinc-900 font-medium'
+                  : 'text-zinc-400 hover:text-zinc-200'
               ].join(' ')}
           >
             {t.label}
           </button>
         ))}
-      </div>
+      </nav>
 
       {/* Panel content */}
       <div className="w-full max-w-[920px] mb-6">
@@ -89,12 +93,19 @@ export default function Home() {
                 onDumpColors={kb.doDumpColors}
                 onCalibrate={kb.doCalibrate}
                 onClearLayout={kb.doClearLayout}
+                onProbeSelect={kb.doProbeSelect}
+                onSnapshotDefaults={kb.doSnapshotDefaults}
+                onRestoreDefaults={kb.doRestoreDefaults}
             />
         )}
       </div>
 
       {/* Log */}
-      <LogPanel logs={kb.logs} />
+      <LogPanel logs={kb.logs} onSaveTrace={kb.doSaveTrace} />
+
+      <footer className="mt-4 mb-2 text-center">
+        <p className="text-[0.7rem] text-zinc-700">Runs entirely in your browser. Keyboard traffic never leaves this machine.</p>
+      </footer>
     </main>
   );
 }

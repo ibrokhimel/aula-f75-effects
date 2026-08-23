@@ -1,5 +1,37 @@
 import { describe, expect, it } from "vitest";
-import { effectOffsetsFor, encodeBrightness, decodeBrightness, diffOffsets, classifySelect } from "./f75-layout";
+import { effectOffsetsFor, encodeBrightness, decodeBrightness, diffOffsets, classifySelect, diffSamples, selectCandidatesFromDiff, DEFAULT_EFFECT_SELECT_OFFSET } from "./f75-layout";
+
+describe("DEFAULT_EFFECT_SELECT_OFFSET", () => {
+  it("is the knob-probe confirmed current-effect slot (tracked 2→3→4→5 across knob cycles)", () => {
+    expect(DEFAULT_EFFECT_SELECT_OFFSET).toBe(10);
+  });
+});
+
+describe("diffSamples", () => {
+  it("maps each offset that differs from the first sample to all its observed values", () => {
+    const a = new Uint8Array([0, 5, 9]);
+    const b = new Uint8Array([0, 6, 9]);
+    const c = new Uint8Array([0, 7, 3]);
+    const d = diffSamples([a, b, c]);
+    expect([...d.keys()].sort()).toEqual([1, 2]);
+    expect(d.get(1)).toEqual([5, 6, 7]);
+    expect(d.get(2)).toEqual([9, 9, 3]);
+  });
+  it("returns an empty map for a single sample", () => {
+    expect(diffSamples([new Uint8Array([1])]).size).toBe(0);
+  });
+});
+
+describe("selectCandidatesFromDiff", () => {
+  it("keeps offsets whose values stay within effect ids 0-18 and actually vary", () => {
+    const d = new Map<number, number[]>([
+      [12, [2, 3, 4]],
+      [30, [9, 77, 9]],
+      [40, [5, 5, 5]],
+    ]);
+    expect(selectCandidatesFromDiff(d)).toEqual([12]);
+  });
+});
 
 describe("effectOffsetsFor", () => {
   it("places Ripple (id 7) at offsets 78-79 from the default table base", () => {
