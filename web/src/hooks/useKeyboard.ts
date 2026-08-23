@@ -1,8 +1,10 @@
 'use client';
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { WIRED_VID, WIRED_PID, WIRELESS_VID, WIRELESS_PID, REPORT_ID } from '@/lib/protocol';
+import { WIRED_VID, WIRED_PID, WIRELESS_VID, WIRELESS_PID } from '@/lib/protocol';
 import { setEffect, applyPerKey, setSleepTimer, setDebounce, factoryReset, readConfig, writeKeybindBlob, type EffectOptions } from '@/lib/webhid';
 import { type Layer } from '@/lib/keybind';
+import { isFeatureTransport, readConfigRegion, readColorTable } from '@/lib/f75';
+import { calibrate, clearLayout } from '@/lib/f75-layout';
 
 export function useKeyboard() {
     const [device, setDevice] = useState<HIDDevice | null>(null);
@@ -74,10 +76,10 @@ export function useKeyboard() {
                 const feat = c.featureReports?.map(r => `0x${(r.reportId ?? 0).toString(16)}`).join(',') ?? '';
                 log(`Collection page ${cp}: out=[${out}] feat=[${feat}]`);
             }
-            const has13 = dev.collections.some(c => (c.outputReports ?? []).some(r => (r.reportId ?? 0) === REPORT_ID));
-            if (!has13) {
-                log('WARNING: none of the opened collections has an output report 0x13 — light/remap writes will fail. Pick the vendor interface.');
-                setStatus('⚠ Interface without report 0x13 — reconnect and pick the vendor collection');
+            const hasFeature06 = dev.collections.some(c => (c.featureReports ?? []).some(r => (r.reportId ?? 0) === 0x06));
+            if (!hasFeature06) {
+                log('WARNING: no collection exposes feature report 0x06 — pick the vendor interface (the second device entry), not the plain keyboard one.');
+                setStatus('⚠ Wrong interface — reconnect and pick the vendor collection');
             }
 
             try {
@@ -184,9 +186,9 @@ export function useKeyboard() {
     const doReadConfig = useCallback(async () => {
         if (!device?.opened) { log('Not connected!'); return 0; }
         try {
-            const frames = await readConfig(device, log, 3);
-            const n = frames.filter((f) => f !== null).length;
-            log(`Config read: ${n}/10 frames`);
+            const frame = await readConfig(device, log, 3); // now Uint8Array | null on wired
+            const n = frame instanceof Uint8Array ? 1 : (frame?.filter(f => f !== null).length ?? 0);
+            log(`Config read: ${n}${frame instanceof Uint8Array ? ' region (128 bytes)' : '/10 frames'}`);
             return n;
         } catch (err: unknown) {
             log(`ERROR: ${err instanceof Error ? err.message : String(err)}`);
@@ -200,8 +202,40 @@ export function useKeyboard() {
         catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
     }, [device, log]);
 
+    const doDumpConfig = useCallback(async () => {
+        if (!device?.opened) { log("Not connected!"); return; }
+        try {
+            if (!isFeatureTransport(device.productId)) { log("Dump config is wired-only."); return; }
+            const r = await readConfigRegion(device, log);
+            log(r ? `Config region (128B): ${Array.from(r).map(b => b.toString(16).padStart(2, "0")).join(" ")}` : "Dump failed");
+        } catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
+    }, [device, log]);
+
+    const doDumpColors = useCallback(async () => {
+        if (!device?.opened) { log("Not connected!"); return; }
+        try {
+            if (!isFeatureTransport(device.productId)) { log("Dump color table is wired-only."); return; }
+            const t = await readColorTable(device, log);
+            log(t ? `Color table (512B): ${Array.from(t).map(b => b.toString(16).padStart(2, "0")).join(" ")}` : "Dump failed");
+        } catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
+    }, [device, log]);
+
+    const doCalibrate = useCallback(async () => {
+        if (!device?.opened) { log("Not connected!"); return; }
+        try {
+            if (!isFeatureTransport(device.productId)) { log("Calibration is wired-only."); return; }
+            await calibrate(device, log);
+        } catch (err: unknown) { log(`ERROR: ${err instanceof Error ? err.message : String(err)}`); }
+    }, [device, log]);
+
+    const doClearLayout = useCallback(() => {
+        clearLayout();
+        log("Calibrated layout map cleared.");
+    }, [log]);
+
     return {
         device, connected, status, logs, log,
         connect, doSetEffect, doApplyPerKey, doSetSleep, doSetDebounce, doFactoryReset, doReadConfig, doWriteKeybind,
+        doDumpConfig, doDumpColors, doCalibrate, doClearLayout,
     };
 }

@@ -81,7 +81,16 @@ export default function Home() {
           />
         )}
         {tab === 'remap' && <RemapPanel onWriteKeybind={kb.doWriteKeybind} />}
-        {tab === 'macros' && <MacrosPanel device={kb.device} log={kb.log} />}
+        {tab === 'macros' && (
+            <MacrosPanel
+                device={kb.device}
+                log={kb.log}
+                onDumpConfig={kb.doDumpConfig}
+                onDumpColors={kb.doDumpColors}
+                onCalibrate={kb.doCalibrate}
+                onClearLayout={kb.doClearLayout}
+            />
+        )}
       </div>
 
       {/* Log */}

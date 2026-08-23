@@ -85,14 +85,14 @@ describe("readConfigRegion", () => {
   it("sends a 0x84 read request then strips payload to 128 bytes", async () => {
     const d = new FakeDevice() as unknown as FakeHID;
     const reply = new Uint8Array(520);
-    for (let i = 0; i < 128; i++) reply[8 + i] = 0xA0 + i;
+    for (let i = 0; i < 128; i++) reply[8 + i] = i;
     d.replies.push(reply);
     const out = await readConfigRegion(d, log);
     expect(d.sent).toHaveLength(1);
     expect(d.sent[0][0]).toBe(FEATURE_REPORT_ID);
     expect(d.sent[0][1][1]).toBe(CMD_READ_REGION);
     expect(out).not.toBeNull();
-    expect(out![0]).toBe(0xA0); expect(out![127]).toBe(0xA0 + 127);
+    expect(out![0]).toBe(0); expect(out![127]).toBe(127);
   });
 });
 
@@ -106,13 +106,24 @@ describe("writeConfigRegion", () => {
     expect(id).toBe(FEATURE_REPORT_ID);
     expect(body[0]).toBe(CMD_WRITE_REGION);
     expect(body[7]).toBe(0x11); // payload offset 8 → index 7 after slicing
-    expect(body[126]).toBe(0x22);
+    expect(body[134]).toBe(0x22); // data[127] lands at frame[135] → body[134]
   });
 });
 
+class FakeStuckDevice {
+  opened = true;
+  sent: Array<[number, Uint8Array]> = [];
+  async sendFeatureReport(id: number, data: Uint8Array) { this.sent.push([id, data]); }
+  async receiveFeatureReport(): Promise<DataView> {
+    return new Promise<DataView>(() => {}); // never resolves — tests the timeout path
+  }
+  async close() {}
+}
+type FakeStuckHID = FakeStuckDevice & HIDDevice;
+
 describe("readRegion", () => {
-  it("timeouts without a preceding receive hang when no reply arrives", async () => {
-    const d = new FakeDevice() as unknown as FakeHID; // replies never resolves quickly
+  it("timeouts when the device never replies", async () => {
+    const d = new FakeStuckDevice() as unknown as FakeStuckHID;
     const out = await readRegion(d, CMD_READ_REGION, [0, 0, 1, 0], CFG_LEN, log, 50);
     expect(out).toBeNull();
   });
@@ -365,16 +376,22 @@ describe("diffOffsets", () => {
 });
 
 describe("classifySelect", () => {
-  it("finds the offset that echoes the written effect id", () => {
+  it("finds the effect-select offset (varied, range-limited to 0-18, echoing a written id)", () => {
     const probes = new Map<number, Uint8Array>();
-    for (const id of [1, 9, 18]) {
-      const r = new Uint8Array(16); r[15] = id; probes.set(id, r);
+    for (const id of [1, 9, 18, 255]) {
+      const r = new Uint8Array(16);
+      r[15] = id; // select offset echoes in-range values and clamps 255 → 18
+      if (id === 255) r[15] = 18;
+      r[4] = id;   // plain storage offset echoes every value verbatim
+      probes.set(id, r);
     }
     expect(classifySelect(probes)).toBe(15);
   });
-  it("returns null when no offset echoes all values", () => {
+  it("returns null when no offset is range-limited", () => {
     const probes = new Map<number, Uint8Array>();
-    for (const id of [1, 9, 18]) { const r = new Uint8Array(16); r[15] = id + 5; probes.set(id, r); }
+    for (const id of [1, 9, 18, 255]) {
+      const r = new Uint8Array(16); r[15] = id; probes.set(id, r);
+    }
     expect(classifySelect(probes)).toBeNull();
   });
 });
@@ -438,10 +455,14 @@ export function diffOffsets(probes: Map<number, Uint8Array>): number[] {
 
 export function classifySelect(probes: Map<number, Uint8Array>): number | null {
   const entries = [...probes.entries()];
-  if (entries.length === 0) return null;
+  if (entries.length < 2) return null;
   const n = entries[0]![1].length;
   for (let o = 0; o < n; o++) {
-    if (entries.every(([id, r]) => r[o] === id)) return o;
+    const readbacks = entries.map(([, r]) => r[o]);
+    const varied = new Set(readbacks).size >= 2;
+    const rangeLimited = readbacks.every(rb => rb <= 18); // effect ids are 0-18
+    const echoesId = entries.some(([v, r]) => r[o] === v);
+    if (varied && rangeLimited && echoesId) return o;
   }
   return null;
 }
@@ -451,7 +472,7 @@ export async function calibrate(device: HIDDevice, log: LogFn): Promise<F75Layou
   if (baseline === null) { log("Calibrate aborted: could not read config region"); return null; }
 
   const probes = new Map<number, Uint8Array>();
-  for (const v of [1, 4, 9, 18]) {
+  for (const v of [1, 9, 18, 255]) {
     const region = new Uint8Array(baseline);
     region.fill(v);
     await writeConfigRegion(device, region, log);
@@ -529,11 +550,15 @@ class FakeFeatureDevice {
   productId = WIRED_PID;
   opened = true;
   region = new Uint8Array(128);
-  writes: Uint8Array[] = [];
+  writes: number[] = [];
   async sendFeatureReport(id: number, data: Uint8Array) {
-    // mirror webhid feature branch: region byte edits, then writeConfigRegion
-    const frame = new Uint8Array(520); frame[0] = 0x06; frame.set(data, 1); this.writes.push(frame);
-    for (let i = 0; i < 128; i++) this.region[i] = frame[8 + i];
+    const frame = new Uint8Array(520); frame[0] = 0x06; frame.set(data, 1);
+    if (frame[1] === 0x04) {
+      this.region = frame.slice(8, 8 + 128);
+      this.writes.push(frame[1]);
+    } else if (frame[1] === 0x84) {
+      this.writes.push(frame[1]);
+    }
   }
   async receiveFeatureReport(): Promise<DataView> {
     const f = new Uint8Array(520); f[0] = 0x06; f.set(this.region, 8);
@@ -544,14 +569,14 @@ type FH = FakeFeatureDevice & HIDDevice;
 const log = vi.fn();
 
 describe("feature branch dispatch", () => {
-  it("routes wired PID operations to feature reports", async () => {
+  it("uses only feature-report writes for wired settings ops (no output 0x13 / save)", async () => {
     expect(isFeatureTransport(WIRED_PID)).toBe(true);
     const d = new FakeFeatureDevice();
     d.region[80] = 7;
     await setSleepTimer(d as unknown as FH, 3, log);
     await setDebounce(d as unknown as FH, 2, log);
-    const sent = d.writes.flatMap(f => [f[1]]);
-    expect(sent.every(cmd => cmd === 0x04)).toBe(true); // writes only, no output 0x13 saves
+    expect(d.writes.every(cmd => cmd === 0x04 || cmd === 0x84)).toBe(true);
+    expect(d.writes.some(cmd => cmd === 0x04)).toBe(true);
   });
 });
 ```
@@ -569,11 +594,7 @@ Add at the top a helper:
 
 ```ts
 import { isFeatureTransport, readConfigRegion, writeConfigRegion, readColorTable, writeColorTable } from "./f75";
-import { loadLayout, effectOffsetsFor, encodeBrightness, classifySelect } from "./f75-layout";
-
-async function readRegionMapped(device: HIDDevice, log: LogFn): Promise<Uint8Array | null> {
-  return readConfigRegion(device, log);
-}
+import { loadLayout, effectOffsetsFor, encodeBrightness, EFFECT_TABLE_BASE } from "./f75-layout";
 ```
 
 **`readConfig`** — keep the existing 10-frame implementation as the wireless branch, but at the top:
@@ -584,15 +605,14 @@ if (isFeatureTransport(device.productId)) {
 }
 ```
 
-**`setSleepTimer`** — at the top:
+**`setSleepTimer`** — hoist the `sleepByte`/`label` computation and its log line to the very top of the function (above the feature branch) so both branches share them, remove the now-duplicate log line from the top of the wireless branch, then:
 
 ```ts
 if (isFeatureTransport(device.productId)) {
   const region = await readConfigRegion(device, log);
   if (!region) { log("ERROR: could not read config region"); return; }
   const layout = loadLayout();
-  const wake = layout?.sleepOffset ?? (classifySelect(new Map(await probe(device, [8, 10, 20], log))) as number | null);
-  // provisional: see calibrate() — the real offset comes from calibration
+  // provisional: real offset comes from calibration (Task 7 refines it)
   const off = layout?.sleepOffset ?? 80;
   const value = Math.min(0xff, Math.round(minutes * 2));
   region[off] = value;
@@ -601,8 +621,6 @@ if (isFeatureTransport(device.productId)) {
   return;
 }
 ```
-
-Keep the sleep helper label logic and the wireless branch underneath unchanged. (The `probe` helper is optional; the provisional `off = 80` reflects `EFFECT_TABLE_BASE + 8` and is refined by calibration — see Task 5.)
 
 **`setDebounce`** — analogous feature branch: region read, set `region[debounceOffset || (EFFECT_TABLE_BASE + 9)] = level - 1`, write, log. Wireless branch unchanged.
 
