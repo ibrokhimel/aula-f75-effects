@@ -64,6 +64,19 @@ int main(int argc, char **argv) {
         printf("ok\n");
         return 0;
     }
+    /* exact-length SET: featsetn <rid> <total_len> <hex..> */
+    if (!strcmp(argv[2 + 1], "featsetn") && argc >= 5) {
+        memset(buf, 0, BUF);
+        buf[0] = (unsigned char)hexbyte(argv[4]);
+        int total = atoi(argv[5]);
+        if (total > BUF) total = BUF;
+        for (int i = 6; i < argc && (i - 5) < BUF - 1; i++)
+            buf[i - 5] = (unsigned char)hexbyte(argv[i]);
+        int r = sfeature(buf, total);
+        if (r < 0) { fprintf(stderr, "SETn err %s\n", strerror(errno)); return 1; }
+        printf("ok\n");
+        return 0;
+    }
     if ((!strcmp(argv[2 + 1], "read") && argc >= 9) || !strcmp(argv[2 + 1], "colors")) {
         int a0=0,a1=0,a2=1,a3=0,len=128,cmd=0x84;
         if (!strcmp(argv[2 + 1], "read")) {

@@ -276,6 +276,19 @@ export async function applyPerKey(device: HIDDevice, keyColors: Record<number, [
 
         await writeColorTable(device, table, log);
 
+        // Best-guess flash commit: the dongle protocol persists via cmd 0x0A
+        // subcmd 0x01 payload 04 07…; on wired the only SET-only channel is
+        // feature report 0x05. Harmless no-op if the firmware ignores it —
+        // the replug test tells us whether boot now restores the paint.
+        try {
+            const commit = new Uint8Array(520);
+            commit[0] = 0x06; commit[1] = 0x05;
+            commit[2] = 0x0a; commit[3] = 0x01;
+            commit[4] = 0x04; commit[5] = 0x07;
+            await device.sendFeatureReport(0x06, commit.slice(1));
+            log('Flash-commit probe sent (report 05: 0a 01 04 07).');
+        } catch { /* optional channel */ }
+
         let stuck: number | null = null;
         const rb = await readColorTable(device, log);
         if (rb) {
