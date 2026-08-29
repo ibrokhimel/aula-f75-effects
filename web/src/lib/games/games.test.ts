@@ -126,6 +126,43 @@ describe('whack-a-mole', () => {
   });
 });
 
+describe('memory', () => {
+  const CARDS = ['KeyQ','KeyW','KeyE','KeyR','KeyT','KeyY','KeyA','KeyS','KeyD','KeyF','KeyG','KeyH'];
+
+  it('can be solved by an oracle that remembers what it has seen', () => {
+    const g = GAMES.memory.create(31);
+    const ledOf = new Map<string, number>();
+    // Turn each card over once to learn the board, then pair them up.
+    for (const code of CARDS) {
+      g.step(DT, holding(code));
+      for (const [led, c] of g.render()) {
+        if (c[0] + c[1] + c[2] > 120) ledOf.set(code, led);
+      }
+      for (let i = 0; i < 80; i++) g.step(DT, none()); // let the pair hide
+    }
+    expect(g.view().state).toBe('playing');
+    // Brute force: try every pairing, which is legal play and must terminate.
+    for (let a = 0; a < CARDS.length && g.view().state === 'playing'; a++) {
+      for (let b = a + 1; b < CARDS.length && g.view().state === 'playing'; b++) {
+        g.step(DT, holding(CARDS[a]));
+        g.step(DT, holding(CARDS[b]));
+        for (let i = 0; i < 80; i++) g.step(DT, none());
+      }
+    }
+    expect(g.view().state).toBe('over');
+    expect(g.view().status).toContain('Solved');
+  });
+
+  it('ignores presses while a mismatched pair is on show', () => {
+    const g = GAMES.memory.create(31);
+    g.step(DT, holding(CARDS[0]));
+    g.step(DT, holding(CARDS[1]));
+    const before = g.view().status;
+    g.step(DT, holding(CARDS[2]));
+    expect(g.view().status).toBe(before);
+  });
+});
+
 describe('dodger', () => {
   it('scores as rocks go by and eventually gets hit', () => {
     const g = GAMES.dodger.create(6);

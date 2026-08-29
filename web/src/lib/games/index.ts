@@ -14,6 +14,7 @@ import { tron } from './tron';
 import { invaders } from './invaders';
 import { flappy } from './flappy';
 import { dodger } from './dodger';
+import { memory } from './memory';
 
 export * from './core';
 
@@ -28,5 +29,6 @@ export const GAMES: Record<string, GameDef> = {
   dodger,
   whackamole: whackAMole,
   simon,
+  memory,
   typing,
 };
