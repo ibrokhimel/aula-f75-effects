@@ -126,6 +126,33 @@ describe('whack-a-mole', () => {
   });
 });
 
+describe('tron', () => {
+  it('resolves a head-on as a draw, not a win for whoever is checked first', () => {
+    // The two start facing each other on row 2. Left alone they close until
+    // each would ride into the other's freshly-laid wall on the same tick.
+    const g = GAMES.tron.create(1);
+    for (let i = 0; i < 600 && g.view().state === 'playing'; i++) g.step(DT, none());
+    expect(g.view().state).toBe('over');
+    expect(g.view().status).toBe('Draw');
+  });
+
+  it('declares a winner when only one rider crashes', () => {
+    const g = GAMES.tron.create(1);
+    // Blue turns away and survives; orange keeps going and hits blue's wall.
+    for (let i = 0; i < 600 && g.view().state === 'playing'; i++) {
+      g.step(DT, i < 12 ? holding('KeyW') : none());
+    }
+    expect(g.view().state).toBe('over');
+    expect(g.view().status).toContain('wins');
+  });
+
+  it('ignores a reversal into its own wall', () => {
+    const g = GAMES.tron.create(1);
+    for (let i = 0; i < 20; i++) g.step(DT, holding('KeyA'));
+    expect(g.view().state).toBe('playing');
+  });
+});
+
 describe('breakout', () => {
   it('breaks bricks once the ball is launched', () => {
     const g = GAMES.breakout.create(4);
