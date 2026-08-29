@@ -126,6 +126,24 @@ describe('whack-a-mole', () => {
   });
 });
 
+describe('space invaders', () => {
+  it('shoots invaders down when firing while sweeping', () => {
+    const g = GAMES.invaders.create(8);
+    for (let i = 0; i < 4000 && g.view().score < 3; i++) {
+      const codes = [i % 200 < 100 ? 'ArrowLeft' : 'ArrowRight'];
+      if (i % 20 === 0) codes.push('Space');
+      g.step(DT, holding(...codes));
+    }
+    expect(g.view().score).toBeGreaterThanOrEqual(3);
+  });
+
+  it('ends once the formation reaches the ship row', () => {
+    const g = GAMES.invaders.create(8);
+    for (let i = 0; i < 20000 && g.view().state === 'playing'; i++) g.step(DT, none());
+    expect(g.view().state).toBe('over');
+  });
+});
+
 describe('tron', () => {
   it('resolves a head-on as a draw, not a win for whoever is checked first', () => {
     // The two start facing each other on row 2. Left alone they close until
