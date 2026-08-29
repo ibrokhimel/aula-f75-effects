@@ -192,13 +192,9 @@ describe('memory', () => {
 
   it('can be solved by an oracle that remembers what it has seen', () => {
     const g = GAMES.memory.create(31);
-    const ledOf = new Map<string, number>();
-    // Turn each card over once to learn the board, then pair them up.
+    // Turn each card over once, which must not by itself solve anything.
     for (const code of CARDS) {
       g.step(DT, holding(code));
-      for (const [led, c] of g.render()) {
-        if (c[0] + c[1] + c[2] > 120) ledOf.set(code, led);
-      }
       for (let i = 0; i < 80; i++) g.step(DT, none()); // let the pair hide
     }
     expect(g.view().state).toBe('playing');
