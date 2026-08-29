@@ -94,14 +94,21 @@ export const PAL_LAST = [0x08, 0x00, 0x00, 0x5a, 0xa5, 0x00, 0x00, 0x00, 0x00, 0
 
 // ── Key layout: [label, ledIndex, widthMultiplier] ──────────────────────
 // Number = gap between key groups (in units)
+//
+// Generated from the OEM's own KB.ini (see src/data/f75-keymap.json), not from
+// a generic 75% template. The F75 has 80 keys: no Prt/Scr/Pse, no Ins/Home, no
+// right Ctrl, and a single right-hand column (Del/PgUp/PgDn/End = LEDs 85-88)
+// rather than the usual three-wide cluster. LED index encodes the matrix
+// position directly as column * 6 + row, so row === index % 6 for every key.
+// Index 84 is the row-0 slot behind the rotary knob and drives no key.
 export type KeyEntry = [string, number, number] | number;
 export const KB_ROWS: KeyEntry[][] = [
-    [['Esc', 0, 1], 1, ['F1', 12, 1], ['F2', 18, 1], ['F3', 24, 1], ['F4', 30, 1], 0.5, ['F5', 36, 1], ['F6', 42, 1], ['F7', 48, 1], ['F8', 54, 1], 0.5, ['F9', 60, 1], ['F10', 66, 1], ['F11', 72, 1], ['F12', 78, 1], 0.25, ['Prt', 84, 1], ['Scr', 90, 1], ['Pse', 96, 1]],
-    [['`', 1, 1], ['1', 7, 1], ['2', 13, 1], ['3', 19, 1], ['4', 25, 1], ['5', 31, 1], ['6', 37, 1], ['7', 43, 1], ['8', 49, 1], ['9', 55, 1], ['0', 61, 1], ['-', 67, 1], ['=', 73, 1], ['Bksp', 79, 2], 0.25, ['Ins', 85, 1], ['Home', 91, 1], ['PgUp', 97, 1]],
-    [['Tab', 2, 1.5], ['Q', 8, 1], ['W', 14, 1], ['E', 20, 1], ['R', 26, 1], ['T', 32, 1], ['Y', 38, 1], ['U', 44, 1], ['I', 50, 1], ['O', 56, 1], ['P', 62, 1], ['[', 68, 1], [']', 74, 1], ['\\', 80, 1.5], 0.25, ['Del', 86, 1], ['End', 92, 1], ['PgDn', 98, 1]],
-    [['Caps', 3, 1.75], ['A', 9, 1], ['S', 15, 1], ['D', 21, 1], ['F', 27, 1], ['G', 33, 1], ['H', 39, 1], ['J', 45, 1], ['K', 51, 1], ['L', 57, 1], [';', 63, 1], ["'", 69, 1], ['Enter', 81, 2.25]],
-    [['LShift', 4, 2.25], ['Z', 10, 1], ['X', 16, 1], ['C', 22, 1], ['V', 28, 1], ['B', 34, 1], ['N', 40, 1], ['M', 46, 1], [',', 52, 1], ['.', 58, 1], ['/', 64, 1], ['RShift', 82, 2.75], 1.25, ['↑', 94, 1]],
-    [['Ctrl', 5, 1.25], ['Win', 11, 1.25], ['Alt', 17, 1.25], ['Space', 35, 6.25], ['Alt', 53, 1.25], ['Fn', 59, 1.25], ['App', 65, 1.25], ['Ctrl', 83, 1.25], 0.25, ['←', 89, 1], ['↓', 95, 1], ['→', 101, 1]],
+    [['Esc', 0, 1], 1, ['F1', 12, 1], ['F2', 18, 1], ['F3', 24, 1], ['F4', 30, 1], 0.25, ['F5', 36, 1], ['F6', 42, 1], ['F7', 48, 1], ['F8', 54, 1], 0.25, ['F9', 60, 1], ['F10', 66, 1], ['F11', 72, 1], ['F12', 78, 1]],
+    [['`', 1, 1], ['1', 7, 1], ['2', 13, 1], ['3', 19, 1], ['4', 25, 1], ['5', 31, 1], ['6', 37, 1], ['7', 43, 1], ['8', 49, 1], ['9', 55, 1], ['0', 61, 1], ['-', 67, 1], ['=', 73, 1], ['Bksp', 79, 2], ['Del', 85, 1]],
+    [['Tab', 2, 1.5], ['Q', 8, 1], ['W', 14, 1], ['E', 20, 1], ['R', 26, 1], ['T', 32, 1], ['Y', 38, 1], ['U', 44, 1], ['I', 50, 1], ['O', 56, 1], ['P', 62, 1], ['[', 68, 1], [']', 74, 1], ['\\', 80, 1.5], ['PgUp', 86, 1]],
+    [['Caps', 3, 1.75], ['A', 9, 1], ['S', 15, 1], ['D', 21, 1], ['F', 27, 1], ['G', 33, 1], ['H', 39, 1], ['J', 45, 1], ['K', 51, 1], ['L', 57, 1], [';', 63, 1], ["'", 69, 1], ['Enter', 81, 2.25], ['PgDn', 87, 1]],
+    [['LShift', 4, 2.25], ['Z', 10, 1], ['X', 16, 1], ['C', 22, 1], ['V', 28, 1], ['B', 34, 1], ['N', 40, 1], ['M', 46, 1], [',', 52, 1], ['.', 58, 1], ['/', 64, 1], ['RShift', 70, 1.75], ['↑', 82, 1], ['End', 88, 1]],
+    [['LCtrl', 5, 1.25], ['Win', 11, 1.25], ['LAlt', 17, 1.25], ['Space', 35, 6.25], ['RAlt', 53, 1.25], ['Fn', 59, 1.25], 0.5, ['←', 77, 1], ['↓', 83, 1], ['→', 89, 1]],
 ];
 
 // ── Helpers ─────────────────────────────────────────────────────────────
@@ -127,7 +134,8 @@ export function effectTableLoc(n: number): [number, number] {
 }
 
 export function encodeSpeedByte(speed: number, colorful: boolean): number {
-    return (speed << 4) | (colorful ? 0x07 : 0x00);
+    // Speed is a nibble; mask so an out-of-range value can't spill out of the byte.
+    return ((speed & 0xf) << 4) | (colorful ? 0x07 : 0x00);
 }
 
 export function decodeSpeedByte(b: number): { speed: number; colorful: boolean } {
