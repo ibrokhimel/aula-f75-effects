@@ -49,7 +49,8 @@ export interface ReactiveDef {
 }
 
 export const REACTIVE_CATEGORIES = [
-  'Point', 'Ripple', 'Sweep', 'Particle', 'Field', 'Reveal', 'Chain', 'Spread',
+  'Point', 'Hold', 'Chord', 'Ripple', 'Sweep', 'Particle', 'Field', 'Reveal',
+  'Chain', 'Spread',
 ] as const;
 export type ReactiveCategory = (typeof REACTIVE_CATEGORIES)[number];
 
@@ -79,6 +80,19 @@ export const heldFor = (p: Press, t: number) => Math.max(0, (p.release ?? t) - p
 export function envelope(p: Press, t: number, life: number) {
   if (isHeld(p, t)) return 1;
   return Math.exp(-3 * (sinceUp(p, t) / life));
+}
+
+/**
+ * How charged a hold is, 0..1, saturating at `full` seconds. The building
+ * block for the Hold family: it keeps rising while the key is down and then
+ * freezes at whatever it reached, so release behaviour can scale off it.
+ */
+export const charge = (p: Press, t: number, full: number) =>
+  clamp01(heldFor(p, t) / full);
+
+/** Keys currently down at time t, newest last. */
+export function heldKeys(presses: readonly Press[], t: number): Press[] {
+  return presses.filter((p) => isHeld(p, t)).sort((a, b) => a.seq - b.seq);
 }
 
 /** Physical distance from a press to a key, in key units. */

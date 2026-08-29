@@ -4,6 +4,8 @@
 
 import type { ReactiveDef } from './core';
 import * as point from './point';
+import * as hold from './hold';
+import * as chords from './chords';
 import * as ripples from './ripples';
 import * as sweeps from './sweeps';
 import * as particles from './particles';
@@ -29,6 +31,31 @@ export const REACTIVE: Record<string, ReactiveDef> = {
   additive: { name: 'Additive', category: 'Point', fn: point.additive },
   confettikey: { name: 'Confetti Key', category: 'Point', fn: point.confettiKey },
   breathbase: { name: 'Breathing Base', category: 'Point', fn: point.breathBase },
+
+  // ── Hold ──────────────────────────────────────────────────────────────
+  sustain: { name: 'Sustain', category: 'Hold', fn: hold.sustain },
+  growring: { name: 'Grow Ring', category: 'Hold', fn: hold.growRing },
+  chargeburst: { name: 'Charge Burst', category: 'Hold', fn: hold.chargeBurst },
+  holdpulse: { name: 'Hold Pulse', category: 'Hold', fn: hold.holdPulse },
+  heatbuild: { name: 'Heat Build', category: 'Hold', fn: hold.heatBuild },
+  meter: { name: 'Hold Meter', category: 'Hold', fn: hold.meter },
+  spin: { name: 'Spin Up', category: 'Hold', fn: hold.spin },
+  flame: { name: 'Flame', category: 'Hold', fn: hold.flame },
+  emitter: { name: 'Emitter', category: 'Hold', fn: hold.emitter },
+  overload: { name: 'Overload', category: 'Hold', fn: hold.overload },
+  anchor: { name: 'Anchor', category: 'Hold', fn: hold.anchor },
+
+  // ── Chord ─────────────────────────────────────────────────────────────
+  chordlines: { name: 'Chord Lines', category: 'Chord', fn: chords.chordLines },
+  chordfill: { name: 'Chord Fill', category: 'Chord', fn: chords.chordFill },
+  siphon: { name: 'Siphon', category: 'Chord', fn: chords.siphon },
+  repel: { name: 'Repel', category: 'Chord', fn: chords.repel },
+  vine: { name: 'Vine', category: 'Chord', fn: chords.vine },
+  freeze: { name: 'Freeze', category: 'Chord', fn: chords.freeze },
+  tug: { name: 'Tug', category: 'Chord', fn: chords.tug },
+  magnetise: { name: 'Magnetise', category: 'Chord', fn: chords.magnetise },
+  bridge: { name: 'Bridge', category: 'Chord', fn: chords.bridge },
+  fieldlines: { name: 'Field Lines', category: 'Chord', fn: chords.fieldLines },
 
   // ── Ripple ────────────────────────────────────────────────────────────
   ripple: { name: 'Ripple', category: 'Ripple', fn: ripples.ripple },

@@ -99,14 +99,105 @@ describe.each(entries)('%s', (id, def) => {
   });
 });
 
+/** Total light emitted across a set of sample times — the energy of a run. */
+function energy(fn: (t: number, p: Press[]) => Map<number, [number, number, number]>,
+                presses: Press[], times: number[]) {
+  let sum = 0;
+  for (const t of times) {
+    for (const rgb of fn(t, presses).values()) sum += rgb[0] + rgb[1] + rgb[2];
+  }
+  return sum;
+}
+
+describe('hold effects', () => {
+  const HOLD = entries.filter(([, e]) => e.category === 'Hold');
+  const SAMPLES = [0.3, 0.8, 1.3, 2.0];
+  const led = [...VALID][10];
+
+  it('there are hold effects registered at all', () => {
+    expect(HOLD.length).toBeGreaterThanOrEqual(8);
+  });
+
+  it.each(HOLD)('%s responds to a sustained hold', (id, def) => {
+    const holding = makePress(led, 0, 0); // release stays null
+    let peak = 0;
+    for (const t of SAMPLES) {
+      for (const rgb of def.fn(t, [holding]).values()) {
+        peak = Math.max(peak, rgb[0] + rgb[1] + rgb[2]);
+      }
+    }
+    expect(peak, `${id} stayed dark through a 2s hold`).toBeGreaterThan(60);
+  });
+
+  it.each(HOLD)('%s gives more than a quick tap', (id, def) => {
+    // The defining property of the family: holding must actually buy you
+    // something a 50ms tap does not.
+    const holding = makePress(led, 0, 0);
+    const tap = makePress(led, 0, 0);
+    tap.release = 0.05;
+    const heldE = energy(def.fn, [holding], SAMPLES);
+    const tapE = energy(def.fn, [tap], SAMPLES);
+    expect(heldE, `${id}: hold ${heldE} vs tap ${tapE}`).toBeGreaterThan(tapE);
+  });
+
+  it.each(HOLD)('%s settles after release', (id, def) => {
+    const p = makePress(led, 0, 0);
+    p.release = 1.5;
+    // Long after release everything must have decayed to at most a dim wash.
+    let peak = 0;
+    for (const rgb of def.fn(1.5 + WINDOW, [p]).values()) {
+      peak = Math.max(peak, rgb[0] + rgb[1] + rgb[2]);
+    }
+    expect(peak, `${id} still bright ${WINDOW}s after release`).toBeLessThan(200);
+  });
+});
+
+describe('chord effects', () => {
+  const CHORD = entries.filter(([, e]) => e.category === 'Chord');
+  const SAMPLES = [0.2, 0.7, 1.4];
+
+  it('there are chord effects registered at all', () => {
+    expect(CHORD.length).toBeGreaterThanOrEqual(6);
+  });
+
+  it.each(CHORD)('%s reacts to a three-key chord', (id, def) => {
+    const leds = [...VALID];
+    const chord = [leds[4], leds[30], leds[60]].map((l, i) => makePress(l, 0, i));
+    let peak = 0;
+    for (const t of SAMPLES) {
+      for (const rgb of def.fn(t, chord).values()) {
+        peak = Math.max(peak, rgb[0] + rgb[1] + rgb[2]);
+      }
+    }
+    expect(peak, `${id} stayed dark under a held chord`).toBeGreaterThan(60);
+  });
+
+  it.each(CHORD)('%s renders sensibly with a single held key', (id, def) => {
+    const one = [makePress([...VALID][7], 0, 0)];
+    for (const t of SAMPLES) assertFrame(id, t, def.fn(t, one));
+  });
+
+  it('chord shapes differ between one key and three', () => {
+    const leds = [...VALID];
+    const one = [makePress(leds[4], 0, 0)];
+    const three = [leds[4], leds[30], leds[60]].map((l, i) => makePress(l, 0, i));
+    for (const [id, def] of CHORD) {
+      const a = energy(def.fn, one, SAMPLES);
+      const b = energy(def.fn, three, SAMPLES);
+      expect(a, `${id} renders identically for one key and three`).not.toBe(b);
+    }
+  });
+});
+
 describe('reactivity', () => {
   // Field effects paint the whole board regardless, so "did a press light
-  // anything" says nothing about them. `charge` deliberately rewards a long
-  // hold and gives a 50ms tap almost nothing; `link` needs two presses to
-  // have a line to draw. Both are covered by their own tests below.
+  // anything" says nothing about them. Hold and Chord are defined by sustain
+  // and by multiple keys, and are covered by their own tests below, as are
+  // `charge` (rewards a long hold) and `link` (needs two presses).
   const QUICK_TAP_EXEMPT = new Set(['charge', 'link']);
+  const TAP_CATEGORIES = (c: string) => c !== 'Field' && c !== 'Hold' && c !== 'Chord';
 
-  it.each(entries.filter(([id, e]) => e.category !== 'Field' && !QUICK_TAP_EXEMPT.has(id)))(
+  it.each(entries.filter(([id, e]) => TAP_CATEGORIES(e.category) && !QUICK_TAP_EXEMPT.has(id)))(
     '%s lights something shortly after a press',
     (id, def) => {
       const p = makePress([...VALID][10], 0, 0);
