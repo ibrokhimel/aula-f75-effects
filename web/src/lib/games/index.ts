@@ -15,6 +15,7 @@ import { invaders } from './invaders';
 import { flappy } from './flappy';
 import { dodger } from './dodger';
 import { memory } from './memory';
+import { reaction } from './reaction';
 
 export * from './core';
 
@@ -30,5 +31,6 @@ export const GAMES: Record<string, GameDef> = {
   whackamole: whackAMole,
   simon,
   memory,
+  reaction,
   typing,
 };

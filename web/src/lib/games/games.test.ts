@@ -126,6 +126,42 @@ describe('whack-a-mole', () => {
   });
 });
 
+describe('reaction', () => {
+  it('re-arms the round on a press before the light', () => {
+    const g = GAMES.reaction.create(13);
+    g.step(DT, holding('KeyA'));
+    // Under MIN_WAIT (1.1s), so still waiting — a false start re-arms the
+    // round rather than advancing it. Idling longer would time the round out,
+    // which is a different mechanism.
+    for (let i = 0; i < 40; i++) g.step(DT, none());
+    expect(g.view().status).toContain('Round 1/5');
+    expect(g.view().status).toContain('wait');
+  });
+
+  it('reports false starts in the final summary', () => {
+    const g = GAMES.reaction.create(13);
+    g.step(DT, holding('KeyA'));
+    for (let i = 0; i < 8000 && g.view().state === 'playing'; i++) {
+      const m = /GO \((\w)\)/.exec(g.view().status);
+      g.step(DT, m ? holding(`Key${m[1]}`) : none());
+    }
+    expect(g.view().status).toContain('false start');
+  });
+
+  it('records a time when the lit key is hit, and finishes five rounds', () => {
+    const g = GAMES.reaction.create(13);
+    for (let i = 0; i < 6000 && g.view().state === 'playing'; i++) {
+      const st = g.view().status;
+      const m = /GO \((\w)\)/.exec(st);
+      g.step(DT, m ? holding(`Key${m[1]}`) : none());
+    }
+    expect(g.view().state).toBe('over');
+    expect(g.view().status).toContain('avg');
+    // Hitting on the very next frame is ~1 frame of latency, not 2s of timeout.
+    expect(g.view().score).toBeLessThan(200);
+  });
+});
+
 describe('memory', () => {
   const CARDS = ['KeyQ','KeyW','KeyE','KeyR','KeyT','KeyY','KeyA','KeyS','KeyD','KeyF','KeyG','KeyH'];
 
