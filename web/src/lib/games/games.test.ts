@@ -126,6 +126,40 @@ describe('whack-a-mole', () => {
   });
 });
 
+describe('flappy', () => {
+  it('waits for the first flap before anything moves', () => {
+    const g = GAMES.flappy.create(2);
+    for (let i = 0; i < 600; i++) g.step(DT, none());
+    expect(g.view().status).toBe('Flap to start');
+    expect(g.view().state).toBe('playing');
+  });
+
+  it('crashes into the floor when left alone after starting', () => {
+    const g = GAMES.flappy.create(2);
+    g.step(DT, holding('Space'));
+    for (let i = 0; i < 600 && g.view().state === 'playing'; i++) g.step(DT, none());
+    expect(g.view().state).toBe('over');
+  });
+
+  it('scores by flapping through gaps', () => {
+    // A flap every k frames hovers: FLAP=-6.2 against GRAVITY=20 gives a ~1u
+    // bob, which fits a 2.3u gap. Gap heights are seeded, so sweep a few of
+    // each until one lines up — this checks scoring works, not that a fixed
+    // cadence is a winning strategy.
+    let best = 0;
+    for (const k of [24, 30, 36]) {
+      for (let seed = 0; seed < 30 && best === 0; seed++) {
+        const h = GAMES.flappy.create(seed);
+        for (let i = 0; i < 2000 && h.view().state === 'playing'; i++) {
+          h.step(DT, i % k === 0 ? holding('Space') : none());
+        }
+        best = Math.max(best, h.view().score);
+      }
+    }
+    expect(best).toBeGreaterThan(0);
+  });
+});
+
 describe('space invaders', () => {
   it('shoots invaders down when firing while sweeping', () => {
     const g = GAMES.invaders.create(8);
