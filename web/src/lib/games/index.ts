@@ -9,6 +9,7 @@ import { whackAMole } from './whackamole';
 import { simon } from './simon';
 import { frogger } from './frogger';
 import { typing } from './typing';
+import { breakout } from './breakout';
 
 export * from './core';
 
@@ -16,6 +17,7 @@ export const GAMES: Record<string, GameDef> = {
   pong,
   snake,
   frogger,
+  breakout,
   whackamole: whackAMole,
   simon,
   typing,

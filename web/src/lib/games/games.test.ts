@@ -126,6 +126,24 @@ describe('whack-a-mole', () => {
   });
 });
 
+describe('breakout', () => {
+  it('breaks bricks once the ball is launched', () => {
+    const g = GAMES.breakout.create(4);
+    for (let i = 0; i < 2500 && g.view().score === 0; i++) {
+      g.step(DT, holding(i % 120 < 60 ? 'ArrowLeft' : 'ArrowRight'));
+    }
+    expect(g.view().score).toBeGreaterThan(0);
+  });
+
+  it('loses lives when the paddle never moves to meet the ball', () => {
+    const g = GAMES.breakout.create(4);
+    // One nudge to launch, then park in a corner and let it drain.
+    g.step(DT, holding('ArrowLeft'));
+    for (let i = 0; i < 4000; i++) g.step(DT, holding('ArrowLeft'));
+    expect(g.view().status).not.toContain('lives ●●●');
+  });
+});
+
 describe('frogger', () => {
   it('registers a crossing when driven upward', () => {
     const g = GAMES.frogger.create(11);
