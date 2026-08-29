@@ -61,6 +61,9 @@ export type ReactiveFn = (t: number, presses: readonly Press[]) => Frame;
 
 export interface ReactiveDef {
   name: string;
+  /** One line for the picker: what it looks like, not how it is built.
+   *  Required, so a new effect cannot ship without one. */
+  description: string;
   category: ReactiveCategory;
   fn: ReactiveFn;
   /**

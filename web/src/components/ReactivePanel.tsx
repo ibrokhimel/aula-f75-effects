@@ -199,6 +199,8 @@ export function ReactivePanel({ device, log }: Props) {
         caption={def ? `${def.name} — ${hits} press${hits === 1 ? '' : 'es'}` : undefined}
       />
 
+      {def && <p className="-mt-2 text-xs text-zinc-400">{def.description}</p>}
+
       <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 text-xs text-zinc-400 flex items-start justify-between gap-4">
         <div className="space-y-1">
           {active
@@ -246,7 +248,7 @@ export function ReactivePanel({ device, log }: Props) {
           <button
             key={key}
             onClick={() => (active === key ? void stop() : void start(key))}
-            title={`${e.name} — ${e.category}`}
+            title={`${e.name} (${e.category}) — ${e.description}`}
             className={[
               'px-2 py-2.5 rounded-lg text-xs font-medium transition-all duration-200 border truncate',
               active === key

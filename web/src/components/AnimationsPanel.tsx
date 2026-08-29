@@ -162,6 +162,10 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
         caption={selected ? ANIMATIONS[selected]?.name : undefined}
       />
 
+      {selected && ANIMATIONS[selected] && (
+        <p className="-mt-2 text-xs text-zinc-400">{ANIMATIONS[selected].description}</p>
+      )}
+
       <div className="flex items-center justify-between">
         <p className="text-xs text-zinc-500">
           {transport === 'wireless'
@@ -220,7 +224,7 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
           <button
             key={key}
             onClick={() => pick(key, fn)}
-            title={name}
+            title={`${name} — ${ANIMATIONS[key].description}`}
             className={[
               'px-2 py-2.5 rounded-lg text-xs font-medium transition-all duration-200 border truncate',
               selected === key
