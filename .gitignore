@@ -3,3 +3,6 @@ web/node_modules/
 web/.next/
 web/next-env.d.ts
 web/*.tsbuildinfo.worktrees/
+
+# tool artifacts
+.claude-flow/
