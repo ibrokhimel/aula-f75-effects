@@ -126,6 +126,31 @@ describe('whack-a-mole', () => {
   });
 });
 
+describe('rhythm', () => {
+  const LANE_CODES = ['KeyF', 'KeyG', 'KeyH', 'KeyJ'];
+
+  it('drops combo and accuracy when every note is ignored', () => {
+    const g = GAMES.rhythm.create(17);
+    for (let i = 0; i < 1200; i++) g.step(DT, none());
+    expect(g.view().score).toBe(0);
+    expect(g.view().status).toContain('combo 0');
+    expect(g.view().status).not.toContain('100%');
+  });
+
+  it('scores and builds combo when notes are hit on the beat', () => {
+    const g = GAMES.rhythm.create(17);
+    // 100 BPM is a 0.6s beat, which at dt=1/60 is exactly 36 frames — and the
+    // chart only places notes on beats. Hitting all four lanes on each beat
+    // boundary therefore lands every note, whichever lane it is in.
+    const BEAT_FRAMES = 36;
+    for (let i = 0; i < 3000; i++) {
+      g.step(DT, i % BEAT_FRAMES === 0 ? holding(...LANE_CODES) : none());
+    }
+    expect(g.view().score).toBeGreaterThan(0);
+    expect(g.view().status).toContain('100%');
+  });
+});
+
 describe('reaction', () => {
   it('re-arms the round on a press before the light', () => {
     const g = GAMES.reaction.create(13);

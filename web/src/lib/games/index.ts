@@ -16,6 +16,7 @@ import { flappy } from './flappy';
 import { dodger } from './dodger';
 import { memory } from './memory';
 import { reaction } from './reaction';
+import { rhythm } from './rhythm';
 
 export * from './core';
 
@@ -32,5 +33,6 @@ export const GAMES: Record<string, GameDef> = {
   simon,
   memory,
   reaction,
+  rhythm,
   typing,
 };

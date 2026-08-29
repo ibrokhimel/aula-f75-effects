@@ -23,7 +23,7 @@ import {
   type Frame, type RGB,
 } from '../animations';
 
-export { BOARD_H, BOARD_W, LED_BY_NAME };
+export { BOARD_H, BOARD_W, LED_BY_NAME, LED_GEO };
 export type { Frame, RGB };
 
 /** Key codes held down, and those that went down since the last tick. */
