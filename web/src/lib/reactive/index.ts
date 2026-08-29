@@ -2,7 +2,7 @@
  * Reactive effect registry. Keys are stable identifiers used by the UI.
  */
 
-import type { ReactiveDef } from './core';
+import { MEMORY_WINDOW, type ReactiveDef } from './core';
 import * as point from './point';
 import * as hold from './hold';
 import * as chords from './chords';
@@ -13,8 +13,22 @@ import * as field from './field';
 import * as reveal from './reveal';
 import * as chain from './chain';
 import * as spread from './spread';
+import * as sequence from './sequence';
+import * as rhythm from './rhythm';
+import * as gesture from './gesture';
+import * as release from './release';
+import * as semantic from './semantic';
+import * as zones from './zones';
+import * as modifiers from './modifiers';
+import * as memory from './memory';
+import * as intensity from './intensity';
+import * as idle from './idle';
 
 export * from './core';
+
+/** Memory effects all want the long horizon; spelled once rather than ten times. */
+const remembers = (name: string, fn: ReactiveDef['fn']): ReactiveDef =>
+  ({ name, category: 'Memory', fn, window: MEMORY_WINDOW });
 
 export const REACTIVE: Record<string, ReactiveDef> = {
   // ── Point ─────────────────────────────────────────────────────────────
@@ -129,4 +143,112 @@ export const REACTIVE: Record<string, ReactiveDef> = {
   gridripple: { name: 'Grid Ripple', category: 'Spread', fn: spread.gridRipple },
   infect: { name: 'Infect', category: 'Spread', fn: spread.infect },
   quake: { name: 'Quake', category: 'Spread', fn: spread.quake },
+
+  // ── Sequence ──────────────────────────────────────────────────────────
+  march: { name: 'Order March', category: 'Sequence', fn: sequence.march },
+  runlength: { name: 'Run Length', category: 'Sequence', fn: sequence.runLength },
+  bigram: { name: 'Bigram', category: 'Sequence', fn: sequence.bigram },
+  phrase: { name: 'Phrase Lock', category: 'Sequence', fn: sequence.phrase },
+  palindrome: { name: 'Palindrome', category: 'Sequence', fn: sequence.palindrome },
+  alternate: { name: 'Alternation', category: 'Sequence', fn: sequence.alternate },
+  rewind: { name: 'Rewind', category: 'Sequence', fn: sequence.rewind },
+  ladder: { name: 'Ladder', category: 'Sequence', fn: sequence.ladder },
+  combolock: { name: 'Combo Lock', category: 'Sequence', fn: sequence.comboLock },
+
+  // ── Rhythm ────────────────────────────────────────────────────────────
+  metronome: { name: 'Metronome', category: 'Rhythm', fn: rhythm.metronome },
+  burst: { name: 'Burst', category: 'Rhythm', fn: rhythm.burst },
+  swing: { name: 'Swing', category: 'Rhythm', fn: rhythm.swing },
+  beatgrid: { name: 'Beat Grid', category: 'Rhythm', fn: rhythm.beatGrid },
+  pulsewave: { name: 'Pulse Wave', category: 'Rhythm', fn: rhythm.pulseWave },
+  strobe: { name: 'Strobe', category: 'Rhythm', fn: rhythm.strobe },
+  anticipate: { name: 'Anticipate', category: 'Rhythm', fn: rhythm.anticipate },
+  groove: { name: 'Groove', category: 'Rhythm', fn: rhythm.groove },
+  drumline: { name: 'Drumline', category: 'Rhythm', fn: rhythm.drumline },
+
+  // ── Gesture ───────────────────────────────────────────────────────────
+  swipe: { name: 'Swipe', category: 'Gesture', fn: gesture.swipe },
+  arc: { name: 'Arc', category: 'Gesture', fn: gesture.arc },
+  zigzag: { name: 'Zigzag', category: 'Gesture', fn: gesture.zigzag },
+  circle: { name: 'Circle', category: 'Gesture', fn: gesture.circle },
+  vector: { name: 'Vector', category: 'Gesture', fn: gesture.vector },
+  smear: { name: 'Smear', category: 'Gesture', fn: gesture.smear },
+  momentum: { name: 'Momentum', category: 'Gesture', fn: gesture.momentum },
+  compass: { name: 'Compass', category: 'Gesture', fn: gesture.compass },
+  scribble: { name: 'Scribble', category: 'Gesture', fn: gesture.scribble },
+
+  // ── Release ───────────────────────────────────────────────────────────
+  snap: { name: 'Snap', category: 'Release', fn: release.snap },
+  recoil: { name: 'Recoil', category: 'Release', fn: release.recoil },
+  bloom: { name: 'Bloom', category: 'Release', fn: release.bloom },
+  springback: { name: 'Spring Back', category: 'Release', fn: release.springBack },
+  dropoff: { name: 'Drop Off', category: 'Release', fn: release.dropOff },
+  residue: { name: 'Residue', category: 'Release', fn: release.residue },
+  exhale: { name: 'Exhale', category: 'Release', fn: release.exhale },
+  staccato: { name: 'Staccato', category: 'Release', fn: release.staccato },
+  unlatch: { name: 'Unlatch', category: 'Release', fn: release.unlatch },
+
+  // ── Semantic ──────────────────────────────────────────────────────────
+  classcolour: { name: 'Class Colour', category: 'Semantic', fn: semantic.classColour },
+  wordflow: { name: 'Word Flow', category: 'Semantic', fn: semantic.wordFlow },
+  backspaceeats: { name: 'Backspace Eats', category: 'Semantic', fn: semantic.backspaceEats },
+  entercommit: { name: 'Enter Commit', category: 'Semantic', fn: semantic.enterCommit },
+  numeric: { name: 'Numeric', category: 'Semantic', fn: semantic.numeric },
+  punctspark: { name: 'Punctuation Spark', category: 'Semantic', fn: semantic.punctSpark },
+  navsteer: { name: 'Nav Steer', category: 'Semantic', fn: semantic.navSteer },
+  syntax: { name: 'Syntax', category: 'Semantic', fn: semantic.syntax },
+  voweltide: { name: 'Vowel Tide', category: 'Semantic', fn: semantic.vowelTide },
+
+  // ── Zones ─────────────────────────────────────────────────────────────
+  zoneglow: { name: 'Zone Glow', category: 'Zones', fn: zones.zoneGlow },
+  zonemeter: { name: 'Zone Meter', category: 'Zones', fn: zones.zoneMeter },
+  handoff: { name: 'Handoff', category: 'Zones', fn: zones.handoff },
+  territory: { name: 'Territory', category: 'Zones', fn: zones.territory },
+  zonewave: { name: 'Zone Wave', category: 'Zones', fn: zones.zoneWave },
+  wasdmode: { name: 'WASD Mode', category: 'Zones', fn: zones.wasdMode },
+  homebase: { name: 'Home Base', category: 'Zones', fn: zones.homeBase },
+  zoneblend: { name: 'Zone Blend', category: 'Zones', fn: zones.zoneBlend },
+  borderpatrol: { name: 'Border Patrol', category: 'Zones', fn: zones.borderPatrol },
+
+  // ── Modifiers ─────────────────────────────────────────────────────────
+  modtint: { name: 'Mod Tint', category: 'Modifiers', fn: modifiers.modTint },
+  shiftbloom: { name: 'Shift Bloom', category: 'Modifiers', fn: modifiers.shiftBloom },
+  ctrlfreeze: { name: 'Ctrl Freeze', category: 'Modifiers', fn: modifiers.ctrlFreeze },
+  altinvert: { name: 'Alt Invert', category: 'Modifiers', fn: modifiers.altInvert },
+  modstack: { name: 'Mod Stack', category: 'Modifiers', fn: modifiers.modStack },
+  shout: { name: 'Shout', category: 'Modifiers', fn: modifiers.shout },
+  modlink: { name: 'Mod Link', category: 'Modifiers', fn: modifiers.modLink },
+  amplify: { name: 'Amplify', category: 'Modifiers', fn: modifiers.amplify },
+
+  // ── Memory ────────────────────────────────────────────────────────────
+  patina: remembers('Patina', memory.patina),
+  erosion: remembers('Erosion', memory.erosion),
+  treerings: remembers('Tree Rings', memory.treeRings),
+  sediment: remembers('Sediment', memory.sediment),
+  familiarity: remembers('Familiarity', memory.familiarity),
+  emberfield: remembers('Ember Field', memory.emberField),
+  ghosttyping: remembers('Ghost Typing', memory.ghostTyping),
+  evolve: remembers('Evolve', memory.evolve),
+  recharge: remembers('Recharge', memory.recharge),
+
+  // ── Intensity ─────────────────────────────────────────────────────────
+  wpm: { name: 'Words Per Minute', category: 'Intensity', fn: intensity.wpm },
+  redline: { name: 'Redline', category: 'Intensity', fn: intensity.redline },
+  gearshift: { name: 'Gear Shift', category: 'Intensity', fn: intensity.gearShift },
+  turbo: { name: 'Turbo', category: 'Intensity', fn: intensity.turbo },
+  throttle: { name: 'Throttle', category: 'Intensity', fn: intensity.throttle },
+  acceleration: { name: 'Acceleration', category: 'Intensity', fn: intensity.acceleration },
+  pressure: { name: 'Pressure', category: 'Intensity', fn: intensity.pressure },
+  stormfront: { name: 'Storm Front', category: 'Intensity', fn: intensity.stormFront },
+  bloomrate: { name: 'Bloom Rate', category: 'Intensity', fn: intensity.bloomRate },
+
+  // ── Idle ──────────────────────────────────────────────────────────────
+  sleep: { name: 'Sleep', category: 'Idle', fn: idle.sleep },
+  wake: { name: 'Wake', category: 'Idle', fn: idle.wake },
+  settlingdust: { name: 'Settling Dust', category: 'Idle', fn: idle.settlingDust },
+  slowbreath: { name: 'Slow Breath', category: 'Idle', fn: idle.slowBreath },
+  countdown: { name: 'Countdown', category: 'Idle', fn: idle.countdown },
+  hourglass: { name: 'Hourglass', category: 'Idle', fn: idle.hourglass },
+  frost: { name: 'Frost', category: 'Idle', fn: idle.frost },
+  heartbeat: { name: 'Heartbeat', category: 'Idle', fn: idle.heartbeat },
 };

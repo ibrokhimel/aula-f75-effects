@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  REACTIVE, REACTIVE_CATEGORIES, LED_FOR_CODE, WINDOW,
+  REACTIVE, REACTIVE_CATEGORIES, LED_FOR_CODE, WINDOW, windowFor,
   makePress, type Press,
 } from './index';
 import { ALL_LEDS } from '../animations';
@@ -84,10 +84,10 @@ describe.each(entries)('%s', (id, def) => {
   });
 
   it('goes quiet once every press has aged out of the window', () => {
-    // Effects must decay inside WINDOW, or the panel's eviction would cut
-    // them off mid-animation and they would visibly pop.
+    // Effects must decay inside their own window, or the panel's eviction
+    // would cut them off mid-animation and they would visibly pop.
     const presses = typed(6);
-    const late = presses[presses.length - 1].release! + WINDOW;
+    const late = presses[presses.length - 1].release! + windowFor(def);
     let lit = 0;
     for (const rgb of def.fn(late, presses).values()) {
       if (rgb[0] + rgb[1] + rgb[2] > 24) lit++;
