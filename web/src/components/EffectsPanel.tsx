@@ -92,11 +92,17 @@ export function EffectsPanel({ onApply }: EffectsPanelProps) {
                         Speed <span className="text-zinc-400">{hasSpeed ? speed : 'N/A'}</span>
                     </label>
                     <input
-                        type="range" min={0} max={4} step={1} value={hasSpeed ? speed : 2}
+                        type="range" min={0} max={15} step={1} value={hasSpeed ? speed : 2}
                         onChange={e => setSpeed(parseInt(e.target.value))}
                         disabled={!hasSpeed}
                         className="w-full accent-violet-500"
                     />
+                    {speed > 4 && (
+                        <p className="text-xs text-amber-600/80">
+                            Above 4 is past the stock driver&apos;s range. The byte holds 0–15, but the
+                            firmware may clamp or ignore it — Fn+Esc resets if it misbehaves.
+                        </p>
+                    )}
                 </div>
 
                 {/* Brightness */}

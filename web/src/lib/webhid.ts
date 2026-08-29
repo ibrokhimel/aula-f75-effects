@@ -171,6 +171,18 @@ export async function setEffect(device: HIDDevice, effectNum: number, opts: Effe
             ? encodeSpeedByte(opts.speed ?? curPair.speed, true)
             : (opts.speed !== null && opts.speed !== undefined ? encodeSpeedByte(opts.speed, !!opts.colorRgb) : region[offs.speedColor]);
         await writeConfigRegion(device, region, log);
+
+        // Read back before claiming success. The firmware sanitises some fields
+        // on write (the boot-time select clamp is the known case), so report what
+        // actually stuck rather than what we asked for.
+        const after = await readConfigRegion(device, log);
+        if (after) {
+            const want = decodeSpeedByte(region[offs.speedColor]);
+            const got = decodeSpeedByte(after[offs.speedColor]);
+            const clamped = got.speed !== want.speed ? ` (asked for ${want.speed} — firmware clamped)` : '';
+            log(`  slot ${effectNum} @${offs.bright}/${offs.speedColor}: select=${sel !== null ? after[sel] : '?'}`
+                + ` bright=0x${after[offs.bright].toString(16)} speed=${got.speed}${clamped} colorful=${got.colorful}`);
+        }
         log(`✓ ${eff.name} active!\n`);
         return;
     }
