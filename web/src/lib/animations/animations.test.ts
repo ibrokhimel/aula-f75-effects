@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { ANIMATIONS, ANIMATION_CATEGORIES, ALL_LEDS } from './index';
+import {
+  ANIMATIONS, ANIMATION_CATEGORIES, ALL_LEDS,
+  rgbToHsv, tint, tintFrame, tintFn, type RGB,
+} from './index';
 
 /**
  * Generators are pure functions of time, so a handful of sample points is
@@ -61,5 +64,67 @@ describe.each(entries)('%s', (key, anim) => {
   it('is deterministic — the same t yields the same frame', () => {
     const a = anim.fn(2.5), b = anim.fn(2.5);
     expect([...a.entries()]).toEqual([...b.entries()]);
+  });
+});
+
+describe('recolouring', () => {
+  const RED: RGB = [255, 0, 64];
+
+  it('round-trips a colour through rgbToHsv', () => {
+    for (const c of [[255, 0, 0], [0, 255, 0], [0, 0, 255], [18, 90, 200]] as RGB[]) {
+      const [h, sat, v] = rgbToHsv(c);
+      expect(h).toBeGreaterThanOrEqual(0);
+      expect(h).toBeLessThan(1);
+      expect(sat).toBeLessThanOrEqual(1);
+      expect(v).toBeCloseTo(Math.max(...c) / 255, 5);
+    }
+  });
+
+  it('keeps the source brightness', () => {
+    for (const v of [0, 30, 90, 160, 255]) {
+      const out = tint([v, Math.round(v * 0.4), 0], RED);
+      expect(Math.max(...out)).toBe(v);
+    }
+  });
+
+  it('takes the target hue for saturated sources', () => {
+    // A full-value rainbow sweep must all land on the target hue.
+    const targetHue = rgbToHsv(RED)[0];
+    for (const c of [[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 0]] as RGB[]) {
+      expect(rgbToHsv(tint(c, RED))[0]).toBeCloseTo(targetHue, 2);
+    }
+  });
+
+  it('colourises mid-grey, so greyscale effects are not left grey', () => {
+    const out = tint([128, 128, 128], RED);
+    expect(rgbToHsv(out)[1]).toBeGreaterThan(0.5);
+    expect(rgbToHsv(out)[0]).toBeCloseTo(rgbToHsv(RED)[0], 2);
+  });
+
+  it('leaves highlights white — a flame tip stays hot, not flat', () => {
+    expect(rgbToHsv(tint([255, 255, 255], RED))[1]).toBeLessThan(0.05);
+    // ...but only at the very top: a dim white is still colour, not a highlight.
+    expect(rgbToHsv(tint([160, 160, 160], RED))[1]).toBeGreaterThan(0.5);
+  });
+
+  it('passes the frame straight through in Colorful mode', () => {
+    const f = new Map([[1, [10, 20, 30] as RGB]]);
+    expect(tintFrame(f, null)).toBe(f);
+    const fn = () => f;
+    expect(tintFn(fn, null)).toBe(fn);
+  });
+
+  it('emits well-formed RGB for every effect it wraps', () => {
+    for (const [key, anim] of entries) {
+      for (const t of SAMPLES) {
+        for (const [led, rgb] of tintFn(anim.fn, RED)(t)) {
+          for (let c = 0; c < 3; c++) {
+            expect(Number.isInteger(rgb[c]), `${key} @ t=${t} LED ${led} ch${c}`).toBe(true);
+            expect(rgb[c], `${key} @ t=${t} LED ${led} ch${c}`).toBeGreaterThanOrEqual(0);
+            expect(rgb[c], `${key} @ t=${t} LED ${led} ch${c}`).toBeLessThanOrEqual(255);
+          }
+        }
+      }
+    }
   });
 });

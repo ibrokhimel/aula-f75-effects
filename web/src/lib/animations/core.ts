@@ -170,6 +170,56 @@ export function fill(c: RGB): Frame {
   return f;
 }
 
+// ── Recolouring ─────────────────────────────────────────────────────────
+// Every effect bakes its own palette in, so a colour picker cannot simply ask
+// one for a different hue. Instead the finished frame is re-hued: the effect
+// keeps the brightness structure that carries its motion, and the picked
+// colour supplies the chroma.
+
+/** RGB 0..255 to HSV 0..1. Inverse of `hsv()`. */
+export function rgbToHsv(c: RGB): [number, number, number] {
+  const r = c[0] / 255, g = c[1] / 255, b = c[2] / 255;
+  const max = Math.max(r, g, b);
+  const d = max - Math.min(r, g, b);
+  let h = 0;
+  if (d > 1e-9) {
+    if (max === r) h = (g - b) / d / 6;
+    else if (max === g) h = ((b - r) / d + 2) / 6;
+    else h = ((r - g) / d + 4) / 6;
+  }
+  return [((h % 1) + 1) % 1, max > 0 ? d / max : 0, max];
+}
+
+/**
+ * Re-hue one colour onto `target`, keeping its own brightness.
+ *
+ * Near-white pixels stay near-white. A highlight — a flame's tip, a sparkle,
+ * lightning — reads as *hot* rather than as a hue, and flattening those onto
+ * the target hue is exactly what makes a naive tint look like a flat wash.
+ * Whiteness is scored as bright AND unsaturated, so a mid-grey still takes the
+ * colour and greyscale effects tint properly instead of staying grey.
+ */
+export function tint(c: RGB, target: RGB): RGB {
+  const [, s, v] = rgbToHsv(c);
+  if (v === 0) return [0, 0, 0]; // fast path: most frames are mostly dark
+  const [th, ts] = rgbToHsv(target);
+  const white = smoothstep(0.8, 1, v) * (1 - s);
+  return hsv(th, ts * (1 - white), v);
+}
+
+/** `tint` across a whole frame. A null target means Colorful — passthrough. */
+export function tintFrame(frame: Frame, target: RGB | null): Frame {
+  if (!target) return frame;
+  const out: Frame = new Map();
+  for (const [led, c] of frame) out.set(led, tint(c, target));
+  return out;
+}
+
+/** Wrap a generator so every frame it yields is tinted. */
+export function tintFn(fn: AnimationFn, target: RGB | null): AnimationFn {
+  return target ? (t) => tintFrame(fn(t), target) : fn;
+}
+
 // ── Palettes ────────────────────────────────────────────────────────────
 // Evenly spaced stops. sampleP wraps (use it like a hue); rampP clamps (use it
 // for heat/depth, where both ends are meaningful).

@@ -2,13 +2,15 @@
 
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import {
-  ANIMATIONS, ANIMATION_CATEGORIES,
-  type AnimationFn, type AnimationCategory,
+  ANIMATIONS, ANIMATION_CATEGORIES, tintFrame, tintFn,
+  type AnimationFn, type AnimationCategory, type RGB,
 } from '@/lib/animations';
+import { hexToRgb } from '@/lib/protocol';
 import { buildDirectFrame, sendDirectFrame, enableDirectMode, disableDirectMode, buildBlankFrame } from '@/lib/direct-mode';
 import { isWirelessDevice, sendWirelessAnimationFrame, sendWirelessIdle } from '@/lib/wireless-mode';
 import { createTicker, startAudioKeepalive, stopAudioKeepalive, type Ticker } from '@/lib/keepalive';
 import { KeyboardPreview } from './KeyboardPreview';
+import { ColorControl } from './ColorControl';
 
 interface AnimationsPanelProps {
   device: HIDDevice | null;
@@ -20,11 +22,20 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
   const [fps, setFps] = useState(20);
   const [category, setCategory] = useState<AnimationCategory | 'All'>('All');
   const [query, setQuery] = useState('');
+  // Colorful by default: each of these effects was written around its own
+  // palette, so overriding every one of them out of the box would be a loss.
+  const [colorful, setColorful] = useState(true);
+  const [color, setColor] = useState('#ff0040');
   // What the on-screen board is showing. Independent of `running`, which only
   // tracks the hardware stream — so effects can be browsed with nothing plugged in.
   const [selected, setSelected] = useState<string | null>(null);
   const tickerRef = useRef<Ticker | null>(null);
   const runningRef = useRef(false);
+  // Also held in a ref so a colour change reaches the running ticker without
+  // tearing the stream down and re-arming direct mode.
+  const target: RGB | null = useMemo(() => (colorful ? null : hexToRgb(color)), [colorful, color]);
+  const targetRef = useRef(target);
+  useEffect(() => { targetRef.current = target; }, [target]);
   const transport = device?.opened ? (isWirelessDevice(device) ? 'wireless' : 'wired') : null;
 
   const stop = useCallback(async () => {
@@ -87,7 +98,7 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
       if (!runningRef.current || inFlight) return; // HID writes must not overlap
       inFlight = true;
       // Wall-clock time, so a dropped tick skips ahead instead of slowing down.
-      const colors = fn((performance.now() - t0) / 1000);
+      const colors = tintFrame(fn((performance.now() - t0) / 1000), targetRef.current);
       const send = useWireless
         ? sendWirelessAnimationFrame(device, colors)
         : sendDirectFrame(device, buildDirectFrame(colors));
@@ -131,6 +142,11 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
     if (device?.opened) await start(key, fn);
   }, [selected, device, start, stop]);
 
+  const previewFn = useMemo(() => {
+    const anim = selected ? ANIMATIONS[selected]?.fn : null;
+    return anim ? tintFn(anim, target) : null;
+  }, [selected, target]);
+
   const entries = useMemo(() => {
     const q = query.trim().toLowerCase();
     return Object.entries(ANIMATIONS).filter(([key, a]) =>
@@ -142,7 +158,7 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
   return (
     <div className="space-y-4">
       <KeyboardPreview
-        fn={selected ? ANIMATIONS[selected]?.fn ?? null : null}
+        fn={previewFn}
         caption={selected ? ANIMATIONS[selected]?.name : undefined}
       />
 
@@ -154,16 +170,24 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
               ? 'USB-C direct mode: uses 520-byte Feature Reports'
               : 'Not connected — preview only. Plug in USB-C or the 2.4GHz dongle to drive the board.'}
         </p>
-        <div className="flex items-center gap-2">
-          <label className="text-xs text-zinc-400">FPS:</label>
-          <input
-            type="number"
-            min={5}
-            max={30}
-            value={fps}
-            onChange={(e) => setFps(Math.max(5, Math.min(30, Number(e.target.value))))}
-            className="w-14 bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-zinc-200"
+        <div className="flex items-center gap-4">
+          <ColorControl
+            colorful={colorful}
+            color={color}
+            onChangeColorful={setColorful}
+            onChangeColor={setColor}
           />
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-zinc-400">FPS:</label>
+            <input
+              type="number"
+              min={5}
+              max={30}
+              value={fps}
+              onChange={(e) => setFps(Math.max(5, Math.min(30, Number(e.target.value))))}
+              className="w-14 bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-zinc-200"
+            />
+          </div>
         </div>
       </div>
 
