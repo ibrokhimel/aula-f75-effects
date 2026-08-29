@@ -11,8 +11,9 @@ import { RemapPanel } from '@/components/RemapPanel';
 import { MacrosPanel } from '@/components/MacrosPanel';
 import { LogPanel } from '@/components/LogPanel';
 import { LayoutMapperPanel } from '@/components/LayoutMapperPanel';
+import { GamesPanel } from '@/components/GamesPanel';
 
-type Tab = 'effects' | 'perkey' | 'animations' | 'settings' | 'remap' | 'macros' | 'layout';
+type Tab = 'effects' | 'perkey' | 'animations' | 'settings' | 'remap' | 'macros' | 'layout' | 'games';
 
 export default function Home() {
   const kb = useKeyboard();
@@ -24,6 +25,7 @@ export default function Home() {
     { id: 'animations', label: 'Animations' },
     { id: 'remap', label: 'Remap' },
     { id: 'macros', label: 'Macros' },
+    { id: 'games', label: 'Games' },
     { id: 'layout', label: 'Layout' },
     { id: 'settings', label: 'Settings' },
   ];
@@ -87,6 +89,7 @@ export default function Home() {
             log={kb.log}
           />
         )}
+        {tab === 'games' && <GamesPanel device={kb.device} log={kb.log} />}
         {tab === 'layout' && <LayoutMapperPanel device={kb.device} log={kb.log} />}
         {tab === 'remap' && <RemapPanel onWriteKeybind={kb.doWriteKeybind} />}
         {tab === 'macros' && (
