@@ -6,3 +6,6 @@ web/*.tsbuildinfo.worktrees/
 
 # tool artifacts
 .claude-flow/
+
+# vitest cache when run from the repo root
+node_modules/
