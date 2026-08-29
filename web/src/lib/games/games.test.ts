@@ -126,6 +126,30 @@ describe('whack-a-mole', () => {
   });
 });
 
+describe('dodger', () => {
+  it('scores as rocks go by and eventually gets hit', () => {
+    const g = GAMES.dodger.create(6);
+    for (let i = 0; i < 6000 && g.view().state === 'playing'; i++) g.step(DT, none());
+    expect(g.view().score).toBeGreaterThan(0);
+    expect(g.view().state).toBe('over');
+  });
+
+  it('moves the ship between rows on a press', () => {
+    const g = GAMES.dodger.create(6);
+    const rowOf = (gg: typeof g) => {
+      // The ship is the teal splat; find its brightest cell.
+      let best = -1, bestV = 0;
+      for (const [led, c] of gg.render()) {
+        if (c[1] > 150 && c[2] > 120 && c[0] < 150 && c[1] > bestV) { bestV = c[1]; best = led; }
+      }
+      return best;
+    };
+    const before = rowOf(g);
+    g.step(DT, holding('ArrowUp'));
+    expect(rowOf(g)).not.toBe(before);
+  });
+});
+
 describe('flappy', () => {
   it('waits for the first flap before anything moves', () => {
     const g = GAMES.flappy.create(2);

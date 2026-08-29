@@ -13,6 +13,7 @@ import { breakout } from './breakout';
 import { tron } from './tron';
 import { invaders } from './invaders';
 import { flappy } from './flappy';
+import { dodger } from './dodger';
 
 export * from './core';
 
@@ -24,6 +25,7 @@ export const GAMES: Record<string, GameDef> = {
   tron,
   invaders,
   flappy,
+  dodger,
   whackamole: whackAMole,
   simon,
   typing,
