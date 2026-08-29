@@ -5,6 +5,9 @@
 import { MEMORY_WINDOW, type ReactiveDef } from './core';
 import * as point from './point';
 import * as hold from './hold';
+import * as holdGrowth from './hold-growth';
+import * as holdCharge from './hold-charge';
+import * as holdMaterial from './hold-material';
 import * as chords from './chords';
 import * as ripples from './ripples';
 import * as sweeps from './sweeps';
@@ -58,6 +61,39 @@ export const REACTIVE: Record<string, ReactiveDef> = {
   emitter: { name: 'Emitter', category: 'Hold', fn: hold.emitter },
   overload: { name: 'Overload', category: 'Hold', fn: hold.overload },
   anchor: { name: 'Anchor', category: 'Hold', fn: hold.anchor },
+
+  growsquare: { name: 'Grow Square', category: 'Hold', fn: holdGrowth.growSquare },
+  growdiamond: { name: 'Grow Diamond', category: 'Hold', fn: holdGrowth.growDiamond },
+  growcolumn: { name: 'Grow Column', category: 'Hold', fn: holdGrowth.growColumn },
+  growrow: { name: 'Grow Row', category: 'Hold', fn: holdGrowth.growRow },
+  growspiral: { name: 'Grow Spiral', category: 'Hold', fn: holdGrowth.growSpiral },
+  growcone: { name: 'Grow Cone', category: 'Hold', fn: holdGrowth.growCone },
+  columnfill: { name: 'Column Fill', category: 'Hold', fn: holdGrowth.columnFill },
+  rowfill: { name: 'Row Fill', category: 'Hold', fn: holdGrowth.rowFill },
+  radialfill: { name: 'Radial Fill', category: 'Hold', fn: holdGrowth.radialFill },
+  clockfill: { name: 'Clock Fill', category: 'Hold', fn: holdGrowth.clockFill },
+
+  chargelightning: { name: 'Charge Lightning', category: 'Hold', fn: holdCharge.chargeLightning },
+  chargenova: { name: 'Charge Nova', category: 'Hold', fn: holdCharge.chargeNova },
+  chargechain: { name: 'Charge Chain', category: 'Hold', fn: holdCharge.chargeChain },
+  chargerecoil: { name: 'Charge Recoil', category: 'Hold', fn: holdCharge.chargeRecoil },
+  chargeimplode: { name: 'Charge Implode', category: 'Hold', fn: holdCharge.chargeImplode },
+  holdstrobe: { name: 'Hold Strobe', category: 'Hold', fn: holdCharge.holdStrobe },
+  holdwobble: { name: 'Hold Wobble', category: 'Hold', fn: holdCharge.holdWobble },
+  holdsiren: { name: 'Hold Siren', category: 'Hold', fn: holdCharge.holdSiren },
+  holdtremolo: { name: 'Hold Tremolo', category: 'Hold', fn: holdCharge.holdTremolo },
+  holdvibrato: { name: 'Hold Vibrato', category: 'Hold', fn: holdCharge.holdVibrato },
+
+  holdmelt: { name: 'Melt', category: 'Hold', fn: holdMaterial.holdMelt },
+  holdcrack: { name: 'Crack', category: 'Hold', fn: holdMaterial.holdCrack },
+  holdrust: { name: 'Rust', category: 'Hold', fn: holdMaterial.holdRust },
+  holdbloom: { name: 'Petals', category: 'Hold', fn: holdMaterial.holdBloom },
+  holdmagma: { name: 'Magma', category: 'Hold', fn: holdMaterial.holdMagma },
+  holdsmoke: { name: 'Smoke', category: 'Hold', fn: holdMaterial.holdSmoke },
+  holdportal: { name: 'Portal', category: 'Hold', fn: holdMaterial.holdPortal },
+  holdbeam: { name: 'Beam Charge', category: 'Hold', fn: holdMaterial.holdBeamCharge },
+  holdshield: { name: 'Shield', category: 'Hold', fn: holdMaterial.holdShield },
+  holdwarp: { name: 'Warp', category: 'Hold', fn: holdMaterial.holdWarp },
 
   // ── Chord ─────────────────────────────────────────────────────────────
   chordlines: { name: 'Chord Lines', category: 'Chord', fn: chords.chordLines },
