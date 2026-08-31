@@ -26,7 +26,7 @@ import * as modifiers from './modifiers';
 import * as memory from './memory';
 import * as intensity from './intensity';
 import * as idle from './idle';
-import { SOUND_FNS } from './sound';
+import { SOUND_FNS } from './sound-effects';
 
 export * from './core';
 
@@ -302,5 +302,10 @@ export const REACTIVE: Record<string, ReactiveDef> = {
   sndrainbow: { name: 'Loud Rainbow', description: 'A rainbow that spins and brightens with how loud it gets', category: 'Sound', fn: SOUND_FNS.loudRainbow },
   sndzones: { name: 'Band Zones', description: 'Left is bass, middle is mids, right is treble — a giant crossover', category: 'Sound', fn: SOUND_FNS.bandZones },
   sndsparkle: { name: 'Treble Sparkle', description: 'Keys twinkle at random; hi-hats decide how many and how hard', category: 'Sound', fn: SOUND_FNS.trebleSparkle },
-  sndburst: { name: 'Center Burst', description: 'A disc whose size is the volume — cool when quiet, hot when loud', category: 'Sound', fn: SOUND_FNS.centerBurst },
+  sndburst: { name: 'Center Burst', description: 'A disc sized by the volume and coloured by the sound\'s own timbre', category: 'Sound', fn: SOUND_FNS.centerBurst },
+  snddisco: { name: 'Disco', description: 'A colour wheel around the centre, spun by loudness and kicked by beats', category: 'Sound', fn: SOUND_FNS.discoSpin },
+  sndstrobe: { name: 'Kick Strobe', description: 'A hard white flash on every kick over a dim timbre-coloured floor', category: 'Sound', fn: SOUND_FNS.kickStrobe },
+  sndflow: { name: 'Spectrum Flow', description: 'The sound\'s colour and loudness flow across the board like lava', category: 'Sound', fn: SOUND_FNS.spectrumFlow },
+  sndduet: { name: 'Duet', description: 'Bass fills the bottom rows, treble the top, mids the middle, centre-out', category: 'Sound', fn: SOUND_FNS.duet },
+  sndconfetti: { name: 'Beat Confetti', description: 'Every beat scatters a burst of coloured keys that burn out fast', category: 'Sound', fn: SOUND_FNS.beatConfetti },
 };

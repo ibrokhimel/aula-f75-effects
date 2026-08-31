@@ -13,6 +13,7 @@ desktop/release/
 # tool artifacts
 .claude-flow/
 .swarm/
+ruvector.db
 
 # vitest cache when run from the repo root
 node_modules/

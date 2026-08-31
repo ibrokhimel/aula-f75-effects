@@ -1,7 +1,7 @@
 {
   "name": "aula-f75-desktop",
   "productName": "AULA F75 Controller",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Background RGB effects and configuration for the AULA F75 keyboard",
   "main": "dist/main.cjs",

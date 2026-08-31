@@ -15,6 +15,7 @@ const sample = (over: Partial<AudioSample> = {}): AudioSample => ({
   mid: 0.4,
   treble: 0.3,
   spectrum: new Array(SPECTRUM_BINS).fill(0.5),
+  centroid: 0.5,
   ...over,
 });
 
@@ -50,10 +51,27 @@ describe('analyzeAudio', () => {
     const time = new Uint8Array(AUDIO_FFT_SIZE);
     for (let i = 0; i < time.length; i++) time[i] = i % 2 ? 40 : 216;
     const s = analyzeAudio(freq, time, 48000);
-    expect(s.level).toBe(1);
+    // Level is deliberately unclamped — the auto-gain needs to see how hot
+    // the signal really is.
+    expect(s.level).toBeGreaterThanOrEqual(1);
     expect(s.bass).toBeGreaterThan(0.8);
     expect(s.treble).toBeGreaterThan(0.8);
     expect(Math.min(...s.spectrum)).toBeGreaterThan(0.8);
+    expect(s.centroid).toBeGreaterThan(0);
+    expect(s.centroid).toBeLessThan(1);
+  });
+
+  it('auto-gain keeps headroom when the volume is pegged', () => {
+    let now = 0;
+    setSoundClock(() => now);
+    // A hot signal parks the reference at its own loudness…
+    for (let i = 0; i < 40; i++) { now = i * 33; pushAudioSample(sample({ level: 2 })); }
+    const pegged = REACTIVE.sndvu.fn(1, []).size;
+    // …so a merely-loud stretch reads as a visible dip, not more full-scale.
+    for (let i = 40; i < 60; i++) { now = i * 33; pushAudioSample(sample({ level: 1.2 })); }
+    const dipped = REACTIVE.sndvu.fn(2, []).size;
+    expect(pegged).toBeGreaterThan(0);
+    expect(dipped).toBeLessThan(pegged);
   });
 });
 
