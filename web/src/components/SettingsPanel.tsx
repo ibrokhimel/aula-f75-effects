@@ -1,8 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DeviceInfoCard } from './DeviceInfoCard';
 import { ProfilesCard } from './ProfilesCard';
 import type { Layer } from '@/lib/keybind';
+import { isNative, nativeGetAutostart, nativeSetAutostart } from '@/lib/native';
 
 interface SettingsPanelProps {
     device: HIDDevice | null;
@@ -20,6 +21,19 @@ export function SettingsPanel({ device, log, onSetSleep, onSetDebounce, onFactor
     const [applyingSleep, setApplyingSleep] = useState(false);
     const [applyingDebounce, setApplyingDebounce] = useState(false);
     const [resetting, setResetting] = useState(false);
+    const native = isNative();
+    const [autostart, setAutostart] = useState(false);
+
+    useEffect(() => {
+        if (native) void nativeGetAutostart().then(setAutostart).catch(() => {});
+    }, [native]);
+
+    const toggleAutostart = async () => {
+        const next = !autostart;
+        setAutostart(next);
+        try { await nativeSetAutostart(next); }
+        catch { setAutostart(!next); }
+    };
 
     const handleSleep = async () => {
         setApplyingSleep(true);
@@ -93,6 +107,25 @@ export function SettingsPanel({ device, log, onSetSleep, onSetDebounce, onFactor
                     {applyingDebounce ? 'Setting...' : 'Set Debounce'}
                 </button>
             </div>
+
+            {/* Desktop app behaviour (only shown inside the desktop app) */}
+            {native && (
+                <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 backdrop-blur-sm space-y-3 sm:col-span-2">
+                    <h3 className="text-sm font-medium text-zinc-300">Desktop App</h3>
+                    <p className="text-xs text-zinc-600">
+                        Closing the window keeps effects running in the tray. Quit from the tray icon.
+                    </p>
+                    <label className="flex items-center gap-3 text-sm text-zinc-300 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={autostart}
+                            onChange={() => void toggleAutostart()}
+                            className="h-4 w-4 accent-violet-500"
+                        />
+                        Start with Windows (hidden in the tray, last effect resumed)
+                    </label>
+                </div>
+            )}
 
             {/* Factory Reset */}
             <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 backdrop-blur-sm space-y-3 sm:col-span-2">

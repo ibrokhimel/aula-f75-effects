@@ -9,6 +9,10 @@ import { hexToRgb } from '@/lib/protocol';
 import { buildDirectFrame, sendDirectFrame, enableDirectMode, disableDirectMode, buildBlankFrame } from '@/lib/direct-mode';
 import { isWirelessDevice, sendWirelessAnimationFrame, sendWirelessIdle } from '@/lib/wireless-mode';
 import { createTicker, startAudioKeepalive, stopAudioKeepalive, type Ticker } from '@/lib/keepalive';
+import {
+  isNative, nativeStartAnimation, nativeStopEffects, nativeSetColor, nativeSetFps,
+  onNativeStatus,
+} from '@/lib/native';
 import { KeyboardPreview } from './KeyboardPreview';
 import { ColorControl } from './ColorControl';
 
@@ -18,6 +22,10 @@ interface AnimationsPanelProps {
 }
 
 export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
+  // Inside the desktop app the stream runs in the main process, immune to
+  // window/tab throttling; this panel is then a remote control. The local
+  // preview stays local either way — animations are pure functions of time.
+  const native = isNative();
   const [running, setRunning] = useState<string | null>(null);
   const [fps, setFps] = useState(20);
   const [category, setCategory] = useState<AnimationCategory | 'All'>('All');
@@ -44,6 +52,10 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
     tickerRef.current = null;
     stopAudioKeepalive();
     setRunning(null);
+    if (native) {
+      await nativeStopEffects();
+      return;
+    }
     if (device?.opened) {
       try {
         if (isWirelessDevice(device)) {
@@ -54,7 +66,7 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
         }
       } catch { /* best effort */ }
     }
-  }, [device, log]);
+  }, [device, log, native]);
 
   useEffect(() => {
     return () => {
@@ -65,6 +77,21 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
     };
   }, []);
 
+  // Native mode: colour, fps, and external state changes flow to the engine.
+  useEffect(() => {
+    if (native) void nativeSetColor(colorful ? null : color);
+  }, [native, colorful, color]);
+  useEffect(() => {
+    if (native) void nativeSetFps(fps);
+  }, [native, fps]);
+  useEffect(() => {
+    if (!native) return;
+    return onNativeStatus((s) => {
+      setRunning(s.animation);
+      if (s.animation) setSelected(s.animation);
+    });
+  }, [native]);
+
   const start = useCallback(async (name: string, fn: AnimationFn) => {
     if (!device?.opened) {
       log('Not connected!');
@@ -72,6 +99,14 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
     }
 
     if (runningRef.current) await stop();
+
+    if (native) {
+      log(`Starting animation: ${name} (desktop engine — keeps running in the tray)`);
+      await nativeSetColor(colorful ? null : color);
+      await nativeStartAnimation(name, fps);
+      setRunning(name);
+      return;
+    }
 
     const useWireless = isWirelessDevice(device);
     log(`Starting animation: ${name} (${useWireless ? '2.4GHz wireless' : 'USB-C direct'})`);
@@ -109,12 +144,13 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
         })
         .finally(() => { inFlight = false; });
     });
-  }, [device, fps, log, stop]);
+  }, [device, fps, log, stop, native, colorful, color]);
 
   // Re-assert direct mode when the tab comes back: if the browser did throttle
   // us hard enough for the firmware to time out, this recovers without a
   // manual restart.
   useEffect(() => {
+    if (native) return; // the main-process stream never throttles
     let hiddenAt = 0;
     const onChange = () => {
       if (document.visibilityState !== 'visible') { hiddenAt = Date.now(); return; }
@@ -128,7 +164,7 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
     };
     document.addEventListener('visibilitychange', onChange);
     return () => document.removeEventListener('visibilitychange', onChange);
-  }, [device]);
+  }, [device, native]);
 
   // One click drives both surfaces: always the preview, and the keyboard too
   // when one is connected.

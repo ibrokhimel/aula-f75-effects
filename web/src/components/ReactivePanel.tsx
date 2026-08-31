@@ -2,11 +2,16 @@
 
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import {
-  REACTIVE, REACTIVE_CATEGORIES, LED_FOR_CODE, makePress, windowFor,
+  REACTIVE, REACTIVE_CATEGORIES,
   MOD_SHIFT, MOD_CTRL, MOD_ALT,
-  type Press, type ReactiveCategory,
+  type ReactiveCategory,
 } from '@/lib/reactive';
-import { tintFrame, type AnimationFn, type RGB } from '@/lib/animations';
+import { ReactiveEngine } from '@/lib/reactive/engine';
+import { type AnimationFn, type RGB } from '@/lib/animations';
+import {
+  isNative, nativeStartReactive, nativeStopEffects, nativeSetColor,
+  onNativeStatus, watchNativeFrames,
+} from '@/lib/native';
 import { hexToRgb } from '@/lib/protocol';
 import {
   buildDirectFrame, sendDirectFrame, enableDirectMode, disableDirectMode, buildBlankFrame,
@@ -26,12 +31,6 @@ const SWALLOW = new Set([
   'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
   'PageUp', 'PageDown', 'Home', 'End', 'Backspace',
 ]);
-/**
- * Hard ceiling on the press buffer. A Memory effect keeps a minute of
- * history, and a fast typist fills that with several hundred presses; the
- * cap stops a long session from growing the buffer without bound.
- */
-const MAX_PRESSES = 600;
 
 export function ReactivePanel({ device, log }: Props) {
   const [active, setActive] = useState<string | null>(null);
@@ -43,26 +42,39 @@ export function ReactivePanel({ device, log }: Props) {
   const [colorful, setColorful] = useState(true);
   const [color, setColor] = useState('#ff0040');
 
-  const pressesRef = useRef<Press[]>([]);
-  const seqRef = useRef(0);
-  const t0Ref = useRef(0);
+  // Inside the desktop app the effect runs in the main process off the
+  // global key hook; this panel is then a remote control plus a mirror of
+  // the frames the engine is really sending.
+  const native = isNative();
+
+  // The press buffer, clock, and eviction all live in the shared engine so
+  // the desktop app's global-hook path can never drift from this one.
+  const [engine] = useState(() => new ReactiveEngine(() => performance.now()));
   const rafRef = useRef<number | null>(null);
   const activeRef = useRef<string | null>(null);
-  const heldRef = useRef(new Map<string, Press>());
+  /** Latest frame streamed from the main process (native mode only). */
+  const nativeFrameRef = useRef<Map<number, [number, number, number]>>(new Map());
   // In a ref because renderFrame is deliberately identity-stable: it is
   // captured by the rAF loop that `start` arms, so a colour change has to
   // reach it without re-running that callback.
   const targetRef = useRef<RGB | null>(null);
   useEffect(() => { targetRef.current = colorful ? null : hexToRgb(color); }, [colorful, color]);
 
-  const clock = () => (performance.now() - t0Ref.current) / 1000;
+  // Colour changes reach the main-process engine as they happen.
+  useEffect(() => {
+    if (native) void nativeSetColor(colorful ? null : color);
+  }, [native, colorful, color]);
 
   const stop = useCallback(async () => {
     activeRef.current = null;
     setActive(null);
     if (rafRef.current !== null) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
-    pressesRef.current = [];
-    heldRef.current.clear();
+    engine.stop();
+    if (native) {
+      await nativeStopEffects();
+      nativeFrameRef.current = new Map();
+      return;
+    }
     if (device?.opened) {
       try {
         if (isWirelessDevice(device)) await sendWirelessIdle(device);
@@ -72,43 +84,52 @@ export function ReactivePanel({ device, log }: Props) {
         }
       } catch { /* best effort */ }
     }
-  }, [device, log]);
+  }, [device, log, engine, native]);
 
   useEffect(() => () => {
     activeRef.current = null;
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
   }, []);
 
-  // Typing drives the effect, so presses are recorded but NOT swallowed —
-  // except keys that would scroll the page out from under you.
+  // Native mode: the tray or a resumed session can also drive the engine, so
+  // mirror whatever the main process says is running.
   useEffect(() => {
-    if (!active) return;
+    if (!native) return;
+    return onNativeStatus((s) => {
+      activeRef.current = s.reactive;
+      setActive(s.reactive);
+      if (!s.reactive) nativeFrameRef.current = new Map();
+    });
+  }, [native]);
+
+  // Native mode: mirror the engine's real frames for the on-screen board.
+  useEffect(() => {
+    if (!native || !active) return;
+    return watchNativeFrames((frame, hits) => {
+      nativeFrameRef.current = frame;
+      setHits(hits);
+    });
+  }, [native, active]);
+
+  // Typing drives the effect, so presses are recorded but NOT swallowed —
+  // except keys that would scroll the page out from under you. Never armed in
+  // native mode: the global hook already sees every key, focused or not.
+  useEffect(() => {
+    if (!active || native) return;
     const down = (e: KeyboardEvent) => {
       if (SWALLOW.has(e.code)) e.preventDefault();
       // Auto-repeat is not a new keystroke. Modified presses *are* — the
       // Modifiers family exists to react to them, so they are recorded with
       // the modifier state rather than dropped.
       if (e.repeat) return;
-      const led = LED_FOR_CODE.get(e.code);
-      if (led === undefined) return;
       const mods = (e.shiftKey ? MOD_SHIFT : 0)
         | (e.ctrlKey || e.metaKey ? MOD_CTRL : 0)
         | (e.altKey ? MOD_ALT : 0);
-      const p = makePress(led, clock(), seqRef.current++, e.code, mods);
-      pressesRef.current.push(p);
-      heldRef.current.set(e.code, p);
-      setHits((n) => n + 1);
+      if (engine.keyDown(e.code, mods)) setHits((n) => n + 1);
     };
-    const up = (e: KeyboardEvent) => {
-      const p = heldRef.current.get(e.code);
-      if (p) { p.release = clock(); heldRef.current.delete(e.code); }
-    };
+    const up = (e: KeyboardEvent) => engine.keyUp(e.code);
     // A lost focus would otherwise leave keys stuck down forever.
-    const blur = () => {
-      const now = clock();
-      for (const p of heldRef.current.values()) p.release = now;
-      heldRef.current.clear();
-    };
+    const blur = () => engine.releaseAll();
     window.addEventListener('keydown', down, { capture: true });
     window.addEventListener('keyup', up, { capture: true });
     window.addEventListener('blur', blur);
@@ -117,41 +138,29 @@ export function ReactivePanel({ device, log }: Props) {
       window.removeEventListener('keyup', up, { capture: true });
       window.removeEventListener('blur', blur);
     };
-  }, [active]);
+  }, [active, engine, native]);
 
-  const renderFrame = useCallback<AnimationFn>(() => {
-    const id = activeRef.current;
-    if (!id) return new Map();
-    const def = REACTIVE[id];
-    if (!def) return new Map();
-    const t = clock();
-    // Evict expired presses here rather than on a timer: this runs every
-    // frame anyway, and held keys must survive regardless of age. The
-    // horizon is the running effect's own — Memory effects ask for a minute
-    // of history where everything else needs six seconds.
-    const horizon = windowFor(def);
-    const buf = pressesRef.current.filter(
-      (p) => p.release === null || t - p.release < horizon,
-    );
-    // Over the cap, the oldest *released* presses go first — a key still
-    // under a finger has to survive however long it has been down.
-    pressesRef.current = buf.length <= MAX_PRESSES ? buf
-      : buf.filter((p, i) => p.release === null || i >= buf.length - MAX_PRESSES);
-    return tintFrame(def.fn(t, pressesRef.current), targetRef.current);
-  }, []);
+  const renderFrame = useCallback<AnimationFn>(
+    () => (native ? nativeFrameRef.current : engine.render(targetRef.current)),
+    [engine, native],
+  );
 
   const start = useCallback(async (id: string) => {
     if (activeRef.current) await stop();
     const def = REACTIVE[id];
     if (!def) return;
 
-    t0Ref.current = performance.now();
-    seqRef.current = 0;
-    pressesRef.current = [];
-    heldRef.current.clear();
+    engine.start(id);
     setHits(0);
     activeRef.current = id;
     setActive(id);
+
+    if (native) {
+      log(`Reactive: ${def.name} (desktop engine — works everywhere)`);
+      await nativeSetColor(colorful ? null : color);
+      await nativeStartReactive(id);
+      return;
+    }
 
     const useWireless = device?.opened ? isWirelessDevice(device) : false;
     if (device?.opened) {
@@ -180,7 +189,7 @@ export function ReactivePanel({ device, log }: Props) {
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
-  }, [device, log, stop, renderFrame]);
+  }, [device, log, stop, renderFrame, engine, native, colorful, color]);
 
   const entries = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -204,12 +213,19 @@ export function ReactivePanel({ device, log }: Props) {
       <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 text-xs text-zinc-400 flex items-start justify-between gap-4">
         <div className="space-y-1">
           {active
-            ? <p className="text-zinc-300"><strong>Type anywhere on this page</strong> and the board reacts. Your keystrokes still reach the page normally.</p>
+            ? <p className="text-zinc-300"><strong>{native ? 'Type anywhere in Windows' : 'Type anywhere on this page'}</strong> and the board reacts. Your keystrokes still reach {native ? 'every application' : 'the page'} normally.</p>
             : <p>Pick an effect, then type. Works with nothing connected — the board above reacts too.</p>}
-          <p className="text-amber-400/70">
-            Only works while this tab has focus. A browser cannot see keystrokes sent to other
-            applications, so this cannot light up while you work elsewhere.
-          </p>
+          {native ? (
+            <p className="text-emerald-400/70">
+              Runs in the background: the effect keeps working in any application,
+              even with this window closed to the tray.
+            </p>
+          ) : (
+            <p className="text-amber-400/70">
+              Only works while this tab has focus. A browser cannot see keystrokes sent to other
+              applications, so this cannot light up while you work elsewhere.
+            </p>
+          )}
         </div>
         <ColorControl
           colorful={colorful}

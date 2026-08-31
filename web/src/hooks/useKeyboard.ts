@@ -7,6 +7,8 @@ import { isFeatureTransport, readConfigRegion, readColorTable } from '@/lib/f75'
 import { calibrate, clearLayout, probeSelectViaKnob, snapshotConfig, restoreSnapshot, probeSelfDefineSlots } from '@/lib/f75-layout';
 import { buildTrace, collectEnv, downloadTrace } from '@/lib/trace';
 import { stopPreviewKeepalive } from '@/lib/direct-mode';
+import { isNative, nativeStatus, onNativeStatus, onNativeLog, makeNativeDevice, nativeReconnect } from '@/lib/native';
+import type { NativeStatus } from '@/lib/native-ipc';
 
 export function useKeyboard() {
     const [device, setDevice] = useState<HIDDevice | null>(null);
@@ -28,7 +30,53 @@ export function useKeyboard() {
         console.log(msg);
     }, []);
 
+    // Desktop app: the main process owns the connection — mirror its status
+    // and hand the panels an IPC-backed device proxy instead of WebHID.
+    const nativeDisposeRef = useRef<(() => void) | null>(null);
+    const nativeKeyRef = useRef<string>('');
+    useEffect(() => {
+        if (!isNative()) return;
+        const apply = (s: NativeStatus) => {
+            // Status events also fire for engine changes; only rebuild the
+            // proxy when the connection itself changed.
+            const key = s.connected ? `${s.vendorId}:${s.productId}:${s.productName}` : '';
+            if (key === nativeKeyRef.current) return;
+            nativeKeyRef.current = key;
+            nativeDisposeRef.current?.();
+            nativeDisposeRef.current = null;
+            if (s.connected) {
+                const { device: dev, dispose } = makeNativeDevice(s);
+                nativeDisposeRef.current = dispose;
+                setDevice(dev);
+                setConnected(true);
+                const vid = (s.vendorId ?? 0).toString(16).padStart(4, '0');
+                const pid = (s.productId ?? 0).toString(16).padStart(4, '0');
+                setStatus(`Connected: ${s.productName ?? 'AULA F75'} (${vid}:${pid}) — ${s.transport ?? 'usb'}`);
+                log(`Connected: ${s.productName ?? 'AULA F75'} (${vid}:${pid})`);
+            } else {
+                setDevice(null);
+                setConnected(false);
+                setStatus('Not connected — plug in USB-C or the 2.4GHz dongle');
+            }
+        };
+        void nativeStatus().then(apply).catch(() => {});
+        const offStatus = onNativeStatus(apply);
+        const offLog = onNativeLog((line) => log(line));
+        return () => {
+            offStatus();
+            offLog();
+            nativeDisposeRef.current?.();
+            nativeDisposeRef.current = null;
+            nativeKeyRef.current = '';
+        };
+    }, [log]);
+
     const connect = useCallback(async (vendorFilter: boolean) => {
+        if (isNative()) {
+            log('Re-scanning for the keyboard…');
+            await nativeReconnect();
+            return;
+        }
         if (device?.opened) {
             await device.close();
             setDevice(null);

@@ -7,6 +7,7 @@ import {
   buildDirectFrame, sendDirectFrame, enableDirectMode, disableDirectMode, buildBlankFrame,
 } from '@/lib/direct-mode';
 import { isWirelessDevice, sendWirelessAnimationFrame, sendWirelessIdle } from '@/lib/wireless-mode';
+import { isNative, nativeStopEffects } from '@/lib/native';
 import { KeyboardPreview } from './KeyboardPreview';
 
 interface Props {
@@ -88,6 +89,9 @@ export function GamesPanel({ device, log }: Props) {
     if (activeRef.current) await stop();
     const def = GAMES[id];
     if (!def) return;
+
+    // Desktop app: a background effect would fight the game for the board.
+    if (isNative()) await nativeStopEffects().catch(() => {});
 
     // Seeded from the clock: reproducible within a run, different each time.
     gameRef.current = def.create(Date.now() & 0xffffffff);
