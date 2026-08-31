@@ -193,9 +193,11 @@ describe('reactivity', () => {
   // Field effects paint the whole board regardless, so "did a press light
   // anything" says nothing about them. Hold and Chord are defined by sustain
   // and by multiple keys, and are covered by their own tests below, as are
-  // `charge` (rewards a long hold) and `link` (needs two presses).
+  // `charge` (rewards a long hold) and `link` (needs two presses). Sound
+  // effects ignore presses entirely — audio drives them (sound.test.ts).
   const QUICK_TAP_EXEMPT = new Set(['charge', 'link']);
-  const TAP_CATEGORIES = (c: string) => c !== 'Field' && c !== 'Hold' && c !== 'Chord';
+  const TAP_CATEGORIES = (c: string) =>
+    c !== 'Field' && c !== 'Hold' && c !== 'Chord' && c !== 'Sound';
 
   it.each(entries.filter(([id, e]) => TAP_CATEGORIES(e.category) && !QUICK_TAP_EXEMPT.has(id)))(
     '%s lights something shortly after a press',

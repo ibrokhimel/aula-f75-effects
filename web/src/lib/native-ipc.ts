@@ -25,6 +25,10 @@ export const CH = {
   setAutostart: 'f75:set-autostart',
   /** () → void — drop and re-enumerate the HID connection. */
   reconnect: 'f75:reconnect',
+  /** () → UpdateCheckResult — compare this build with the repo's default branch. */
+  checkUpdate: 'f75:check-update',
+  /** () → void — open the GitHub releases page in the default browser. */
+  openReleases: 'f75:open-releases',
   /** (on: boolean) → void — renderer wants engine frames streamed. */
   watchFrames: 'f75:watch-frames',
 
@@ -80,6 +84,24 @@ export interface NativeStatus {
   hookError: string | null;
   /** Synthetic collection info for the HID proxy; null while disconnected. */
   collections: ProxyCollectionInfo[] | null;
+}
+
+/** Result of comparing the installed build with the repo's default branch. */
+export interface UpdateCheckResult {
+  /** Installed app version (desktop/package.json). */
+  version: string;
+  /** Short sha this build was made from; null when built outside git. */
+  commit: string | null;
+  /** ISO timestamp of when the bundle was built. */
+  builtAt: string | null;
+  /** The repo's default branch name. */
+  branch: string;
+  /** null = the build commit is unknown to GitHub, so no comparison. */
+  updateAvailable: boolean | null;
+  /** Commits the default branch is ahead of this build; null when unknown. */
+  behindBy: number | null;
+  /** Tip of the default branch; null when already up to date. */
+  latest: { sha: string; date: string | null; message: string } | null;
 }
 
 /**

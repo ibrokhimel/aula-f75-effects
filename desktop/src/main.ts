@@ -6,16 +6,19 @@
  * a view; closing it hides it to the tray and nothing else changes.
  */
 import {
-  app, BrowserWindow, Tray, Menu, ipcMain, protocol, net, dialog,
+  app, BrowserWindow, Tray, Menu, ipcMain, protocol, net, dialog, shell,
 } from 'electron';
 import { join, normalize } from 'node:path';
 import { existsSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { CH, EV, type NativeStatus, type FramePayload } from '../../web/src/lib/native-ipc';
+import { REACTIVE } from '../../web/src/lib/reactive';
 import { HidTransport } from './hid';
+import { AudioCapture } from './audio-capture';
 import { KeyHook } from './keyhook';
 import { EngineHost } from './engine-host';
 import { loadSettings, saveSettings, type PersistedSettings } from './settings';
+import { checkForUpdates, RELEASES_URL } from './updater';
 import { buildTrayIcon } from './tray-icon';
 
 const SMOKE = process.argv.includes('--smoke');
@@ -67,10 +70,21 @@ async function bootstrap(): Promise<void> {
       pushStatus();
       persistEngineState();
       refreshTray();
+      syncAudioCapture();
     },
   });
 
   const hook = new KeyHook();
+  const audio = new AudioCapture(log);
+
+  // Sound effects need system audio flowing; nothing else should keep the
+  // hidden capture window (and its WASAPI stream) alive.
+  function syncAudioCapture(): void {
+    const wantsAudio = engine.reactive !== null
+      && REACTIVE[engine.reactive]?.category === 'Sound';
+    if (wantsAudio) audio.start();
+    else audio.stop();
+  }
 
   function currentStatus(): NativeStatus {
     return {
@@ -142,6 +156,8 @@ async function bootstrap(): Promise<void> {
     log(on ? 'Will start with Windows (hidden in the tray)' : 'Removed from Windows startup');
   });
   ipcMain.handle(CH.reconnect, () => hid.reconnect());
+  ipcMain.handle(CH.checkUpdate, () => checkForUpdates(app.getVersion()));
+  ipcMain.handle(CH.openReleases, () => { void shell.openExternal(RELEASES_URL); });
   ipcMain.handle(CH.watchFrames, (_e, on: boolean) => {
     frameWatchers = Math.max(0, frameWatchers + (on ? 1 : -1));
     updateFrameListener();
@@ -229,6 +245,7 @@ async function bootstrap(): Promise<void> {
     shuttingDown = true;
     e.preventDefault();
     hook.stop();
+    audio.stop();
     void engine.shutdown().finally(() => {
       hid.stop();
       app.exit(0);

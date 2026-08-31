@@ -26,6 +26,7 @@ import * as modifiers from './modifiers';
 import * as memory from './memory';
 import * as intensity from './intensity';
 import * as idle from './idle';
+import { SOUND_FNS } from './sound';
 
 export * from './core';
 
@@ -287,4 +288,19 @@ export const REACTIVE: Record<string, ReactiveDef> = {
   hourglass: { name: 'Hourglass', description: 'Sand runs from the top of the board to the bottom while you wait', category: 'Idle', fn: idle.hourglass },
   frost: { name: 'Frost', description: 'Frost creeps across the board while it is idle, and a press melts it', category: 'Idle', fn: idle.frost },
   heartbeat: { name: 'Heartbeat', description: 'A pulse that races while you type and settles to a resting rate', category: 'Idle', fn: idle.heartbeat },
+
+  // ── Sound ─────────────────────────────────────────────────────────────
+  // Driven by what the PC is playing (system audio, never the microphone);
+  // keypresses are ignored. Dark until a capture host is feeding samples.
+  sndspectrum: { name: 'Spectrum Bars', description: 'An EQ across the board: each column a frequency band, filling bottom-up', category: 'Sound', fn: SOUND_FNS.spectrumBars },
+  sndvu: { name: 'VU Meter', description: 'One loudness bar, green into red, with a falling peak marker', category: 'Sound', fn: SOUND_FNS.vuMeter },
+  sndbass: { name: 'Bass Pulse', description: 'A warm core that swells from the centre with every kick', category: 'Sound', fn: SOUND_FNS.bassPulse },
+  sndbeat: { name: 'Beat Flash', description: 'Every detected beat flashes the whole board a fresh colour', category: 'Sound', fn: SOUND_FNS.beatFlash },
+  sndripple: { name: 'Beat Ripples', description: 'Each beat throws a ring out from the middle of the board', category: 'Sound', fn: SOUND_FNS.beatRipples },
+  sndwave: { name: 'Waveform', description: 'The loudness history scrolls across the board as a centred waveform', category: 'Sound', fn: SOUND_FNS.waveform },
+  sndfire: { name: 'Sound Fire', description: 'Flames climb from the bottom row, fed by bass, flickering on treble', category: 'Sound', fn: SOUND_FNS.soundFire },
+  sndrainbow: { name: 'Loud Rainbow', description: 'A rainbow that spins and brightens with how loud it gets', category: 'Sound', fn: SOUND_FNS.loudRainbow },
+  sndzones: { name: 'Band Zones', description: 'Left is bass, middle is mids, right is treble — a giant crossover', category: 'Sound', fn: SOUND_FNS.bandZones },
+  sndsparkle: { name: 'Treble Sparkle', description: 'Keys twinkle at random; hi-hats decide how many and how hard', category: 'Sound', fn: SOUND_FNS.trebleSparkle },
+  sndburst: { name: 'Center Burst', description: 'A disc whose size is the volume — cool when quiet, hot when loud', category: 'Sound', fn: SOUND_FNS.centerBurst },
 };

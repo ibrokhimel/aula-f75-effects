@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { DeviceInfoCard } from './DeviceInfoCard';
 import { ProfilesCard } from './ProfilesCard';
 import type { Layer } from '@/lib/keybind';
-import { isNative, nativeGetAutostart, nativeSetAutostart } from '@/lib/native';
+import { isNative, nativeGetAutostart, nativeSetAutostart, nativeCheckUpdate, nativeOpenReleases } from '@/lib/native';
+import type { UpdateCheckResult } from '@/lib/native-ipc';
 
 interface SettingsPanelProps {
     device: HIDDevice | null;
@@ -23,6 +24,9 @@ export function SettingsPanel({ device, log, onSetSleep, onSetDebounce, onFactor
     const [resetting, setResetting] = useState(false);
     const native = isNative();
     const [autostart, setAutostart] = useState(false);
+    const [checkingUpdate, setCheckingUpdate] = useState(false);
+    const [update, setUpdate] = useState<UpdateCheckResult | null>(null);
+    const [updateError, setUpdateError] = useState<string | null>(null);
 
     useEffect(() => {
         if (native) void nativeGetAutostart().then(setAutostart).catch(() => {});
@@ -33,6 +37,17 @@ export function SettingsPanel({ device, log, onSetSleep, onSetDebounce, onFactor
         setAutostart(next);
         try { await nativeSetAutostart(next); }
         catch { setAutostart(!next); }
+    };
+
+    const checkUpdates = async () => {
+        setCheckingUpdate(true);
+        setUpdateError(null);
+        try { setUpdate(await nativeCheckUpdate()); }
+        catch {
+            setUpdate(null);
+            setUpdateError('Could not reach GitHub — check your connection and try again.');
+        }
+        finally { setCheckingUpdate(false); }
     };
 
     const handleSleep = async () => {
@@ -124,6 +139,62 @@ export function SettingsPanel({ device, log, onSetSleep, onSetDebounce, onFactor
                         />
                         Start with Windows (hidden in the tray, last effect resumed)
                     </label>
+                </div>
+            )}
+
+            {/* Update check (only shown inside the desktop app) */}
+            {native && (
+                <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 backdrop-blur-sm space-y-3 sm:col-span-2">
+                    <h3 className="text-sm font-medium text-zinc-300">Updates</h3>
+                    <p className="text-xs text-zinc-600">
+                        Compares this build against the latest code on GitHub
+                    </p>
+                    {update && (
+                        <div className="text-xs space-y-1">
+                            <p className="text-zinc-500">
+                                Installed: v{update.version}
+                                {update.commit && ` · ${update.commit}`}
+                            </p>
+                            {update.updateAvailable === false && (
+                                <p className="text-emerald-400">Up to date with {update.branch}</p>
+                            )}
+                            {update.updateAvailable === true && (
+                                <p className="text-amber-400">
+                                    Update available — {update.branch} is {update.behindBy} commit{update.behindBy === 1 ? '' : 's'} ahead
+                                </p>
+                            )}
+                            {update.updateAvailable === null && (
+                                <p className="text-zinc-400">
+                                    Couldn&apos;t compare this build with GitHub
+                                    {update.latest && ` — latest on ${update.branch} is ${update.latest.sha}`}
+                                </p>
+                            )}
+                            {update.latest && update.updateAvailable && (
+                                <p className="text-zinc-500 truncate">
+                                    Latest: {update.latest.message} ({update.latest.sha}
+                                    {update.latest.date && `, ${new Date(update.latest.date).toLocaleDateString()}`})
+                                </p>
+                            )}
+                        </div>
+                    )}
+                    {updateError && <p className="text-xs text-red-400">{updateError}</p>}
+                    <div className="flex gap-3">
+                        <button
+                            onClick={() => void checkUpdates()}
+                            disabled={checkingUpdate}
+                            className="flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-zinc-800 border border-zinc-700 text-zinc-300 hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-default"
+                        >
+                            {checkingUpdate ? 'Checking...' : 'Check for Updates'}
+                        </button>
+                        {update?.updateAvailable && (
+                            <button
+                                onClick={() => void nativeOpenReleases()}
+                                className="flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-violet-600 text-white hover:bg-violet-500 shadow-md shadow-violet-600/20"
+                            >
+                                Download from GitHub
+                            </button>
+                        )}
+                    </div>
                 </div>
             )}
 

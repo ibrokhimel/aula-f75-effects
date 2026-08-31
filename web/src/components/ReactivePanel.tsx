@@ -7,6 +7,7 @@ import {
   type ReactiveCategory,
 } from '@/lib/reactive';
 import { ReactiveEngine } from '@/lib/reactive/engine';
+import { startBrowserCapture } from '@/lib/reactive/sound';
 import { type AnimationFn, type RGB } from '@/lib/animations';
 import {
   isNative, nativeStartReactive, nativeStopEffects, nativeSetColor,
@@ -52,6 +53,8 @@ export function ReactivePanel({ device, log }: Props) {
   const [engine] = useState(() => new ReactiveEngine(() => performance.now()));
   const rafRef = useRef<number | null>(null);
   const activeRef = useRef<string | null>(null);
+  /** Stops the browser's audio share while a Sound effect runs in web mode. */
+  const audioStopRef = useRef<(() => void) | null>(null);
   /** Latest frame streamed from the main process (native mode only). */
   const nativeFrameRef = useRef<Map<number, [number, number, number]>>(new Map());
   // In a ref because renderFrame is deliberately identity-stable: it is
@@ -69,6 +72,8 @@ export function ReactivePanel({ device, log }: Props) {
     activeRef.current = null;
     setActive(null);
     if (rafRef.current !== null) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+    audioStopRef.current?.();
+    audioStopRef.current = null;
     engine.stop();
     if (native) {
       await nativeStopEffects();
@@ -89,6 +94,7 @@ export function ReactivePanel({ device, log }: Props) {
   useEffect(() => () => {
     activeRef.current = null;
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    audioStopRef.current?.();
   }, []);
 
   // Native mode: the tray or a resumed session can also drive the engine, so
@@ -162,6 +168,17 @@ export function ReactivePanel({ device, log }: Props) {
       return;
     }
 
+    // Sound effects need audio in web mode too — a screen share with audio
+    // is the closest a browser gets to system loopback.
+    if (def.category === 'Sound' && !audioStopRef.current) {
+      try {
+        audioStopRef.current = await startBrowserCapture();
+        log(`Sound: ${def.name} — following the shared audio`);
+      } catch (err) {
+        log(`Sound capture unavailable: ${err instanceof Error ? err.message : String(err)} — the effect stays dark`);
+      }
+    }
+
     const useWireless = device?.opened ? isWirelessDevice(device) : false;
     if (device?.opened) {
       log(`Reactive: ${def.name} (${useWireless ? '2.4GHz wireless' : 'USB-C direct'})`);
@@ -213,7 +230,9 @@ export function ReactivePanel({ device, log }: Props) {
       <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 text-xs text-zinc-400 flex items-start justify-between gap-4">
         <div className="space-y-1">
           {active
-            ? <p className="text-zinc-300"><strong>{native ? 'Type anywhere in Windows' : 'Type anywhere on this page'}</strong> and the board reacts. Your keystrokes still reach {native ? 'every application' : 'the page'} normally.</p>
+            ? (def?.category === 'Sound'
+              ? <p className="text-zinc-300"><strong>Play some audio</strong> and the board follows it — system sound, never the microphone.</p>
+              : <p className="text-zinc-300"><strong>{native ? 'Type anywhere in Windows' : 'Type anywhere on this page'}</strong> and the board reacts. Your keystrokes still reach {native ? 'every application' : 'the page'} normally.</p>)
             : <p>Pick an effect, then type. Works with nothing connected — the board above reacts too.</p>}
           {native ? (
             <p className="text-emerald-400/70">

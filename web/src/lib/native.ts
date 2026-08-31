@@ -10,7 +10,7 @@
 
 import {
   CH, EV,
-  type FramePayload, type NativeStatus, type ProxyCollectionInfo,
+  type FramePayload, type NativeStatus, type ProxyCollectionInfo, type UpdateCheckResult,
 } from './native-ipc';
 
 interface RawBridge {
@@ -74,6 +74,9 @@ export const nativeSetFps = (fps: number) => bridge()!.invoke(CH.setFps, fps);
 export const nativeGetAutostart = async () => await bridge()!.invoke(CH.getAutostart) as boolean;
 export const nativeSetAutostart = (on: boolean) => bridge()!.invoke(CH.setAutostart, on);
 export const nativeReconnect = () => bridge()!.invoke(CH.reconnect);
+export const nativeCheckUpdate = async () =>
+  await bridge()!.invoke(CH.checkUpdate) as UpdateCheckResult;
+export const nativeOpenReleases = () => bridge()!.invoke(CH.openReleases);
 
 // ── HIDDevice proxy ─────────────────────────────────────────────────────
 // The config panels' lib functions all take a `HIDDevice` and use only four

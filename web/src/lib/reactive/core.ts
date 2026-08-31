@@ -80,7 +80,7 @@ export const windowFor = (def: ReactiveDef) => def.window ?? WINDOW;
 export const REACTIVE_CATEGORIES = [
   'Point', 'Hold', 'Chord', 'Ripple', 'Sweep', 'Particle', 'Field', 'Reveal',
   'Chain', 'Spread', 'Sequence', 'Rhythm', 'Gesture', 'Release', 'Semantic',
-  'Zones', 'Modifiers', 'Memory', 'Intensity', 'Idle',
+  'Zones', 'Modifiers', 'Memory', 'Intensity', 'Idle', 'Sound',
 ] as const;
 export type ReactiveCategory = (typeof REACTIVE_CATEGORIES)[number];
 
