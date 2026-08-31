@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { isNative } from '@/lib/native';
 import { useKeyboard } from '@/hooks/useKeyboard';
 import { ConnectionBar } from '@/components/ConnectionBar';
 import { EffectsPanel } from '@/components/EffectsPanel';
@@ -19,6 +20,10 @@ type Tab = 'effects' | 'perkey' | 'animations' | 'settings' | 'remap' | 'macros'
 export default function Home() {
   const kb = useKeyboard();
   const [tab, setTab] = useState<Tab>('effects');
+  // Set after mount: the prerendered HTML is web-flavoured, and swapping the
+  // captions post-hydration avoids a mismatch inside the desktop app.
+  const [native, setNative] = useState(false);
+  useEffect(() => { setNative(isNative()); }, []);
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'effects', label: 'Effects' },
@@ -40,7 +45,9 @@ export default function Home() {
           <h1 className="text-lg font-semibold tracking-tight text-zinc-100">
             AULA F75 <span className="font-normal text-zinc-500">controller</span>
           </h1>
-          <p className="font-mono text-[0.7rem] text-zinc-600">258A:010C · WebHID · local only</p>
+          <p className="font-mono text-[0.7rem] text-zinc-600">
+            {native ? '258A:010C · desktop · runs in the tray' : '258A:010C · WebHID · local only'}
+          </p>
         </div>
       </header>
 
@@ -115,7 +122,11 @@ export default function Home() {
       <LogPanel logs={kb.logs} onSaveTrace={kb.doSaveTrace} />
 
       <footer className="mt-4 mb-2 text-center">
-        <p className="text-[0.7rem] text-zinc-700">Runs entirely in your browser. Keyboard traffic never leaves this machine.</p>
+        <p className="text-[0.7rem] text-zinc-700">
+          {native
+            ? 'Effects keep running with this window closed — find the app in the system tray. Keyboard traffic never leaves this machine.'
+            : 'Runs entirely in your browser. Keyboard traffic never leaves this machine.'}
+        </p>
       </footer>
     </main>
   );
