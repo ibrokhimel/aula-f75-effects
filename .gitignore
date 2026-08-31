@@ -1,8 +1,14 @@
 # web app
 web/node_modules/
 web/.next/
+web/out/
 web/next-env.d.ts
 web/*.tsbuildinfo.worktrees/
+
+# desktop app
+desktop/node_modules/
+desktop/dist/
+desktop/release/
 
 # tool artifacts
 .claude-flow/

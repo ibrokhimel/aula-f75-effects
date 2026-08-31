@@ -1,0 +1,61 @@
+{
+  "name": "aula-f75-desktop",
+  "productName": "AULA F75 Controller",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Background RGB effects and configuration for the AULA F75 keyboard",
+  "main": "dist/main.cjs",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "bundle": "node scripts/build.mjs",
+    "build:web": "cd ../web && cross-env NEXT_OUTPUT=export next build",
+    "build": "npm run typecheck && npm run bundle",
+    "start": "npm run build && electron .",
+    "smoke": "npm run build && electron . --smoke",
+    "dist": "npm run build && electron-builder --win"
+  },
+  "dependencies": {
+    "node-hid": "^3.1.2",
+    "uiohook-napi": "^1.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/w3c-web-hid": "^1.0.6",
+    "cross-env": "^7.0.3",
+    "electron": "^33.3.1",
+    "electron-builder": "^25.1.8",
+    "esbuild": "^0.24.2",
+    "typescript": "^5"
+  },
+  "build": {
+    "appId": "com.aula.f75.controller",
+    "productName": "AULA F75 Controller",
+    "npmRebuild": false,
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "files": [
+      "dist/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../web/out",
+        "to": "web-out"
+      }
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "runAfterFinish": true
+    }
+  }
+}
