@@ -6,11 +6,16 @@ import { parseSettings } from './storage';
 import { defaultModes, parseModes, requirementsFor, type ModeSettings } from './modes';
 import { adjustFrame } from './frame';
 
-export interface StudioConfiguration { mode: LightingMode; automatic: StudioSettings; modes: ModeSettings; playback: Playback; epoch: number; fps: number; enabled: boolean }
-export function defaultStudioConfiguration(): StudioConfiguration { return { mode: 'automatic', automatic: defaultsFor(), modes: defaultModes(), playback: 'playing', epoch: 0, fps: 30, enabled: false }; }
+/** enabled streams to the keyboard; outputChosen records that the person set it, rather than a default. */
+export interface StudioConfiguration { mode: LightingMode; automatic: StudioSettings; modes: ModeSettings; playback: Playback; epoch: number; fps: number; enabled: boolean; outputChosen: boolean }
+export function defaultStudioConfiguration(): StudioConfiguration { return { mode: 'automatic', automatic: defaultsFor(), modes: defaultModes(), playback: 'playing', epoch: 0, fps: 30, enabled: false, outputChosen: false }; }
+/** The Windows app streams by default. Only an explicit choice keeps output off, so v0.3.0's saved default no longer does. */
+export function withDefaultOutput(config: StudioConfiguration): StudioConfiguration {
+  return config.outputChosen ? config : { ...config, enabled: true };
+}
 export function parseStudioConfiguration(value: unknown): StudioConfiguration {
   const v = value && typeof value === 'object' ? value as Record<string, unknown> : {};
-  return { mode: LIGHTING_MODES.some(m => m.id === v.mode) ? v.mode as LightingMode : 'automatic', automatic: parseSettings(v.automatic), modes: parseModes(JSON.stringify(v.modes ?? {})), playback: ['playing', 'paused', 'stopped'].includes(String(v.playback)) ? v.playback as Playback : 'playing', epoch: typeof v.epoch === 'number' && Number.isFinite(v.epoch) ? v.epoch : 0, fps: typeof v.fps === 'number' && Number.isFinite(v.fps) ? Math.max(5, Math.min(30, v.fps)) : 30, enabled: v.enabled === true };
+  return { mode: LIGHTING_MODES.some(m => m.id === v.mode) ? v.mode as LightingMode : 'automatic', automatic: parseSettings(v.automatic), modes: parseModes(JSON.stringify(v.modes ?? {})), playback: ['playing', 'paused', 'stopped'].includes(String(v.playback)) ? v.playback as Playback : 'playing', epoch: typeof v.epoch === 'number' && Number.isFinite(v.epoch) ? v.epoch : 0, fps: typeof v.fps === 'number' && Number.isFinite(v.fps) ? Math.max(5, Math.min(30, v.fps)) : 30, enabled: v.enabled === true, outputChosen: v.outputChosen === true };
 }
 
 /** The selected effect listens to sound: an Audio mode style, or a typing scene with an audio layer. */

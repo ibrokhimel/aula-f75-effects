@@ -29,7 +29,7 @@ import { useModeSettings, replaceModeSettings } from './useModeSettings';
 import { useWorkspaceData } from './useWorkspaceData';
 import { useStudioOutput } from './useStudioOutput';
 import { type Setup } from '@/lib/studio/workspaces';
-import { parseStudioConfiguration } from '@/lib/studio/runtime';
+import { parseStudioConfiguration, withDefaultOutput } from '@/lib/studio/runtime';
 import { isNative, nativeGetStudio, onNativeStatus, nativeSetStudioPreferences } from '@/lib/native';
 
 type Workspace = 'lighting' | 'mapping' | 'macros' | 'profiles' | 'games' | 'settings' | 'advanced';
@@ -97,7 +97,8 @@ export function Studio() {
   const keyboard = useKeyboard();
   const [modes] = useModeSettings();
   const [workspaceData, updateWorkspaceData] = useWorkspaceData();
-  const [output, setOutput] = useState(false), [sessionLoaded, setSessionLoaded] = useState(false);
+  const [output, setOutput] = useState(false), [outputChosen, setOutputChosen] = useState(false), [sessionLoaded, setSessionLoaded] = useState(false);
+  const chooseOutput = useCallback((on: boolean) => { setOutput(on); setOutputChosen(true); }, []);
   useEffect(() => {
     let alive = true;
     async function restore() {
@@ -107,8 +108,8 @@ export function Studio() {
       if (saved) {
         const c = parseStudioConfiguration(saved);
         setSettings(c.automatic); setMode(c.mode); setPlayback(c.playback); setEpoch(c.epoch);
-        if (isNative()) { replaceModeSettings(c.modes); setOutput(c.enabled); }
-      }
+        if (isNative()) { replaceModeSettings(c.modes); setOutput(withDefaultOutput(c).enabled); setOutputChosen(c.outputChosen); }
+      } else if (isNative()) setOutput(true); // The Windows app lights the keyboard unless told not to.
       setSessionLoaded(true);
     }
     void restore(); return () => { alive = false; };
@@ -122,7 +123,7 @@ export function Studio() {
     });
   }, [sessionLoaded]);
   useEffect(() => { if (sessionLoaded && isNative()) void nativeSetStudioPreferences(workspaceData.preferences); }, [sessionLoaded, workspaceData.preferences]);
-  const configuration = useMemo(() => ({ automatic: settings, modes, mode, playback: mode === 'per-key' ? 'playing' as const : playback, epoch, fps, enabled: output }), [settings, modes, mode, playback, epoch, fps, output]);
+  const configuration = useMemo(() => ({ automatic: settings, modes, mode, playback: mode === 'per-key' ? 'playing' as const : playback, epoch, fps, enabled: output, outputChosen }), [settings, modes, mode, playback, epoch, fps, output, outputChosen]);
   useStudioOutput(configuration, keyboard.device, sessionLoaded, setToast);
   useEffect(() => {
     if (!sessionLoaded) return;
@@ -234,6 +235,9 @@ export function Studio() {
           <div><h1>{header.title}</h1><p>{workspace === 'lighting' ? modeInfo.label : header.description}</p></div>
           <div className="studio-header-actions">
             {(workspace === 'lighting' && mode === 'automatic') && <div className="studio-preset-select"><label htmlFor="studio-preset" className="studio-sr-only">Lighting preset</label><select id="studio-preset" value={currentPreset ? activePreset : 'daily-driver'} onChange={(event) => loadPreset(event.target.value)}><option value="daily-driver">Daily driver{!currentPreset && edited ? ' · Edited' : ''}</option>{library.presets.map((preset) => <option key={preset.id} value={preset.id}>{preset.name}{activePreset === preset.id && edited ? ' · Edited' : ''}</option>)}</select><CaretDownIcon size={14} /></div>}
+            {workspace === 'lighting' && <button type="button" className={`studio-output-toggle ${output ? 'is-on' : ''}`} aria-pressed={output} disabled={!keyboard.connected && !output}
+              title={output ? (keyboard.connected ? 'Lighting is playing on your keyboard. Click to stop.' : 'Lighting will play once your keyboard is connected.') : keyboard.connected ? 'Play this lighting on your keyboard' : 'Connect your keyboard to play lighting on it'}
+              onClick={() => chooseOutput(!output)}><KeyboardIcon size={17} weight={output ? 'fill' : 'light'} />{output ? 'Keyboard on' : 'Keyboard off'}</button>}
             <button type="button" className="studio-icon-button studio-preferences-button" aria-label="Preview settings" onClick={() => setDialog('preferences')}><SlidersHorizontalIcon size={19} /></button>
           </div>
         </header>
@@ -296,7 +300,7 @@ export function Studio() {
         {workspace === 'macros' && <MacrosWorkspace notify={setToast} />}
         {workspace === 'profiles' && <ProfilesWorkspace capture={captureSetup} apply={applySetup} notify={setToast} />}
         {workspace === 'games' && <GamesWorkspace onStart={() => setPlayback('playing')} />}
-        {(workspace === 'settings' || workspace === 'advanced') && <DeviceWorkspace key={workspace} keyboard={keyboard} advanced={workspace === 'advanced'} capture={captureSetup} notify={setToast} output={output} onOutput={setOutput} />}
+        {(workspace === 'settings' || workspace === 'advanced') && <DeviceWorkspace key={workspace} keyboard={keyboard} advanced={workspace === 'advanced'} capture={captureSetup} notify={setToast} output={output} onOutput={chooseOutput} />}
       </main>
 
       {isAutomatic && <footer className="studio-transport" aria-label="Playback controls">

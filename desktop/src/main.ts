@@ -23,7 +23,7 @@ import { checkForUpdates, RELEASES_URL } from './updater';
 import { buildTrayIcon } from './tray-icon';
 import { createTelemetrySampler } from './telemetry';
 import { VirtualKeyboardBridge, SILENCE, type AudioInput, type PixelSource } from '../../packages/engine/src';
-import { parseStudioConfiguration, defaultStudioConfiguration, studioNeedsAudio } from '../../web/src/lib/studio/runtime';
+import { parseStudioConfiguration, defaultStudioConfiguration, studioNeedsAudio, withDefaultOutput } from '../../web/src/lib/studio/runtime';
 
 const SMOKE = process.argv.includes('--smoke');
 const START_HIDDEN = process.argv.includes('--hidden');
@@ -335,7 +335,7 @@ async function bootstrap(): Promise<void> {
   engine.setColor(settings.color);
   engine.setFps(settings.fps);
   if (settings.studio && !SMOKE) {
-    void engine.configureStudio(parseStudioConfiguration(settings.studio));
+    void engine.configureStudio(withDefaultOutput(parseStudioConfiguration(settings.studio)));
   } else if (settings.effect && !SMOKE) {
     log(`Resuming ${settings.effect.kind} effect: ${settings.effect.id}`);
     if (settings.effect.kind === 'reactive') void engine.startReactive(settings.effect.id);

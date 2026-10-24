@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { defaultSetup, parseSetup, parseWorkspaces, parseMacros, defaultMappings } from './workspaces';
 import { getSlot, setSlot, validateBlob } from '../keybind';
-import { defaultStudioConfiguration, parseStudioConfiguration, StudioRuntime, studioNeedsAudio } from './runtime';
+import { defaultStudioConfiguration, parseStudioConfiguration, StudioRuntime, studioNeedsAudio, withDefaultOutput } from './runtime';
 import { EXPANSION_AUDIO_EFFECTS, requirementsFor } from './modes';
 import { createEffectLibrary } from '../../../../packages/engine/src';
 import { F75_LAYOUT } from '../bridges/f75/layout';
@@ -31,6 +31,15 @@ describe('complete studio setups', () => {
     expect(parseWorkspaces('{bad').profiles).toEqual([]);
     expect(parseSetup({ preferences: { fps: Infinity }, modes: { typing: { effect: '__proto__' } } }).preferences.fps).toBe(30);
     expect(parseStudioConfiguration({ fps: Infinity, mode: 'broken', enabled: 'yes' })).toMatchObject({ fps: 30, mode: 'automatic', enabled: false });
+  });
+  it('streams to the keyboard by default unless the person switched output off', () => {
+    // v0.3.0 saved enabled: false without anyone choosing it.
+    expect(withDefaultOutput(parseStudioConfiguration({ enabled: false })).enabled).toBe(true);
+    expect(withDefaultOutput(parseStudioConfiguration({})).enabled).toBe(true);
+    expect(withDefaultOutput(parseStudioConfiguration({ enabled: false, outputChosen: true })).enabled).toBe(false);
+    expect(withDefaultOutput(parseStudioConfiguration({ enabled: true, outputChosen: true })).enabled).toBe(true);
+    expect(parseStudioConfiguration(JSON.parse(JSON.stringify({ ...defaultStudioConfiguration(), outputChosen: true }))).outputChosen).toBe(true);
+    expect(parseStudioConfiguration({ outputChosen: 'yes' }).outputChosen).toBe(false);
   });
 });
 

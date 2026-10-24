@@ -133,6 +133,11 @@
 .studio-preset-select { position: relative; min-width: 157px; max-width: 220px; }
 .studio-preset-select select { height: 39px; width: 100%; border: 1px solid #343c3c; padding: 0 38px 0 14px; border-radius: 7px; background: #1d2223; font-size: 12px; text-overflow: ellipsis; }
 .studio-preset-select > svg { position: absolute; right: 13px; top: 13px; pointer-events: none; color: #bdc8c0; }
+.studio-output-toggle { height: 39px; display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; border: 1px solid #343c3c; border-radius: 7px; background: #1d2223; color: #c4cdc6 !important; font-size: 12px; white-space: nowrap; }
+.studio-output-toggle:hover:not(:disabled) { border-color: #4a5452; }
+.studio-output-toggle.is-on { border-color: color-mix(in srgb, var(--studio-accent) 45%, #343c3c); color: #f3f6ed !important; }
+.studio-output-toggle.is-on svg { color: var(--studio-accent); }
+.studio-output-toggle:disabled { opacity: .5; cursor: not-allowed; }
 .studio-icon-button { width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: 1px solid transparent; border-radius: 6px; color: #c4cdc6 !important; }
 .studio-icon-button:hover { background: #303735; color: #fff !important; }
 .studio-icon-button.is-on { color: var(--studio-accent) !important; }
@@ -620,3 +625,4 @@
  .studio-chart-legend { flex-wrap: wrap; }
  .studio-chart-legend > span:last-child { flex-basis: 100%; margin-left: 0; }
 }
+@media (max-width: 760px) { .studio-output-toggle { height: 36px; padding: 0 10px; gap: 6px; font-size: 10px; } }
