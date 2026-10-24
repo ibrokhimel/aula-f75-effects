@@ -8,11 +8,11 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "bundle": "node scripts/build.mjs",
-    "build:web": "cd ../web && cross-env NEXT_OUTPUT=export next build",
+    "build:web": "node scripts/build-studio-web.mjs",
     "build": "npm run typecheck && npm run bundle",
     "start": "npm run build && electron .",
     "smoke": "npm run build && electron . --smoke",
-    "dist": "npm run build && electron-builder --win"
+    "dist": "npm run build:web && npm run build && electron-builder --win"
   },
   "dependencies": {
     "node-hid": "^3.1.2",
@@ -28,6 +28,7 @@
     "typescript": "^5"
   },
   "build": {
+    "artifactName": "AULA-F75-Studio-${version}-${arch}.${ext}",
     "appId": "com.aula.f75.controller",
     "productName": "AULA F75 Controller",
     "npmRebuild": false,
@@ -40,7 +41,7 @@
     ],
     "extraResources": [
       {
-        "from": "../web/out",
+        "from": "../web/studio-out",
         "to": "web-out"
       }
     ],
@@ -56,6 +57,7 @@
       "signAndEditExecutable": false
     },
     "nsis": {
+      "artifactName": "AULA-F75-Studio-Setup-${version}-${arch}.${ext}",
       "oneClick": true,
       "runAfterFinish": true
     }

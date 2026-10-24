@@ -12,6 +12,9 @@ import {
   CH, EV,
   type FramePayload, type NativeStatus, type ProxyCollectionInfo, type UpdateCheckResult,
 } from './native-ipc';
+import type { StudioConfiguration } from './studio/runtime';
+import type { AudioInput, PixelSource, SystemSample } from '../../../packages/engine/src';
+import type { Preferences } from './studio/workspaces';
 
 interface RawBridge {
   invoke(channel: string, ...args: unknown[]): Promise<unknown>;
@@ -77,6 +80,15 @@ export const nativeReconnect = () => bridge()!.invoke(CH.reconnect);
 export const nativeCheckUpdate = async () =>
   await bridge()!.invoke(CH.checkUpdate) as UpdateCheckResult;
 export const nativeOpenReleases = () => bridge()!.invoke(CH.openReleases);
+export const nativeGetStudio = async () => await bridge()!.invoke(CH.getStudio) as StudioConfiguration | null;
+export const nativeConfigureStudio = (config: StudioConfiguration) => bridge()!.invoke(CH.configureStudio, config);
+export const nativeStudioInput = (kind: 'audio' | 'screen' | 'game', value: AudioInput | PixelSource | number[][] | null) => bridge()!.invoke(CH.studioInput, kind, value);
+export const nativeStudioAudioCapture = (on: boolean) => bridge()!.invoke(CH.studioAudioCapture, on);
+export const nativeStudioKey = (code: string, down: boolean) => bridge()!.invoke(CH.studioKey, code, down);
+export const onNativeStudioAudio = (fn: (sample: AudioInput) => void) => bridge()?.on(EV.studioAudio, value => fn(value as AudioInput)) ?? (() => {});
+export const onNativeStudioAudioState = (fn: (state: { active: boolean; error?: string }) => void) => bridge()?.on(EV.studioAudioState, value => fn(value as { active: boolean; error?: string })) ?? (() => {});
+export const nativeTelemetry = async () => await bridge()!.invoke(CH.telemetry) as SystemSample;
+export const nativeSetStudioPreferences = (value: Preferences) => bridge()!.invoke(CH.studioPreferences, value);
 
 // ── HIDDevice proxy ─────────────────────────────────────────────────────
 // The config panels' lib functions all take a `HIDDevice` and use only four

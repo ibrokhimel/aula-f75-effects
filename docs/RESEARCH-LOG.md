@@ -1,7 +1,8 @@
 # Research log — F75 protocol experiments
 
-Raw hardware experiments using `tools/hidraw_lab.c` (direct hidraw feature-report
-I/O, no browser). All dates 2026-08-24 unless noted.
+Historical hardware experiments using the former `tools/hidraw_lab.c` utility
+(available in Git history; removed from the Windows-focused app). This log
+preserves the protocol findings. All dates 2026-08-24 unless noted.
 
 ## Setup
 

@@ -16,6 +16,9 @@ const sample = (over: Partial<AudioSample> = {}): AudioSample => ({
   treble: 0.3,
   spectrum: new Array(SPECTRUM_BINS).fill(0.5),
   centroid: 0.5,
+  left: 0.4,
+  right: 0.7,
+  pitch: { hz: 440, confidence: .95, pitchClass: 9 },
   ...over,
 });
 

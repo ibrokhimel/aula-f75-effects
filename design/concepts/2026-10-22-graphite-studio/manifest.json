@@ -1,0 +1,62 @@
+﻿[
+    {
+        "Name":  "01-lighting-automatic.png",
+        "Width":  1586,
+        "Height":  992,
+        "Bytes":  1630725
+    },
+    {
+        "Name":  "02-lighting-typing.png",
+        "Width":  1586,
+        "Height":  992,
+        "Bytes":  1641097
+    },
+    {
+        "Name":  "03-lighting-audio.png",
+        "Width":  1586,
+        "Height":  992,
+        "Bytes":  1675732
+    },
+    {
+        "Name":  "04-lighting-per-key.png",
+        "Width":  1586,
+        "Height":  992,
+        "Bytes":  1508320
+    },
+    {
+        "Name":  "05-key-mapping.png",
+        "Width":  1586,
+        "Height":  992,
+        "Bytes":  1468560
+    },
+    {
+        "Name":  "06-macros.png",
+        "Width":  1586,
+        "Height":  992,
+        "Bytes":  1556421
+    },
+    {
+        "Name":  "07-profiles.png",
+        "Width":  1586,
+        "Height":  992,
+        "Bytes":  1554584
+    },
+    {
+        "Name":  "08-games.png",
+        "Width":  1586,
+        "Height":  992,
+        "Bytes":  1595418
+    },
+    {
+        "Name":  "09-settings.png",
+        "Width":  1586,
+        "Height":  992,
+        "Bytes":  1466827
+    },
+    {
+        "Name":  "10-advanced.png",
+        "Width":  1586,
+        "Height":  992,
+        "Bytes":  1479703
+    }
+]

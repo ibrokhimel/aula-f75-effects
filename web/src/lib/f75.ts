@@ -34,13 +34,23 @@ export async function sendFeature(device: HIDDevice, frame: Uint8Array, log: Log
 export async function readRegion(
   device: HIDDevice, cmd: number, addr: number[], len: number, log: LogFn, timeoutMs = 800,
 ): Promise<Uint8Array | null> {
-  await sendFeature(device, buildFrame(cmd, addr, len), log);
+  const request = buildFrame(cmd, addr, len);
+  await sendFeature(device, request, log);
+  const deadline = Date.now() + timeoutMs;
   try {
-    const view = await withTimeout(device.receiveFeatureReport(FEATURE_REPORT_ID), timeoutMs);
-    const full = new Uint8Array(REPORT_SIZE);
-    new Uint8Array(view.buffer).forEach((b, i) => { if (i < REPORT_SIZE) full[i] = b; });
-    log(`RX-FEATURE: ${hex(full)}`);
-    return full;
+    // GET_FEATURE can still return a preceding RGB command while firmware
+    // finishes a new read. Its bytes must never be treated as configuration.
+    for (let attempt = 0; attempt < 8 && Date.now() < deadline; attempt++) {
+      const view = await withTimeout(device.receiveFeatureReport(FEATURE_REPORT_ID), Math.max(1, deadline - Date.now()));
+      const bytes = new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
+      if (bytes.length >= HEADER_SIZE + len && request.slice(0, HEADER_SIZE).every((byte, index) => bytes[index] === byte)) {
+        const full = new Uint8Array(REPORT_SIZE); full.set(bytes.subarray(0, REPORT_SIZE));
+        log(`RX-FEATURE: ${hex(full)}`); return full;
+      }
+      log(`RX-FEATURE: ignoring unmatched reply (command 0x${(bytes[1] ?? 0).toString(16)})`);
+      await new Promise(resolve => setTimeout(resolve, Math.min(12, Math.max(0, deadline - Date.now()))));
+    }
+    log('RX-FEATURE: no matching reply'); return null;
   } catch {
     log("RX-FEATURE: (no reply)");
     return null;
@@ -48,10 +58,10 @@ export async function readRegion(
 }
 
 function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
-  return Promise.race([
-    p,
-    new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), ms)),
-  ]);
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('timeout')), ms);
+    p.then(value => { clearTimeout(timer); resolve(value); }, error => { clearTimeout(timer); reject(error); });
+  });
 }
 
 async function retry<T>(fn: () => Promise<T | null>, retries: number, log: LogFn, label: string): Promise<T | null> {

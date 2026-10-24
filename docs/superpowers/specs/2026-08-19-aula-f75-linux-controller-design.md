@@ -1,3 +1,6 @@
+> Historical design record. The current app targets Windows; the Linux setup
+> files described below have been removed. See the root README for current setup.
+
 # AULA F75 Linux Controller — Design
 
 - Date: 2026-08-19

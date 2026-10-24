@@ -1,8 +1,13 @@
 # web app
 web/node_modules/
 web/.next/
+web/.next-desktop/
+web/.next-desktop-final/
+web/studio-out/
+web/*.tsbuildinfo
 web/out/
 web/next-env.d.ts
+web/test-results/
 web/*.tsbuildinfo.worktrees/
 
 # desktop app
@@ -17,3 +22,6 @@ ruvector.db
 
 # vitest cache when run from the repo root
 node_modules/
+
+# duplicate download bundle of the concept images already committed alongside it
+design/**/*.zip

@@ -1,0 +1,30 @@
+﻿{
+    "reviewed":  "2026-10-23",
+    "fullSuite":  {
+                      "exitCode":  0,
+                      "command":  "bun run test -- --maxWorkers=2 --testTimeout=30000",
+                      "testFiles":  32,
+                      "failed":  0,
+                      "passed":  4163
+                  },
+    "checks":  [
+                   "Engine, web and desktop TypeScript checks passed",
+                   "Desktop bundle passed",
+                   "Static web production build passed",
+                   "All 180 preview selections loaded without browser errors",
+                   "F75, sparse macropad and single-key renderer fixtures passed"
+               ],
+    "registry":  {
+                     "total":  523,
+                     "reactive":  299,
+                     "added":  180,
+                     "animations":  224
+                 },
+    "physicalKeyboardValidated":  false,
+    "integrationLimitations":  [
+                                   "Curated new UI selectors still need the 72 reactive/audio/scene/event entries",
+                                   "Some event producers require explicit host integrations",
+                                   "Endpoint currently feeds legacy EffectsEngine; new StudioRuntime event forwarding remains UI integration work"
+                               ],
+    "performanceReport":  "EFFECTS-PERFORMANCE.json"
+}

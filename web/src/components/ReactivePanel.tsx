@@ -14,10 +14,9 @@ import {
   onNativeStatus, watchNativeFrames,
 } from '@/lib/native';
 import { hexToRgb } from '@/lib/protocol';
-import {
-  buildDirectFrame, sendDirectFrame, enableDirectMode, disableDirectMode, buildBlankFrame,
-} from '@/lib/direct-mode';
-import { isWirelessDevice, sendWirelessAnimationFrame, sendWirelessIdle } from '@/lib/wireless-mode';
+import { BridgeSession } from '../../../packages/engine/src';
+import { createF75Bridge } from '@/lib/bridges/f75';
+import { isWirelessDevice } from '@/lib/wireless-mode';
 import { KeyboardPreview } from './KeyboardPreview';
 import { ColorControl } from './ColorControl';
 
@@ -47,6 +46,7 @@ export function ReactivePanel({ device, log }: Props) {
   // global key hook; this panel is then a remote control plus a mirror of
   // the frames the engine is really sending.
   const native = isNative();
+  const bridgeRef = useRef<BridgeSession | null>(null);
 
   // The press buffer, clock, and eviction all live in the shared engine so
   // the desktop app's global-hook path can never drift from this one.
@@ -80,21 +80,18 @@ export function ReactivePanel({ device, log }: Props) {
       nativeFrameRef.current = new Map();
       return;
     }
-    if (device?.opened) {
-      try {
-        if (isWirelessDevice(device)) await sendWirelessIdle(device);
-        else {
-          await sendDirectFrame(device, buildBlankFrame());
-          await disableDirectMode(device, log);
-        }
-      } catch { /* best effort */ }
-    }
+    const session = bridgeRef.current;
+    bridgeRef.current = null;
+    try { await session?.disconnect(); } catch { /* Device may have been unplugged. */ }
+
   }, [device, log, engine, native]);
 
   useEffect(() => () => {
     activeRef.current = null;
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     audioStopRef.current?.();
+    void bridgeRef.current?.disconnect().catch(() => {});
+    bridgeRef.current = null;
   }, []);
 
   // Native mode: the tray or a resumed session can also drive the engine, so
@@ -182,7 +179,9 @@ export function ReactivePanel({ device, log }: Props) {
     const useWireless = device?.opened ? isWirelessDevice(device) : false;
     if (device?.opened) {
       log(`Reactive: ${def.name} (${useWireless ? '2.4GHz wireless' : 'USB-C direct'})`);
-      if (!useWireless) await enableDirectMode(device, log);
+      const session = new BridgeSession(createF75Bridge(device, log), () => performance.now());
+      bridgeRef.current = session;
+      await session.connect();
     } else {
       log(`Reactive: ${def.name} (preview only — nothing connected)`);
     }
@@ -195,9 +194,7 @@ export function ReactivePanel({ device, log }: Props) {
         hwDue = now + 1000 / HW_FPS;
         inFlight = true;
         const colors = renderFrame(0);
-        const send = useWireless
-          ? sendWirelessAnimationFrame(device, colors)
-          : sendDirectFrame(device, buildDirectFrame(colors));
+        const send = bridgeRef.current?.sendFrame(colors) ?? Promise.resolve(false);
         send.catch((err) => {
           log(`Reactive error: ${err instanceof Error ? err.message : String(err)}`);
           void stop();

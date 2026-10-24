@@ -1,0 +1,100 @@
+﻿KEYBOARD EFFECTS LIBRARY - IMPLEMENTATION HANDOFF
+
+180 new engine renderers, 15 packs. Total registry: 224 animations + 299 reactive
+entries = 523. All stable IDs start with expansion. The original 343 remain.
+
+RUN THE LOCAL PREVIEW
+From repository root: node web/scripts/build-effects-preview.mjs
+Output: ../keyboard-effects-preview.html (offline, open in any Chromium browser).
+Search packs, change controls, switch F75/macropad, and type into the preview.
+Demo inputs is explicitly labeled. Live audio requires sharing an audio source.
+The preview never opens HID or writes keyboard packets.
+
+ENGINE API
+import { createEffectLibrary, EffectsEngine, EXPANSION_CATALOG,
+  EXPANSION_PARAMETERS, EXPANSION_SCENES, expansionRequirements } from the engine.
+createEffectLibrary(layout) owns independent effects, audio, events and simulation
+state. library.animations and library.reactive are the normal registries.
+EffectsEngine.startAnimation(id, parameters) and startReactive(id, parameters)
+accept every new ID in its registered mode. library.expansion.requirements(id)
+reports typing/audio/stereo/pitch/event requirements and discrete motion.
+
+UI HANDOFF FOR THE CONCURRENT REDESIGN
+No component layouts or curated mode selectors were replaced by this work.
+The Automatic catalogue discovers the 108 new animation entries automatically.
+The other 72 are in library.reactive: typing physics, chords, memory, audio,
+interactive scenes, and host events. The current curated Typing/Audio selectors
+need to expose those IDs using EXPANSION_CATALOG, rather than hardcoded variants.
+A scene with typing/audio must run through the reactive path and receive both
+presses and live audio samples. Use expansionRequirements(id) to start capture.
+Do not show an unavailable source as a simulated live value. The preview's demo
+input generator is only a labeled fixture, not the production capture source.
+
+CONTROLS AND LIFECYCLE
+Parameters are engine-owned and normalized through the existing numeric/select
+control path; unknown and nonfinite values are ignored. A Seed control appears
+only where initialization uses it. Reset through library.expansion.reset(id) or
+EffectsEngine.start*. Each scene owns child renderers. All source layers share
+one scene clock; masks and add/screen/normal blending are reusable primitives.
+Simulations use 288 cells, capped particles, double buffers and fixed 6/10/20 Hz
+steps. Deterministic epochs (32s cell fields, 48s worlds) bound seek replay;
+there is a one-second fade at epoch boundaries. Seeking backwards resets and
+replays at most 640 cell steps or 480 world steps. These are intentionally
+bounded visual models, not scientific fluid/biological solvers.
+Typing history is limited to 600 events / 60 seconds. Co-activity/transition
+summaries derive from this bounded history, not a permanent key logger.
+
+AUDIO
+Feed library.audio.pushAudioSample(sample). Additional optional fields left,
+right, and pitch must be measured. Stereo effects stay dark on mono/unknown
+channel counts. analyzeAudio now performs confidence-gated autocorrelation pitch
+analysis on PCM. Separate channel RMS is captured by the desktop/browser hosts
+when their audio tracks report stereo. The feature store retains 256 timestamped
+spectrum columns and 96 onsets. Stale capture fades to black. Quiet Bloom needs
+an active capture stream and never treats absent capture as quiet music.
+
+HOST EVENTS
+library.events.register({ id: 'my-tool', types: ['build'], ttlMs: 60000 });
+library.events.push({version:1,id:'unique-event-id',source:'my-tool',
+  at:engineClockMilliseconds,type:'build',
+  data:{runId:'run-1',progress:0.6,result:'running'}});
+Types and data fields: packages/engine/src/expansion/events.ts.
+Clock must match the injected engine clock (desktop uses performance.now()).
+Queue cap 128; source cap 16; IDs deduplicate; invalid/stale/future data rejects.
+Application rules and shortcut guides must be explicitly configured. Manual
+scene override takes precedence. App changes use a dwell and scene crossfade.
+
+OPTIONAL DESKTOP LOOPBACK ENDPOINT
+Set KEYBOARD_EFFECTS_EVENT_TOKEN to a private value of at least 24 characters
+before launching desktop. KEYBOARD_EFFECTS_EVENT_PORT defaults to 9735.
+With no token no HTTP listener starts. It binds only 127.0.0.1, requires a Bearer
+token, rejects browser Origin headers, caps payloads to 16KB, and limits clients.
+GET /clock supplies the timestamp domain; POST /sources registers explicit source
+capabilities; POST /events submits validated events. Additional configuration:
+POST /application-rules (process -> scene ID map), /shortcut-guides (array).
+Use desktop/scripts/effect-event.mjs with the same token in its environment:
+  node desktop/scripts/effect-event.mjs build -- node.exe build-script.js
+  node desktop/scripts/effect-event.mjs test -- node.exe test-script.js
+  node desktop/scripts/effect-event.mjs download https://example.org/file
+  node desktop/scripts/effect-event.mjs mute <JSON with state muted/unmuted>
+The download command measures and discards a transfer; embed the event adapter
+in your actual downloader to save the data. CLI builds/tests report real start
+and exit results, not fabricated intermediate percentages.
+Resource Weather reuses desktop telemetry when that sampler is configured.
+Meeting Mute, OS battery, foreground app, notifications and focus timers have
+working event renderers but still require an explicit producer/integration.
+The endpoint currently feeds the legacy EffectsEngine in EngineHost. The new
+StudioRuntime owns its own library; forward events there when exposing these
+integrations in the new UI. Do not imply this wiring is already present.
+
+VALIDATION / LIMITS
+Automated coverage includes every new renderer on F75, a sparse macropad and a
+single key; finite integer RGB; unrelated LED numbering; late uptime/backward
+seeks; seed/reset isolation; Life blinker and refractory-cell rules; conserved
+exchange mass; connected maze paths; validated HTTP ingestion; stereo/pitch and
+missing-source behavior; every host renderer fed its own event schema.
+Original continuity scans retain smoothness checks; cellular generations,
+indexed mechanics, maze states and discrete events declare intentional steps.
+The implementation checklist records renderer delivery separately from its
+more ambitious behavior-specific acceptance criteria. Those tasks are not all
+marked done. Physical keyboard appearance and every OS producer remain unverified.

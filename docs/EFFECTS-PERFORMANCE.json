@@ -1,0 +1,3276 @@
+{
+  "runtime": {
+    "node": "24.3.0",
+    "bun": "1.3.14",
+    "boringssl": "0c5fce43b7ed5eb6001487ee48ac65766f5ddcd1",
+    "openssl": "1.1.0",
+    "llhttp": "9.3.0",
+    "libarchive": "ded82291ab41d5e355831b96b0e1ff49e24d8939",
+    "mimalloc": "f15aecb94fc8096008bf87b90c53ed682026914a",
+    "picohttpparser": "066d2b1e9ab820703db0837a7255d92d30f0c9f5",
+    "uwebsockets": "0d9b296af33f2b851fcbf4df3e9ec89751734ba4",
+    "webkit": "5488984d20e0dbfe4be2c3ba8fb18eb81a5e0e8b",
+    "zig": "04e7f6ac1e009525bc00934f20199c68f04e0a24",
+    "zlib": "12731092979c6d07f42da27da673a9f6c7b13586",
+    "tinycc": "12882eee073cfe5c7621bcfadf679e1372d4537b",
+    "lolhtml": "77127cd2b8545998756e8d64e36ee2313c4bb312",
+    "ares": "3ac47ee46edd8ea40370222f91613fc16c434853",
+    "libdeflate": "c8c56a20f8f621e6a966b716b31f1dedab6a41e3",
+    "usockets": "0d9b296af33f2b851fcbf4df3e9ec89751734ba4",
+    "lshpack": "8905c024b6d052f083a3d11d0a169b3c2735c8a1",
+    "zstd": "f8745da6ff1ad1e7bab384bd1f9d742439278e99",
+    "v8": "13.6.233.10-node.18",
+    "uv": "1.51.1-dev",
+    "napi": "10",
+    "icu": "73.2",
+    "unicode": "15.0",
+    "modules": "137"
+  },
+  "measuredAt": "2026-10-22T20:46:49.547Z",
+  "notes": [
+    "CPU render timings on this machine. No hardware transport or real-time FPS guarantee.",
+    "First sampled frame may include seek replay. Input-driven effects without their specific host event are idle."
+  ],
+  "rows": [
+    {
+      "layout": "pad",
+      "id": "expansion.life-colony",
+      "p50ms": 0.021000000000000796,
+      "p95ms": 0.08240000000000691,
+      "maxMs": 3.3692999999999955,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.three-state-sparks",
+      "p50ms": 0.015200000000007208,
+      "p95ms": 0.27060000000000173,
+      "maxMs": 8.4251,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.cyclic-dominion",
+      "p50ms": 0.010400000000004184,
+      "p95ms": 0.29299999999999216,
+      "maxMs": 4.756900000000002,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.turmite-trails",
+      "p50ms": 0.007199999999997431,
+      "p95ms": 0.022900000000007026,
+      "maxMs": 0.5639000000000038,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.wireworld-circuit",
+      "p50ms": 0.011299999999991428,
+      "p95ms": 0.2650000000000148,
+      "maxMs": 3.7220999999999975,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.sandpile-cascade",
+      "p50ms": 0.013399999999990087,
+      "p95ms": 0.07699999999999818,
+      "maxMs": 1.0238999999999976,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.reaction-islands",
+      "p50ms": 0.00909999999998945,
+      "p95ms": 0.23349999999999227,
+      "maxMs": 5.6051000000000215,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.wavefront-labyrinth",
+      "p50ms": 0.037499999999994316,
+      "p95ms": 0.07909999999998263,
+      "maxMs": 4.915300000000002,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.firebreak-forest",
+      "p50ms": 0.008499999999997954,
+      "p95ms": 0.18139999999999645,
+      "maxMs": 2.8974999999999795,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.neighborhood-drift",
+      "p50ms": 0.007000000000005002,
+      "p95ms": 0.08050000000000068,
+      "maxMs": 2.0087999999999795,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.thermal-domains",
+      "p50ms": 0.004599999999982174,
+      "p95ms": 0.1525000000000034,
+      "maxMs": 4.878300000000024,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.conserved-shuffle",
+      "p50ms": 0.003899999999987358,
+      "p95ms": 0.08629999999999427,
+      "maxMs": 2.184899999999999,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.ferrofluid-peaks",
+      "p50ms": 0.011899999999997135,
+      "p95ms": 0.18909999999999627,
+      "maxMs": 1.7998000000000047,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.marbling-streaks",
+      "p50ms": 0.004600000000010596,
+      "p95ms": 0.14650000000000318,
+      "maxMs": 3.9233999999999867,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.droplet-coalescence",
+      "p50ms": 0.015700000000009595,
+      "p95ms": 0.0338000000000136,
+      "maxMs": 0.4712000000000103,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.pigment-separation",
+      "p50ms": 0.006000000000000227,
+      "p95ms": 0.23169999999998936,
+      "maxMs": 6.342199999999991,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.capillary-climb",
+      "p50ms": 0.028400000000004866,
+      "p95ms": 0.04630000000000223,
+      "maxMs": 0.42250000000001364,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.viscous-curtain",
+      "p50ms": 0.03130000000001587,
+      "p95ms": 0.0654999999999859,
+      "maxMs": 0.5652000000000044,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.foam-network",
+      "p50ms": 0.01820000000000732,
+      "p95ms": 0.034300000000001774,
+      "maxMs": 0.5353000000000065,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.crystallizing-melt",
+      "p50ms": 0.007100000000008322,
+      "p95ms": 0.13339999999999463,
+      "maxMs": 2.9364999999999952,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.drying-pigment",
+      "p50ms": 0.007899999999949614,
+      "p95ms": 0.27230000000002974,
+      "maxMs": 5.344699999999989,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.oil-and-water",
+      "p50ms": 0.006299999999953343,
+      "p95ms": 0.22000000000002728,
+      "maxMs": 5.303099999999972,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.pendulum-paint",
+      "p50ms": 0.010999999999967258,
+      "p95ms": 0.021700000000009823,
+      "maxMs": 0.4490999999999872,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.refracted-ripples",
+      "p50ms": 0.006100000000003547,
+      "p95ms": 0.02740000000000009,
+      "maxMs": 0.27609999999998536,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.prism-split",
+      "p50ms": 0.007300000000043383,
+      "p95ms": 0.017899999999997362,
+      "maxMs": 0.1272999999999911,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.lens-sweep",
+      "p50ms": 0.008600000000001273,
+      "p95ms": 0.022899999999992815,
+      "maxMs": 0.16329999999999245,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.slit-diffraction",
+      "p50ms": 0.005400000000008731,
+      "p95ms": 0.012400000000013733,
+      "maxMs": 0.06860000000000355,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.two-slit-light",
+      "p50ms": 0.006399999999985084,
+      "p95ms": 0.016400000000032833,
+      "maxMs": 2.2048000000000343,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.shadow-theater",
+      "p50ms": 0.00889999999998281,
+      "p95ms": 0.023300000000006094,
+      "maxMs": 0.07570000000004029,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.iris-shutter",
+      "p50ms": 0.009200000000021191,
+      "p95ms": 0.021099999999989905,
+      "maxMs": 0.09859999999997626,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.chromatic-outlines",
+      "p50ms": 0.008199999999987995,
+      "p95ms": 0.020699999999976626,
+      "maxMs": 0.237199999999973,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.light-sheet-slice",
+      "p50ms": 0.005699999999990268,
+      "p95ms": 0.012799999999970169,
+      "maxMs": 0.10720000000003438,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.stained-glass",
+      "p50ms": 0.022599999999954434,
+      "p95ms": 0.03480000000001837,
+      "maxMs": 0.11529999999999063,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.opal-turn",
+      "p50ms": 0.01650000000000773,
+      "p95ms": 0.0262000000000171,
+      "maxMs": 0.172300000000007,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.crossed-polarizers",
+      "p50ms": 0.008600000000001273,
+      "p95ms": 0.01579999999995607,
+      "maxMs": 0.08150000000000546,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.dithered-mist",
+      "p50ms": 0.009199999999964348,
+      "p95ms": 0.01470000000000482,
+      "maxMs": 0.06610000000000582,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.elliptical-rendezvous",
+      "p50ms": 0.00929999999999609,
+      "p95ms": 0.01599999999996271,
+      "maxMs": 0.09230000000002292,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.binary-eclipse",
+      "p50ms": 0.006500000000016826,
+      "p95ms": 0.015000000000043201,
+      "maxMs": 0.08220000000000027,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.orbital-convoy",
+      "p50ms": 0.015500000000031378,
+      "p95ms": 0.024199999999950705,
+      "maxMs": 0.08730000000002747,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.accretion-shear",
+      "p50ms": 0.006000000000028649,
+      "p95ms": 0.013500000000021828,
+      "maxMs": 0.09609999999997854,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.pulsar-lighthouse",
+      "p50ms": 0.005400000000008731,
+      "p95ms": 0.011399999999980537,
+      "maxMs": 0.05329999999997881,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.nebula-collapse",
+      "p50ms": 0.030399999999985994,
+      "p95ms": 0.054100000000005366,
+      "maxMs": 0.8426000000000045,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.asteroid-lanes",
+      "p50ms": 0.06090000000000373,
+      "p95ms": 0.12359999999995352,
+      "maxMs": 0.18610000000001037,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.solar-windfront",
+      "p50ms": 0.008800000000007913,
+      "p95ms": 0.023300000000006094,
+      "maxMs": 0.12000000000000455,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.gravity-lens",
+      "p50ms": 0.04810000000003356,
+      "p95ms": 0.14460000000002537,
+      "maxMs": 0.37210000000004584,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.planet-transit",
+      "p50ms": 0.005000000000052296,
+      "p95ms": 0.013800000000003365,
+      "maxMs": 0.07010000000002492,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.resonant-alignment",
+      "p50ms": 0.011799999999993815,
+      "p95ms": 0.017200000000002547,
+      "maxMs": 0.08420000000000982,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.redshift-flight",
+      "p50ms": 0.04550000000000409,
+      "p95ms": 0.09769999999997481,
+      "maxMs": 0.20199999999999818,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.weather-fronts",
+      "p50ms": 0.006599999999991724,
+      "p95ms": 0.021100000000046748,
+      "maxMs": 0.06860000000000355,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.tornado-track",
+      "p50ms": 0.023099999999999454,
+      "p95ms": 0.03409999999996671,
+      "maxMs": 0.7332000000000107,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.river-delta",
+      "p50ms": 0.03109999999998081,
+      "p95ms": 0.045099999999990814,
+      "maxMs": 0.5824999999999818,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.meander-migration",
+      "p50ms": 0.014100000000041746,
+      "p95ms": 0.023200000000031196,
+      "maxMs": 0.10300000000000864,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.glacier-calving",
+      "p50ms": 0.008900000000039654,
+      "p95ms": 0.030599999999992633,
+      "maxMs": 0.5696000000000367,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.sea-ice-leads",
+      "p50ms": 0.010800000000017462,
+      "p95ms": 0.023700000000019372,
+      "maxMs": 0.4194999999999709,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.migrating-dunes",
+      "p50ms": 0.0056000000000153705,
+      "p95ms": 0.013700000000028467,
+      "maxMs": 0.07220000000000937,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.rain-shadow",
+      "p50ms": 0.015500000000031378,
+      "p95ms": 0.02359999999998763,
+      "maxMs": 0.09660000000002356,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.convection-cells",
+      "p50ms": 0.006900000000030104,
+      "p95ms": 0.014099999999984902,
+      "maxMs": 0.08559999999999945,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.branching-lightning",
+      "p50ms": 0.023199999999974352,
+      "p95ms": 0.03500000000002501,
+      "maxMs": 0.07869999999996935,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.layered-cloud-deck",
+      "p50ms": 0.016999999999995907,
+      "p95ms": 0.027100000000018554,
+      "maxMs": 0.12319999999999709,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.fog-bank",
+      "p50ms": 0.015199999999992997,
+      "p95ms": 0.0221000000000231,
+      "maxMs": 0.10539999999997463,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.mycelium-routes",
+      "p50ms": 0.08659999999997581,
+      "p95ms": 0.16179999999997108,
+      "maxMs": 1.5260999999999854,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.root-foraging",
+      "p50ms": 0.06100000000003547,
+      "p95ms": 0.1671000000000049,
+      "maxMs": 0.6744999999999663,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.predator-and-prey",
+      "p50ms": 0.01670000000001437,
+      "p95ms": 0.04519999999996571,
+      "maxMs": 2.518599999999992,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.firefly-synchrony",
+      "p50ms": 0.005899999999996908,
+      "p95ms": 0.3033999999999537,
+      "maxMs": 11.824799999999982,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.coral-competition",
+      "p50ms": 0.010800000000017462,
+      "p95ms": 0.019900000000006912,
+      "maxMs": 1.074899999999957,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.leaf-veins",
+      "p50ms": 0.07129999999995107,
+      "p95ms": 0.09139999999996462,
+      "maxMs": 0.5697999999999865,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.pollinator-routes",
+      "p50ms": 0.01290000000000191,
+      "p95ms": 0.021199999999964803,
+      "maxMs": 0.5620000000000118,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.spore-landing",
+      "p50ms": 0.02569999999997208,
+      "p95ms": 0.03669999999999618,
+      "maxMs": 0.5430000000000064,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.slime-trail-network",
+      "p50ms": 0.0039000000000442014,
+      "p95ms": 0.06589999999999918,
+      "maxMs": 2.136799999999994,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.spring-succession",
+      "p50ms": 0.09829999999999472,
+      "p95ms": 0.1593000000000302,
+      "maxMs": 1.9116999999999962,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.tidepool-colonies",
+      "p50ms": 0.009900000000016007,
+      "p95ms": 0.022199999999998,
+      "maxMs": 0.09439999999995052,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.circadian-garden",
+      "p50ms": 0.026000000000067303,
+      "p95ms": 0.06479999999999109,
+      "maxMs": 0.4377999999999247,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.gear-train",
+      "p50ms": 0.009500000000002728,
+      "p95ms": 0.01710000000002765,
+      "maxMs": 0.07569999999998345,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.ratchet-march",
+      "p50ms": 0.006899999999973261,
+      "p95ms": 0.0141999999999598,
+      "maxMs": 0.0523000000000593,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.conveyor-sorter",
+      "p50ms": 0.01779999999996562,
+      "p95ms": 0.039400000000000546,
+      "maxMs": 1.656500000000051,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.escapement-tick",
+      "p50ms": 0.008100000000013097,
+      "p95ms": 0.021600000000034925,
+      "maxMs": 0.12249999999994543,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.cam-lift",
+      "p50ms": 0.010999999999967258,
+      "p95ms": 0.025599999999940337,
+      "maxMs": 0.2119000000000142,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.piston-bank",
+      "p50ms": 0.013599999999996726,
+      "p95ms": 0.033100000000104046,
+      "maxMs": 0.6394000000000233,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.dwell-drive",
+      "p50ms": 0.011799999999993815,
+      "p95ms": 0.03560000000004493,
+      "maxMs": 0.12969999999995707,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.spring-lattice",
+      "p50ms": 0.016799999999989268,
+      "p95ms": 0.047100000000000364,
+      "maxMs": 1.0671000000000959,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.magnetic-clutch",
+      "p50ms": 0.02250000000003638,
+      "p95ms": 0.04100000000005366,
+      "maxMs": 0.3147000000000162,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.hydraulic-network",
+      "p50ms": 0.023000000000024556,
+      "p95ms": 0.04169999999999163,
+      "maxMs": 0.8168999999999187,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.differential-motion",
+      "p50ms": 0.008600000000001273,
+      "p95ms": 0.01160000000004402,
+      "maxMs": 0.14819999999997435,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.kinetic-tiles",
+      "p50ms": 0.006400000000098771,
+      "p95ms": 0.01740000000006603,
+      "maxMs": 0.1716000000000122,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.truchet-paths",
+      "p50ms": 0.010400000000004184,
+      "p95ms": 0.019400000000018736,
+      "maxMs": 0.137299999999982,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.hilbert-walk",
+      "p50ms": 0.04780000000005202,
+      "p95ms": 0.08849999999995362,
+      "maxMs": 0.40189999999995507,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.peano-weave",
+      "p50ms": 0.17889999999999873,
+      "p95ms": 0.2966000000000122,
+      "maxMs": 0.51400000000001,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.cell-fracture",
+      "p50ms": 0.05570000000000164,
+      "p95ms": 0.10379999999997835,
+      "maxMs": 0.16060000000004493,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.triangulated-mesh",
+      "p50ms": 0.2478999999999587,
+      "p95ms": 0.43629999999996016,
+      "maxMs": 2.0816999999999553,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.quasiperiodic-tiles",
+      "p50ms": 0.015199999999936153,
+      "p95ms": 0.019300000000043838,
+      "maxMs": 0.177599999999984,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.superformula-morph",
+      "p50ms": 0.011700000000018917,
+      "p95ms": 0.030700000000024374,
+      "maxMs": 0.16380000000003747,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.harmonic-knots",
+      "p50ms": 0.016799999999989268,
+      "p95ms": 0.03550000000007003,
+      "maxMs": 0.12789999999995416,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.distance-sculptures",
+      "p50ms": 0.02290000000004966,
+      "p95ms": 0.032100000000014006,
+      "maxMs": 0.20289999999999964,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.topographic-contours",
+      "p50ms": 0.015300000000024738,
+      "p95ms": 0.022699999999986176,
+      "maxMs": 0.07070000000010168,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.quadtree-bloom",
+      "p50ms": 0.01779999999996562,
+      "p95ms": 0.030200000000036198,
+      "maxMs": 0.13160000000004857,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.aperiodic-weave",
+      "p50ms": 0.00580000000002201,
+      "p95ms": 0.012199999999893407,
+      "maxMs": 0.055099999999924876,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.maze-carver",
+      "p50ms": 0.10849999999993543,
+      "p95ms": 0.19409999999993488,
+      "maxMs": 0.6071999999999207,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.maze-search",
+      "p50ms": 0.0969000000000051,
+      "p95ms": 0.17579999999998108,
+      "maxMs": 0.4634999999999536,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.courier-network",
+      "p50ms": 0.10789999999997235,
+      "p95ms": 0.16519999999991342,
+      "maxMs": 0.4597999999999729,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.packet-switching",
+      "p50ms": 0.05349999999998545,
+      "p95ms": 0.09449999999992542,
+      "maxMs": 1.4823000000000093,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.railway-signals",
+      "p50ms": 0.04349999999999454,
+      "p95ms": 0.11959999999999127,
+      "maxMs": 0.2600999999999658,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.continuity-tester",
+      "p50ms": 0.08399999999994634,
+      "p95ms": 0.157100000000014,
+      "maxMs": 0.6698000000000093,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.elevator-dispatch",
+      "p50ms": 0.013599999999996726,
+      "p95ms": 0.024299999999925603,
+      "maxMs": 0.21790000000009968,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.city-nightfall",
+      "p50ms": 0.012200000000007094,
+      "p95ms": 0.023000000000024556,
+      "maxMs": 0.3311999999999671,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.factory-shift",
+      "p50ms": 0.0747000000000071,
+      "p95ms": 0.08880000000010568,
+      "maxMs": 0.44069999999999254,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.growing-skyline",
+      "p50ms": 0.01710000000002765,
+      "p95ms": 0.056100000000014916,
+      "maxMs": 0.26490000000001146,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.power-grid-startup",
+      "p50ms": 0.058300000000031105,
+      "p95ms": 0.07979999999997744,
+      "maxMs": 0.4461000000000013,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.signal-hunt",
+      "p50ms": 0.013999999999896318,
+      "p95ms": 0.018699999999967076,
+      "maxMs": 0.32179999999993925,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.compression-wake",
+      "p50ms": 0.13209999999992306,
+      "p95ms": 0.2179999999999609,
+      "maxMs": 3.173000000000002,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.duration-brush",
+      "p50ms": 0.12160000000005766,
+      "p95ms": 0.25490000000002055,
+      "maxMs": 0.3609000000000151,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.foam-puncture",
+      "p50ms": 0.24249999999994998,
+      "p95ms": 0.36099999999999,
+      "maxMs": 0.5879999999999654,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.particle-brush",
+      "p50ms": 0.3391000000000304,
+      "p95ms": 0.5698999999999614,
+      "maxMs": 0.9945000000000164,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.resonant-membrane",
+      "p50ms": 0.2402999999999338,
+      "p95ms": 0.26969999999994343,
+      "maxMs": 0.3240000000000691,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.domino-run",
+      "p50ms": 1.6416000000000395,
+      "p95ms": 2.9372000000000753,
+      "maxMs": 3.341000000000008,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.dipole-touch",
+      "p50ms": 0.08000000000015461,
+      "p95ms": 0.10449999999991633,
+      "maxMs": 0.4130000000000109,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.shock-absorber",
+      "p50ms": 0.17229999999995016,
+      "p95ms": 0.31349999999997635,
+      "maxMs": 0.4955999999999676,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.touch-lens",
+      "p50ms": 0.12120000000004438,
+      "p95ms": 0.19620000000008986,
+      "maxMs": 0.27359999999998763,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.turbulent-typing-wake",
+      "p50ms": 0.1878999999998996,
+      "p95ms": 0.39580000000000837,
+      "maxMs": 1.4260000000001583,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.colliding-sparks",
+      "p50ms": 0.2140999999999167,
+      "p95ms": 0.3793000000000575,
+      "maxMs": 0.5880999999999403,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.ballistic-release",
+      "p50ms": 0.03050000000007458,
+      "p95ms": 0.04179999999996653,
+      "maxMs": 0.08899999999994179,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.tension-net",
+      "p50ms": 0.4996000000001004,
+      "p95ms": 0.6132000000000062,
+      "maxMs": 1.0470000000000255,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.soap-film-chord",
+      "p50ms": 0.015000000000100044,
+      "p95ms": 0.06079999999997199,
+      "maxMs": 0.2841999999998279,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.chord-arpeggio",
+      "p50ms": 0.014799999999922875,
+      "p95ms": 0.03350000000000364,
+      "maxMs": 0.10629999999991924,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.chord-polyrhythm",
+      "p50ms": 0.04529999999999745,
+      "p95ms": 0.08799999999996544,
+      "maxMs": 0.2096999999998843,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.phase-agreement",
+      "p50ms": 0.49929999999994834,
+      "p95ms": 0.9619000000000142,
+      "maxMs": 0.9767000000001644,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.color-treaty",
+      "p50ms": 0.21100000000001273,
+      "p95ms": 0.37330000000019936,
+      "maxMs": 0.6405999999999494,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.elastic-perimeter",
+      "p50ms": 0.01290000000017244,
+      "p95ms": 0.01880000000005566,
+      "maxMs": 0.09789999999998145,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.chord-interferometer",
+      "p50ms": 0.13560000000006767,
+      "p95ms": 0.14869999999996253,
+      "maxMs": 0.21259999999983847,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.braided-hands",
+      "p50ms": 0.08940000000006876,
+      "p95ms": 0.11930000000006658,
+      "maxMs": 0.3284000000001015,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.shortcut-confirmation",
+      "p50ms": 0.22079999999982647,
+      "p95ms": 0.7598000000000411,
+      "maxMs": 1.8478999999999814,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.chord-orbitals",
+      "p50ms": 0.41990000000009786,
+      "p95ms": 0.5909999999998945,
+      "maxMs": 1.8116999999999734,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.release-compass",
+      "p50ms": 0.011499999999841748,
+      "p95ms": 0.020299999999906504,
+      "maxMs": 0.07220000000006621,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.trail-excavation",
+      "p50ms": 0.4030999999999949,
+      "p95ms": 0.5315000000000509,
+      "maxMs": 0.6333999999999378,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.activity-districts",
+      "p50ms": 0.3183999999998832,
+      "p95ms": 0.3326999999999316,
+      "maxMs": 0.39200000000005275,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.palette-inheritance",
+      "p50ms": 0.8956000000000586,
+      "p95ms": 1.6714999999999236,
+      "maxMs": 1.8483000000001084,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.learned-footpaths",
+      "p50ms": 0.3554999999998927,
+      "p95ms": 0.43249999999989086,
+      "maxMs": 0.7889999999999873,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.recency-ribbons",
+      "p50ms": 0.49099999999998545,
+      "p95ms": 0.9030999999999949,
+      "maxMs": 1.162499999999909,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.entropy-landscape",
+      "p50ms": 0.3192999999998847,
+      "p95ms": 0.5601999999998952,
+      "maxMs": 0.6014999999999873,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.habit-contours",
+      "p50ms": 0.33330000000000837,
+      "p95ms": 0.6074999999998454,
+      "maxMs": 0.7036000000000513,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.two-time-memory",
+      "p50ms": 0.31330000000002656,
+      "p95ms": 0.3810000000000855,
+      "maxMs": 0.5932999999999993,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.session-seasons",
+      "p50ms": 0.16249999999990905,
+      "p95ms": 0.2036000000000513,
+      "maxMs": 0.481899999999996,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.afterwork-rain",
+      "p50ms": 0.5224000000000615,
+      "p95ms": 0.9610999999999876,
+      "maxMs": 1.0394000000001142,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.recovering-reef",
+      "p50ms": 0.3374999999998636,
+      "p95ms": 0.6125999999999294,
+      "maxMs": 2.097099999999955,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.recurring-constellations",
+      "p50ms": 0.38789999999994507,
+      "p95ms": 0.6808999999998377,
+      "maxMs": 0.9188000000001466,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.stereo-separation",
+      "p50ms": 0.006899999999859574,
+      "p95ms": 0.049999999999954525,
+      "maxMs": 0.8140999999998257,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.bass-lens",
+      "p50ms": 0.0079000000000633,
+      "p95ms": 0.021700000000009823,
+      "maxMs": 0.06510000000002947,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.transient-raindrops",
+      "p50ms": 0.027399999999943248,
+      "p95ms": 0.05510000000003856,
+      "maxMs": 0.17249999999989996,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.harmonic-ladder",
+      "p50ms": 0.005799999999908323,
+      "p95ms": 0.014699999999947977,
+      "maxMs": 0.18380000000001928,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.onset-racetrack",
+      "p50ms": 0.00909999999998945,
+      "p95ms": 0.015000000000100044,
+      "maxMs": 0.029500000000098225,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.centroid-orbit",
+      "p50ms": 0.005999999999858119,
+      "p95ms": 0.007999999999810825,
+      "maxMs": 0.055399999999963256,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.beat-pendulum",
+      "p50ms": 0.005799999999908323,
+      "p95ms": 0.008700000000089858,
+      "maxMs": 0.03289999999992688,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.polyrhythm-bands",
+      "p50ms": 0.00839999999993779,
+      "p95ms": 0.022799999999961074,
+      "maxMs": 0.12940000000003238,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.quiet-bloom",
+      "p50ms": 0.01650000000017826,
+      "p95ms": 0.05349999999998545,
+      "maxMs": 1.5652000000000044,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.spectral-memory",
+      "p50ms": 0.020299999999906504,
+      "p95ms": 0.0341000000000804,
+      "maxMs": 0.08519999999998618,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.stereo-vortex",
+      "p50ms": 0.007100000000036744,
+      "p95ms": 0.010199999999940701,
+      "maxMs": 0.06550000000015643,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.build-and-drop",
+      "p50ms": 0.13190000000008695,
+      "p95ms": 0.5329000000001543,
+      "maxMs": 0.7646999999997206,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.glass-ocean",
+      "p50ms": 0.23880000000008295,
+      "p95ms": 0.43260000000009313,
+      "maxMs": 2.543999999999869,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.copper-rain",
+      "p50ms": 0.030499999999847205,
+      "p95ms": 0.08519999999998618,
+      "maxMs": 1.580000000000382,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.night-drive",
+      "p50ms": 0.2804999999998472,
+      "p95ms": 0.323399999999765,
+      "maxMs": 0.39859999999998763,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.botanical-study",
+      "p50ms": 0.12190000000009604,
+      "p95ms": 0.2748999999998887,
+      "maxMs": 1.9391999999998006,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.deep-laboratory",
+      "p50ms": 0.22359999999980573,
+      "p95ms": 0.6664999999998145,
+      "maxMs": 12.024199999999837,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.quiet-reading-room",
+      "p50ms": 0.02109999999993306,
+      "p95ms": 0.041300000000319415,
+      "maxMs": 0.09589999999980137,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.arcade-afterhours",
+      "p50ms": 0.04100000000016735,
+      "p95ms": 0.11920000000009168,
+      "maxMs": 0.5817999999999302,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.arctic-radio",
+      "p50ms": 0.0567999999998392,
+      "p95ms": 0.08419999999978245,
+      "maxMs": 0.4717000000000553,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.solar-forge",
+      "p50ms": 0.0702000000001135,
+      "p95ms": 0.21170000000029177,
+      "maxMs": 0.8557000000000698,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.paper-lanterns",
+      "p50ms": 0.026299999999991996,
+      "p95ms": 0.06259999999974752,
+      "maxMs": 0.23230000000012296,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.rain-on-glass",
+      "p50ms": 0.2189000000003034,
+      "p95ms": 0.290599999999813,
+      "maxMs": 0.629399999999805,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.living-circuit",
+      "p50ms": 0.03969999999981155,
+      "p95ms": 0.2617000000000189,
+      "maxMs": 3.0579999999999927,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.build-runner",
+      "p50ms": 0.15630000000010114,
+      "p95ms": 0.3249000000000706,
+      "maxMs": 2.076999999999771,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.test-lanes",
+      "p50ms": 0.15049999999973807,
+      "p95ms": 0.2656000000001768,
+      "maxMs": 1.7824999999998,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.download-channel",
+      "p50ms": 0.16109999999980573,
+      "p95ms": 0.32310000000006767,
+      "maxMs": 1.788000000000011,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.meeting-mute",
+      "p50ms": 0.13560000000006767,
+      "p95ms": 0.22000000000025466,
+      "maxMs": 1.5949000000000524,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.focus-arc",
+      "p50ms": 0.1289999999999054,
+      "p95ms": 0.20839999999998327,
+      "maxMs": 1.5016999999998006,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.timer-landing",
+      "p50ms": 0.12430000000040309,
+      "p95ms": 0.19619999999986248,
+      "maxMs": 1.5246999999999389,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.laptop-battery-contour",
+      "p50ms": 0.12460000000010041,
+      "p95ms": 0.17669999999998254,
+      "maxMs": 1.6902000000000044,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.application-scene-switch",
+      "p50ms": 0.0008000000002539309,
+      "p95ms": 0.007000000000061846,
+      "maxMs": 0.12139999999999418,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.shortcut-layer-guide",
+      "p50ms": 0.2541999999998552,
+      "p95ms": 0.49729999999999563,
+      "maxMs": 2.515900000000329,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.notification-inbox",
+      "p50ms": 0.134900000000016,
+      "p95ms": 0.234599999999773,
+      "maxMs": 2.34270000000015,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.resource-weather",
+      "p50ms": 0.15970000000015716,
+      "p95ms": 0.233600000000024,
+      "maxMs": 2.1378999999997177,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "pad",
+      "id": "expansion.local-event-canvas",
+      "p50ms": 0.2980000000002292,
+      "p95ms": 0.4855999999999767,
+      "maxMs": 2.4556000000002314,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.life-colony",
+      "p50ms": 0.05279999999993379,
+      "p95ms": 0.09300000000030195,
+      "maxMs": 0.6731999999997242,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.three-state-sparks",
+      "p50ms": 0.02699999999958891,
+      "p95ms": 0.24829999999974461,
+      "maxMs": 3.5295000000000982,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.cyclic-dominion",
+      "p50ms": 0.026199999999789725,
+      "p95ms": 0.30760000000009313,
+      "maxMs": 5.085000000000036,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.turmite-trails",
+      "p50ms": 0.02389999999968495,
+      "p95ms": 0.04289999999991778,
+      "maxMs": 0.5489999999999782,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.wireworld-circuit",
+      "p50ms": 0.017000000000280124,
+      "p95ms": 0.14699999999993452,
+      "maxMs": 3.5468000000000757,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.sandpile-cascade",
+      "p50ms": 0.033999999999650754,
+      "p95ms": 0.07150000000001455,
+      "maxMs": 0.3647000000000844,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.reaction-islands",
+      "p50ms": 0.04390000000012151,
+      "p95ms": 0.46660000000019863,
+      "maxMs": 9.025299999999788,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.wavefront-labyrinth",
+      "p50ms": 0.10389999999961219,
+      "p95ms": 0.14699999999993452,
+      "maxMs": 0.2849999999998545,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.firebreak-forest",
+      "p50ms": 0.022699999999986176,
+      "p95ms": 0.2055000000000291,
+      "maxMs": 4.642199999999775,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.neighborhood-drift",
+      "p50ms": 0.018099999999776628,
+      "p95ms": 0.06770000000005894,
+      "maxMs": 0.9252999999998792,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.thermal-domains",
+      "p50ms": 0.018799999999828287,
+      "p95ms": 0.2076999999999316,
+      "maxMs": 3.2661000000002787,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.conserved-shuffle",
+      "p50ms": 0.02179999999998472,
+      "p95ms": 0.11679999999978463,
+      "maxMs": 1.674199999999928,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.ferrofluid-peaks",
+      "p50ms": 0.06279999999969732,
+      "p95ms": 0.10829999999987194,
+      "maxMs": 0.17579999999998108,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.marbling-streaks",
+      "p50ms": 0.03610000000026048,
+      "p95ms": 0.21239999999988868,
+      "maxMs": 2.921899999999823,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.droplet-coalescence",
+      "p50ms": 0.12179999999989377,
+      "p95ms": 0.1847000000002481,
+      "maxMs": 0.4884999999999309,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.pigment-separation",
+      "p50ms": 0.021299999999882857,
+      "p95ms": 0.25640000000021246,
+      "maxMs": 8.369599999999991,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.capillary-climb",
+      "p50ms": 0.0965000000001055,
+      "p95ms": 0.11760000000003856,
+      "maxMs": 0.34400000000005093,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.viscous-curtain",
+      "p50ms": 0.14570000000003347,
+      "p95ms": 0.2319999999999709,
+      "maxMs": 1.8278000000000247,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.foam-network",
+      "p50ms": 0.09700000000020736,
+      "p95ms": 0.11259999999992942,
+      "maxMs": 0.3850999999999658,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.crystallizing-melt",
+      "p50ms": 0.023100000000340515,
+      "p95ms": 0.1273999999998523,
+      "maxMs": 2.3400000000001455,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.drying-pigment",
+      "p50ms": 0.03040000000009968,
+      "p95ms": 0.26569999999992433,
+      "maxMs": 3.8811000000000604,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.oil-and-water",
+      "p50ms": 0.021999999999934516,
+      "p95ms": 0.4338999999999942,
+      "maxMs": 5.464399999999841,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.pendulum-paint",
+      "p50ms": 0.03010000000040236,
+      "p95ms": 0.0706000000000131,
+      "maxMs": 0.2945999999997184,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.refracted-ripples",
+      "p50ms": 0.033999999999650754,
+      "p95ms": 0.04919999999992797,
+      "maxMs": 0.0644999999999527,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.prism-split",
+      "p50ms": 0.05319999999983338,
+      "p95ms": 0.06830000000036307,
+      "maxMs": 0.09189999999989595,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.lens-sweep",
+      "p50ms": 0.066899999999805,
+      "p95ms": 0.10050000000001091,
+      "maxMs": 0.15699999999969805,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.slit-diffraction",
+      "p50ms": 0.052000000000134605,
+      "p95ms": 0.08280000000013388,
+      "maxMs": 0.12510000000020227,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.two-slit-light",
+      "p50ms": 0.05390000000033979,
+      "p95ms": 0.11859999999978754,
+      "maxMs": 0.1875,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.shadow-theater",
+      "p50ms": 0.08920000000034634,
+      "p95ms": 0.15599999999994907,
+      "maxMs": 0.18589999999994689,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.iris-shutter",
+      "p50ms": 0.10210000000006403,
+      "p95ms": 0.2155999999999949,
+      "maxMs": 0.3306000000002314,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.chromatic-outlines",
+      "p50ms": 0.07119999999986248,
+      "p95ms": 0.09819999999990614,
+      "maxMs": 0.21509999999989304,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.light-sheet-slice",
+      "p50ms": 0.04750000000012733,
+      "p95ms": 0.07360000000016953,
+      "maxMs": 0.08609999999998763,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.stained-glass",
+      "p50ms": 0.17719999999962965,
+      "p95ms": 0.31310000000030414,
+      "maxMs": 2.195299999999861,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.opal-turn",
+      "p50ms": 0.10969999999997526,
+      "p95ms": 0.19900000000006912,
+      "maxMs": 0.21039999999993597,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.crossed-polarizers",
+      "p50ms": 0.11400000000003274,
+      "p95ms": 0.14969999999993888,
+      "maxMs": 1.8919999999998254,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.dithered-mist",
+      "p50ms": 0.0886000000000422,
+      "p95ms": 0.1710000000002765,
+      "maxMs": 0.3769999999999527,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.elliptical-rendezvous",
+      "p50ms": 0.0660000000002583,
+      "p95ms": 0.1570000000001528,
+      "maxMs": 0.3168000000000575,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.binary-eclipse",
+      "p50ms": 0.04539999999997235,
+      "p95ms": 0.0751999999997679,
+      "maxMs": 0.2458000000001448,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.orbital-convoy",
+      "p50ms": 0.09570000000030632,
+      "p95ms": 0.16660000000001673,
+      "maxMs": 0.24139999999988504,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.accretion-shear",
+      "p50ms": 0.05889999999999418,
+      "p95ms": 0.08760000000029322,
+      "maxMs": 0.1675000000000182,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.pulsar-lighthouse",
+      "p50ms": 0.057299999999941065,
+      "p95ms": 0.08300000000008367,
+      "maxMs": 0.10710000000017317,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.nebula-collapse",
+      "p50ms": 0.23640000000023065,
+      "p95ms": 0.43260000000009313,
+      "maxMs": 0.987800000000334,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.asteroid-lanes",
+      "p50ms": 0.4000999999998385,
+      "p95ms": 0.5343000000002576,
+      "maxMs": 0.8414999999999964,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.solar-windfront",
+      "p50ms": 0.07439999999996871,
+      "p95ms": 0.0864000000001397,
+      "maxMs": 0.13239999999996144,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.gravity-lens",
+      "p50ms": 0.43840000000000146,
+      "p95ms": 0.4983999999999469,
+      "maxMs": 0.5859000000000378,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.planet-transit",
+      "p50ms": 0.023299999999835563,
+      "p95ms": 0.07229999999981374,
+      "maxMs": 1.7101999999999862,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.resonant-alignment",
+      "p50ms": 0.04149999999981446,
+      "p95ms": 0.0648999999998523,
+      "maxMs": 0.08849999999983993,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.redshift-flight",
+      "p50ms": 0.27620000000024447,
+      "p95ms": 0.491099999999733,
+      "maxMs": 0.5807000000004336,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.weather-fronts",
+      "p50ms": 0.01900000000023283,
+      "p95ms": 0.07179999999971187,
+      "maxMs": 0.2278999999998632,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.tornado-track",
+      "p50ms": 0.23039999999991778,
+      "p95ms": 0.33199999999987995,
+      "maxMs": 0.9992999999999483,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.river-delta",
+      "p50ms": 0.3184000000001106,
+      "p95ms": 0.36469999999962965,
+      "maxMs": 2.3005999999995765,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.meander-migration",
+      "p50ms": 0.042699999999967986,
+      "p95ms": 0.06129999999984648,
+      "maxMs": 0.07769999999982247,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.glacier-calving",
+      "p50ms": 0.06870000000026266,
+      "p95ms": 0.12560000000030414,
+      "maxMs": 0.25250000000005457,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.sea-ice-leads",
+      "p50ms": 0.05180000000018481,
+      "p95ms": 0.08280000000013388,
+      "maxMs": 0.36970000000019354,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.migrating-dunes",
+      "p50ms": 0.03860000000031505,
+      "p95ms": 0.06129999999984648,
+      "maxMs": 2.419499999999971,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.rain-shadow",
+      "p50ms": 0.1430000000000291,
+      "p95ms": 0.16119999999955326,
+      "maxMs": 0.21889999999984866,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.convection-cells",
+      "p50ms": 0.05490000000008877,
+      "p95ms": 0.068000000000211,
+      "maxMs": 0.1329000000000633,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.branching-lightning",
+      "p50ms": 0.250999999999749,
+      "p95ms": 0.30300000000033833,
+      "maxMs": 2.28020000000015,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.layered-cloud-deck",
+      "p50ms": 0.09009999999989304,
+      "p95ms": 0.13720000000012078,
+      "maxMs": 0.16409999999996217,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.fog-bank",
+      "p50ms": 0.08540000000039072,
+      "p95ms": 0.09940000000005966,
+      "maxMs": 0.15470000000004802,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.mycelium-routes",
+      "p50ms": 0.43220000000019354,
+      "p95ms": 0.5091000000002168,
+      "maxMs": 3.5371000000000095,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.root-foraging",
+      "p50ms": 0.23100000000022192,
+      "p95ms": 0.5159999999996217,
+      "maxMs": 2.4972999999999956,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.predator-and-prey",
+      "p50ms": 0.18709999999964566,
+      "p95ms": 0.25640000000021246,
+      "maxMs": 1.369799999999941,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.firefly-synchrony",
+      "p50ms": 0.031899999999950523,
+      "p95ms": 0.47519999999985885,
+      "maxMs": 11.385400000000118,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.coral-competition",
+      "p50ms": 0.03440000000000509,
+      "p95ms": 0.05510000000003856,
+      "maxMs": 0.6165999999998348,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.leaf-veins",
+      "p50ms": 0.23280000000022483,
+      "p95ms": 0.4057999999999993,
+      "maxMs": 2.5752000000002226,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.pollinator-routes",
+      "p50ms": 0.0864000000001397,
+      "p95ms": 0.10580000000027212,
+      "maxMs": 0.36419999999998254,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.spore-landing",
+      "p50ms": 0.24569999999994252,
+      "p95ms": 0.3915999999999258,
+      "maxMs": 2.012699999999768,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.slime-trail-network",
+      "p50ms": 0.020199999999931606,
+      "p95ms": 0.06559999999990396,
+      "maxMs": 1.2467000000001462,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.spring-succession",
+      "p50ms": 0.5036000000000058,
+      "p95ms": 0.8541999999997643,
+      "maxMs": 2.610900000000129,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.tidepool-colonies",
+      "p50ms": 0.042699999999967986,
+      "p95ms": 0.06960000000026412,
+      "maxMs": 0.16280000000006112,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.circadian-garden",
+      "p50ms": 0.12030000000004293,
+      "p95ms": 0.24159999999983484,
+      "maxMs": 0.275300000000243,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.gear-train",
+      "p50ms": 0.0421000000001186,
+      "p95ms": 0.07600000000002183,
+      "maxMs": 0.2885000000001128,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.ratchet-march",
+      "p50ms": 0.02570000000014261,
+      "p95ms": 0.034799999999904685,
+      "maxMs": 0.05750000000034561,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.conveyor-sorter",
+      "p50ms": 0.12030000000004293,
+      "p95ms": 0.2244999999998072,
+      "maxMs": 0.7191000000002532,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.escapement-tick",
+      "p50ms": 0.037000000000261934,
+      "p95ms": 0.04489999999987049,
+      "maxMs": 0.07180000000016662,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.cam-lift",
+      "p50ms": 0.024600000000191358,
+      "p95ms": 0.06520000000000437,
+      "maxMs": 0.14740000000028886,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.piston-bank",
+      "p50ms": 0.023099999999885767,
+      "p95ms": 0.02860000000009677,
+      "maxMs": 0.06149999999979627,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.dwell-drive",
+      "p50ms": 0.023700000000189902,
+      "p95ms": 0.031899999999950523,
+      "maxMs": 0.03710000000000946,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.spring-lattice",
+      "p50ms": 0.04039999999986321,
+      "p95ms": 0.06749999999965439,
+      "maxMs": 0.2721000000001368,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.magnetic-clutch",
+      "p50ms": 0.049500000000080036,
+      "p95ms": 0.05279999999993379,
+      "maxMs": 0.14489999999977954,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.hydraulic-network",
+      "p50ms": 0.044200000000273576,
+      "p95ms": 0.06140000000004875,
+      "maxMs": 1.659400000000005,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.differential-motion",
+      "p50ms": 0.02109999999993306,
+      "p95ms": 0.02860000000009677,
+      "maxMs": 0.04419999999981883,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.kinetic-tiles",
+      "p50ms": 0.018800000000283035,
+      "p95ms": 0.027399999999943248,
+      "maxMs": 0.029500000000098225,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.truchet-paths",
+      "p50ms": 0.05609999999978754,
+      "p95ms": 0.07970000000022992,
+      "maxMs": 0.14330000000018117,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.hilbert-walk",
+      "p50ms": 0.29670000000032815,
+      "p95ms": 0.4290000000000873,
+      "maxMs": 0.6165000000000873,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.peano-weave",
+      "p50ms": 1.0653000000002066,
+      "p95ms": 1.898200000000088,
+      "maxMs": 1.9394999999999527,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.cell-fracture",
+      "p50ms": 0.19369999999980791,
+      "p95ms": 0.27880000000004657,
+      "maxMs": 0.31530000000020664,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.triangulated-mesh",
+      "p50ms": 1.460099999999784,
+      "p95ms": 2.612300000000232,
+      "maxMs": 3.3712000000000444,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.quasiperiodic-tiles",
+      "p50ms": 0.03599999999960346,
+      "p95ms": 0.04690000000027794,
+      "maxMs": 0.06190000000015061,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.superformula-morph",
+      "p50ms": 0.0284999999998945,
+      "p95ms": 0.05920000000014625,
+      "maxMs": 0.09109999999964202,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.harmonic-knots",
+      "p50ms": 0.026899999999841384,
+      "p95ms": 0.03440000000000509,
+      "maxMs": 0.05559999999968568,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.distance-sculptures",
+      "p50ms": 0.03540000000020882,
+      "p95ms": 0.04359999999996944,
+      "maxMs": 0.05639999999993961,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.topographic-contours",
+      "p50ms": 0.08829999999989013,
+      "p95ms": 0.130500000000211,
+      "maxMs": 1.6304000000000087,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.quadtree-bloom",
+      "p50ms": 0.08910000000014406,
+      "p95ms": 0.16030000000000655,
+      "maxMs": 0.16840000000001965,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.aperiodic-weave",
+      "p50ms": 0.03429999999980282,
+      "p95ms": 0.0466999999998734,
+      "maxMs": 2.115099999999984,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.maze-carver",
+      "p50ms": 0.5869000000002416,
+      "p95ms": 0.8463000000001557,
+      "maxMs": 1.2473999999997432,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.maze-search",
+      "p50ms": 0.4749999999994543,
+      "p95ms": 0.7461000000002969,
+      "maxMs": 1.1134999999994761,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.courier-network",
+      "p50ms": 0.7789000000002488,
+      "p95ms": 1.2121999999999389,
+      "maxMs": 2.1862999999993917,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.packet-switching",
+      "p50ms": 0.5901000000003478,
+      "p95ms": 0.7645999999995183,
+      "maxMs": 2.367699999999786,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.railway-signals",
+      "p50ms": 0.4661999999998443,
+      "p95ms": 0.6035000000001673,
+      "maxMs": 0.721599999999853,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.continuity-tester",
+      "p50ms": 0.45430000000033033,
+      "p95ms": 0.6279000000004089,
+      "maxMs": 0.7740999999996347,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.elevator-dispatch",
+      "p50ms": 0.06459999999970023,
+      "p95ms": 0.0955999999996493,
+      "maxMs": 0.27229999999963184,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.city-nightfall",
+      "p50ms": 0.05889999999999418,
+      "p95ms": 0.08469999999942956,
+      "maxMs": 0.40020000000004075,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.factory-shift",
+      "p50ms": 0.5338000000001557,
+      "p95ms": 0.7462000000004991,
+      "maxMs": 0.9808000000002721,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.growing-skyline",
+      "p50ms": 0.04919999999947322,
+      "p95ms": 0.06540000000040891,
+      "maxMs": 0.2238999999999578,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.power-grid-startup",
+      "p50ms": 0.3400000000001455,
+      "p95ms": 0.5199999999995271,
+      "maxMs": 0.644800000000032,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.signal-hunt",
+      "p50ms": 0.06780000000071595,
+      "p95ms": 0.12669999999980064,
+      "maxMs": 0.4345000000002983,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.compression-wake",
+      "p50ms": 1.8238000000001193,
+      "p95ms": 2.1845000000002983,
+      "maxMs": 2.420799999999872,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.duration-brush",
+      "p50ms": 0.7917000000006738,
+      "p95ms": 1.4494999999997162,
+      "maxMs": 1.5688000000000102,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.foam-puncture",
+      "p50ms": 1.7570999999998094,
+      "p95ms": 2.827299999999923,
+      "maxMs": 4.780300000000352,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.particle-brush",
+      "p50ms": 0.5291999999999462,
+      "p95ms": 0.9621999999999389,
+      "maxMs": 1.2960000000002765,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.resonant-membrane",
+      "p50ms": 0.42809999999917636,
+      "p95ms": 0.7250999999996566,
+      "maxMs": 0.8032000000002881,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.domino-run",
+      "p50ms": 4.004299999999603,
+      "p95ms": 5.797700000000077,
+      "maxMs": 6.71349999999984,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.dipole-touch",
+      "p50ms": 0.49179999999978463,
+      "p95ms": 0.9944000000004962,
+      "maxMs": 1.3429999999998472,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.shock-absorber",
+      "p50ms": 0.5009000000000015,
+      "p95ms": 0.9539000000004307,
+      "maxMs": 2.5839999999998327,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.touch-lens",
+      "p50ms": 0.8022000000000844,
+      "p95ms": 1.2978000000002794,
+      "maxMs": 1.5857000000005428,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.turbulent-typing-wake",
+      "p50ms": 1.0898999999999432,
+      "p95ms": 1.6045999999996639,
+      "maxMs": 1.662199999999757,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.colliding-sparks",
+      "p50ms": 0.4786999999996624,
+      "p95ms": 0.7851999999993495,
+      "maxMs": 2.478399999999965,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.ballistic-release",
+      "p50ms": 0.11679999999978463,
+      "p95ms": 0.2620999999999185,
+      "maxMs": 0.3085000000000946,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.tension-net",
+      "p50ms": 3.821799999999712,
+      "p95ms": 6.031599999999344,
+      "maxMs": 6.168700000000172,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.soap-film-chord",
+      "p50ms": 0.04370000000017171,
+      "p95ms": 0.08119999999962602,
+      "maxMs": 0.11779999999998836,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.chord-arpeggio",
+      "p50ms": 0.04629999999997381,
+      "p95ms": 0.07950000000073487,
+      "maxMs": 0.11999999999989086,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.chord-polyrhythm",
+      "p50ms": 0.22800000000006548,
+      "p95ms": 0.4173000000000684,
+      "maxMs": 2.0978000000004613,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.phase-agreement",
+      "p50ms": 3.790200000000368,
+      "p95ms": 6.210999999999331,
+      "maxMs": 6.489300000000185,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.color-treaty",
+      "p50ms": 1.4416999999994005,
+      "p95ms": 2.2272000000002663,
+      "maxMs": 2.8872999999994136,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.elastic-perimeter",
+      "p50ms": 0.04349999999976717,
+      "p95ms": 0.09940000000005966,
+      "maxMs": 1.4729999999999563,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.chord-interferometer",
+      "p50ms": 0.8881000000001222,
+      "p95ms": 1.4868999999998778,
+      "maxMs": 1.6876000000002023,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.braided-hands",
+      "p50ms": 0.3949000000002343,
+      "p95ms": 0.6606000000001586,
+      "maxMs": 3.1134000000001834,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.shortcut-confirmation",
+      "p50ms": 1.5628000000006068,
+      "p95ms": 6.613699999999881,
+      "maxMs": 8.050100000000384,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.chord-orbitals",
+      "p50ms": 0.4709000000002561,
+      "p95ms": 0.8975000000000364,
+      "maxMs": 1.0057999999999083,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.release-compass",
+      "p50ms": 0.024600000000646105,
+      "p95ms": 0.03459999999995489,
+      "maxMs": 0.2698999999993248,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.trail-excavation",
+      "p50ms": 2.456500000000233,
+      "p95ms": 3.5098000000007232,
+      "maxMs": 4.387400000000525,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.activity-districts",
+      "p50ms": 1.9974999999994907,
+      "p95ms": 2.6346000000003187,
+      "maxMs": 3.8245999999999185,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.palette-inheritance",
+      "p50ms": 1.96520000000055,
+      "p95ms": 2.552400000000489,
+      "maxMs": 3.77770000000055,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.learned-footpaths",
+      "p50ms": 2.4000000000005457,
+      "p95ms": 3.71520000000055,
+      "maxMs": 4.337700000000041,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.recency-ribbons",
+      "p50ms": 3.2674999999999272,
+      "p95ms": 4.936599999999089,
+      "maxMs": 6.185899999998583,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.entropy-landscape",
+      "p50ms": 2.3641999999999825,
+      "p95ms": 3.8122000000003027,
+      "maxMs": 3.8858000000000175,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.habit-contours",
+      "p50ms": 2.159299999999348,
+      "p95ms": 3.735399999999572,
+      "maxMs": 4.404900000001362,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.two-time-memory",
+      "p50ms": 2.330899999999019,
+      "p95ms": 3.7194999999992433,
+      "maxMs": 4.299999999999272,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.session-seasons",
+      "p50ms": 0.8078999999997905,
+      "p95ms": 1.3816999999999098,
+      "maxMs": 3.438400000000911,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.afterwork-rain",
+      "p50ms": 3.447200000000521,
+      "p95ms": 4.9025000000001455,
+      "maxMs": 5.5055000000011205,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.recovering-reef",
+      "p50ms": 1.9858000000003813,
+      "p95ms": 2.626800000000003,
+      "maxMs": 4.01339999999982,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.recurring-constellations",
+      "p50ms": 2.312099999999191,
+      "p95ms": 3.9657999999999447,
+      "maxMs": 5.189399999999296,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.stereo-separation",
+      "p50ms": 0.029199999999036663,
+      "p95ms": 0.07040000000051805,
+      "maxMs": 1.4750999999996566,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.bass-lens",
+      "p50ms": 0.03220000000146683,
+      "p95ms": 0.04489999999896099,
+      "maxMs": 0.08100000000013097,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.transient-raindrops",
+      "p50ms": 0.12419999999838183,
+      "p95ms": 0.43699999999989814,
+      "maxMs": 0.5698000000011234,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.harmonic-ladder",
+      "p50ms": 0.049099999998361454,
+      "p95ms": 0.10289999999986321,
+      "maxMs": 0.11359999999876891,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.onset-racetrack",
+      "p50ms": 0.05799999999908323,
+      "p95ms": 0.11520000000018626,
+      "maxMs": 0.1364000000012311,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.centroid-orbit",
+      "p50ms": 0.04770000000098662,
+      "p95ms": 0.06489999999939755,
+      "maxMs": 0.1367999999984022,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.beat-pendulum",
+      "p50ms": 0.027000000000043656,
+      "p95ms": 0.06270000000040454,
+      "maxMs": 0.11660000000119908,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.polyrhythm-bands",
+      "p50ms": 0.0459999999984575,
+      "p95ms": 0.07809999999881256,
+      "maxMs": 0.14310000000114087,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.quiet-bloom",
+      "p50ms": 0.08059999999932188,
+      "p95ms": 0.16190000000096916,
+      "maxMs": 0.17770000000018626,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.spectral-memory",
+      "p50ms": 0.11199999999917054,
+      "p95ms": 0.28769999999894935,
+      "maxMs": 0.34240000000136206,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.stereo-vortex",
+      "p50ms": 0.04459999999926367,
+      "p95ms": 0.06179999999949359,
+      "maxMs": 0.07519999999931315,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.build-and-drop",
+      "p50ms": 0.9423999999999069,
+      "p95ms": 2.918999999999869,
+      "maxMs": 5.26339999999982,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.glass-ocean",
+      "p50ms": 2.4374000000007072,
+      "p95ms": 4.386799999998402,
+      "maxMs": 4.91859999999906,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.copper-rain",
+      "p50ms": 0.13379999999961,
+      "p95ms": 0.30060000000048603,
+      "maxMs": 2.2762999999995372,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.night-drive",
+      "p50ms": 2.0068000000010215,
+      "p95ms": 3.149300000000949,
+      "maxMs": 3.9068999999999505,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.botanical-study",
+      "p50ms": 0.8181000000004133,
+      "p95ms": 1.6208999999998923,
+      "maxMs": 3.9214000000010856,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.deep-laboratory",
+      "p50ms": 1.4798999999984517,
+      "p95ms": 2.7255999999997584,
+      "maxMs": 8.191600000000108,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.quiet-reading-room",
+      "p50ms": 0.06899999999950523,
+      "p95ms": 0.10519999999996799,
+      "maxMs": 0.12479999999959546,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.arcade-afterhours",
+      "p50ms": 0.11870000000089931,
+      "p95ms": 0.2224000000005617,
+      "maxMs": 0.25639999999839347,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.arctic-radio",
+      "p50ms": 0.2382999999990716,
+      "p95ms": 0.3775000000005093,
+      "maxMs": 2.1491000000005442,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.solar-forge",
+      "p50ms": 0.2867000000005646,
+      "p95ms": 1.0382000000008702,
+      "maxMs": 2.2608000000000175,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.paper-lanterns",
+      "p50ms": 0.1815999999998894,
+      "p95ms": 0.25610000000051514,
+      "maxMs": 0.39249999999992724,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.rain-on-glass",
+      "p50ms": 2.7327000000004773,
+      "p95ms": 4.690899999999601,
+      "maxMs": 6.396099999999933,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.living-circuit",
+      "p50ms": 0.11330000000089058,
+      "p95ms": 0.37479999999959546,
+      "maxMs": 4.1141999999999825,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.build-runner",
+      "p50ms": 1.1371999999992113,
+      "p95ms": 3.2568000000010215,
+      "maxMs": 4.389599999998609,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.test-lanes",
+      "p50ms": 1.247800000001007,
+      "p95ms": 3.067399999999907,
+      "maxMs": 3.4724999999998545,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.download-channel",
+      "p50ms": 1.0494999999991705,
+      "p95ms": 2.819900000000416,
+      "maxMs": 3.6545999999998457,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.meeting-mute",
+      "p50ms": 1.1015999999999622,
+      "p95ms": 2.98319999999876,
+      "maxMs": 3.678699999998571,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.focus-arc",
+      "p50ms": 0.9740000000001601,
+      "p95ms": 2.8464999999996508,
+      "maxMs": 4.721400000000358,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.timer-landing",
+      "p50ms": 1.1534000000010565,
+      "p95ms": 3.0900000000001455,
+      "maxMs": 3.5525000000016007,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.laptop-battery-contour",
+      "p50ms": 1.1379000000015367,
+      "p95ms": 3.224900000001071,
+      "maxMs": 3.834500000000844,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.application-scene-switch",
+      "p50ms": 0.0008999999990919605,
+      "p95ms": 0.004700000001321314,
+      "maxMs": 0.009700000000520959,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.shortcut-layer-guide",
+      "p50ms": 2.7194999999992433,
+      "p95ms": 4.8906000000006316,
+      "maxMs": 5.990399999998772,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.notification-inbox",
+      "p50ms": 1.5039000000015221,
+      "p95ms": 3.8482999999996537,
+      "maxMs": 4.234199999998964,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.resource-weather",
+      "p50ms": 1.4447000000000116,
+      "p95ms": 3.689300000000003,
+      "maxMs": 3.9666999999990367,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    },
+    {
+      "layout": "aula-f75",
+      "id": "expansion.local-event-canvas",
+      "p50ms": 2.167299999999159,
+      "p95ms": 4.305200000000696,
+      "maxMs": 4.4945000000006985,
+      "frames": 96,
+      "inputs": "120 typing events, measured-format audio fixture, canvas events; some event types intentionally absent"
+    }
+  ]
+}

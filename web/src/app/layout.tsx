@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "AULA F75 Controller",
-  description: "Configure the AULA F75 keyboard from Linux over WebHID — effects, remapping, per-key colors.",
+  description: "Keyboard RGB effects with a shared engine and an AULA F75 bridge — Windows desktop app and browser preview.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

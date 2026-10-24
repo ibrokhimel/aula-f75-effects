@@ -195,7 +195,13 @@ describe('reactivity', () => {
   // and by multiple keys, and are covered by their own tests below, as are
   // `charge` (rewards a long hold) and `link` (needs two presses). Sound
   // effects ignore presses entirely — audio drives them (sound.test.ts).
-  const QUICK_TAP_EXEMPT = new Set(['charge', 'link']);
+  const QUICK_TAP_EXEMPT = new Set([
+    'charge', 'link',
+    // Paths require transitions, Afterwork Rain waits for idle, and
+    // constellations require repeated co-activity (expansion/inputs.test.ts).
+    'expansion.trail-excavation', 'expansion.learned-footpaths',
+    'expansion.afterwork-rain', 'expansion.recurring-constellations',
+  ]);
   const TAP_CATEGORIES = (c: string) =>
     c !== 'Field' && c !== 'Hold' && c !== 'Chord' && c !== 'Sound';
 

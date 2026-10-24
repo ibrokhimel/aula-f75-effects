@@ -43,7 +43,7 @@ describe("extractData", () => {
 describe("readConfigRegion", () => {
   it("sends a 0x84 read request then strips payload to 128 bytes", async () => {
     const d = new FakeDevice() as unknown as FakeHID;
-    const reply = new Uint8Array(520);
+    const reply = buildFrame(CMD_READ_REGION, [0, 0, 1, 0], CFG_LEN);
     for (let i = 0; i < 128; i++) reply[8 + i] = i;
     d.replies.push(reply);
     const out = await readConfigRegion(d, log);
@@ -81,6 +81,27 @@ class FakeStuckDevice {
 type FakeStuckHID = FakeStuckDevice & HIDDevice;
 
 describe("readRegion", () => {
+  it('ignores stale RGB and mismatched-address replies before accepting configuration', async () => {
+    const d = new FakeDevice() as unknown as FakeHID;
+    const stale = buildFrame(8, [0, 0, 1, 0], 0x17a);
+    const wrongAddress = buildFrame(CMD_READ_REGION, [1, 0, 1, 0], CFG_LEN);
+    const valid = buildFrame(CMD_READ_REGION, [0, 0, 1, 0], CFG_LEN); valid[8] = 42;
+    d.replies.push(stale, wrongAddress, valid);
+    const out = await readRegion(d, CMD_READ_REGION, [0, 0, 1, 0], CFG_LEN, log, 200);
+    expect(out?.[8]).toBe(42); expect(out?.[1]).toBe(CMD_READ_REGION);
+  });
+  it('rejects a read that only returns stale lighting data', async () => {
+    const d = new FakeDevice() as unknown as FakeHID;
+    d.replies.push(...Array.from({ length: 8 }, () => buildFrame(8, [0, 0, 1, 0], 0x17a)));
+    expect(await readRegion(d, CMD_READ_REGION, [0, 0, 1, 0], CFG_LEN, log, 100)).toBeNull();
+  });
+  it('honors DataView offsets and rejects truncated payloads', async () => {
+    const d = new FakeDevice() as unknown as FakeHID;
+    const valid = buildFrame(CMD_READ_REGION, [0, 0, 1, 0], CFG_LEN); valid[8] = 55;
+    const buffer = new Uint8Array(540); buffer.set(valid, 12);
+    d.receiveFeatureReport = vi.fn().mockResolvedValueOnce(new DataView(valid.buffer, 0, 10)).mockResolvedValueOnce(new DataView(buffer.buffer, 12, 520));
+    expect((await readRegion(d, CMD_READ_REGION, [0, 0, 1, 0], CFG_LEN, log, 200))?.[8]).toBe(55);
+  });
   it("timeouts when the device never replies", async () => {
     const d = new FakeStuckDevice() as unknown as FakeStuckHID;
     const out = await readRegion(d, CMD_READ_REGION, [0, 0, 1, 0], CFG_LEN, log, 50);

@@ -25,7 +25,7 @@ export function useKeyboard() {
     const log = useCallback((msg: string) => {
         const ts = new Date().toLocaleTimeString('en', { hour12: false, fractionalSecondDigits: 3 });
         const entry = `[${ts}] ${msg}`;
-        logsRef.current = [...logsRef.current, entry];
+        logsRef.current = [...logsRef.current.slice(-499), entry];
         setLogs([...logsRef.current]);
         console.log(msg);
     }, []);
@@ -137,11 +137,8 @@ export function useKeyboard() {
             } catch (err: unknown) {
                 const msg = err instanceof Error ? err.message : String(err);
                 log(`Error: Failed to open ${model} (${vid}:${pid}): ${msg}`);
-                log('Hint: on Linux this means the browser cannot access the keyboard\'s /dev/hidraw node.');
-                log('  Install the udev rule, reload it, then replug the keyboard:');
-                log('    sudo cp udev/99-aula-f75.rules /etc/udev/rules.d/');
-                log('    sudo udevadm control --reload-rules && sudo udevadm trigger');
-                log('  Also close any other tab/app that has the keyboard open (only one page can hold it).');
+                log('Close any other tab/app that has the keyboard open, then reconnect.');
+                log('For background lighting on Windows, use the desktop app.');
                 setStatus(`Error: failed to open ${model}`);
                 return;
             }

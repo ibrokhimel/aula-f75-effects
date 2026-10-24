@@ -1,21 +1,22 @@
 # AULA F75 controller
 
-An RGB effects engine and full configuration tool for the AULA F75 mechanical
-keyboard, speaking the keyboard's own protocol directly — no OEM driver, and
-no traffic ever leaves your machine.
+A Windows keyboard RGB app with a reusable, layout-driven effects engine.
+AULA F75 is the first hardware bridge, speaking its protocol directly without
+an OEM driver. Other keyboards can reuse the effects by supplying a layout
+and bridge; see [Adding a keyboard](docs/KEYBOARD-BRIDGES.md).
 
 It comes in two forms:
 
 - **Windows desktop app** — the full experience. Effects react to your typing
   in *any* application, keep running with the window closed, and live in the
   system tray. [Grab it from Releases](../../releases/latest).
-- **Browser app** — runs on Linux (or anywhere Chromium runs) over WebHID.
-  No install, nothing runs as root. Effects only react while the tab is
-  focused; browsers can't see keystrokes sent to other apps.
+- **Browser preview / development app** — runs in Chromium over WebHID.
+  Effects react while the tab is focused; use the Windows desktop app for
+  background lighting.
 
 What's inside either way:
 
-- **211 reactive effects** — lighting driven by your typing: ripples, holds,
+- **227 reactive effects** — lighting driven by your typing: ripples, holds,
   chords, rhythm, typing-speed, zones, memory effects that build up patina
   over a minute of use, and more. Every effect works on the on-screen preview
   even with no keyboard plugged in.
@@ -24,6 +25,33 @@ What's inside either way:
   invaders, whack-a-mole, rhythm…
 - Full configuration: per-key colors, onboard effect switching, key
   remapping (Default + FN1 layers), debounce, profiles, snapshots.
+
+## New studio
+
+Open **http://127.0.0.1:3000/studio** after running `node scripts/dev-studio.mjs`
+from `web/`. The studio includes seven lighting modes plus Key mapping,
+Macros, Profiles, Games, Settings, and Advanced. Navigation uses icons with
+accessible labels; keyboard thumbnails animate on hover or focus.
+
+Profiles save the complete setup, including both mapping layers and macros.
+Mapping edits stay local until **Apply to keyboard**. Macros support recording,
+editable presses/releases/delays, import/export, and visual simulation;
+firmware macro upload is not implemented.
+
+Connect in **Settings** and enable **Keyboard lighting output** to stream RGB.
+The browser uses WebHID. The Windows app renders effects in the main process,
+supports global typing and tray playback, and reads CPU/memory through IPC.
+Audio and screen capture start only after an explicit capture action.
+
+Build the studio desktop UI with `node scripts/build-studio-web.mjs` from
+`desktop/`, then run `node scripts/build.mjs`. The static UI goes to
+`web/studio-out`, independently of the browser development server.
+`electron . --smoke` checks the native UI, global hook, telemetry, and virtual
+frame delivery without writing to the physical keyboard or changing saved settings.
+
+The studio keeps the reviewed 72-family / 116-renderer collection. Experimental
+engine expansion effects remain outside this collection until their validation
+and visual review are complete.
 
 ## Windows desktop app
 
@@ -45,7 +73,9 @@ Run anyway*).
 Build it yourself:
 
 ```bash
-cd desktop
+cd web
+npm install
+cd ../desktop
 npm install
 npm run build:web   # static-exports the UI from ../web
 npm run start       # typecheck + bundle + launch
@@ -56,22 +86,9 @@ npm run dist        # → release/ (installer, portable, zip)
 hook, streams a real animation for 2.5 s, prints a status JSON line, and
 exits.
 
-## Browser app (Linux)
+## Browser preview / development
 
-You need a Chromium-based browser (Chrome, Edge, Brave) and
-[Bun](https://bun.sh) or Node 18+. Give your user access to the keyboard's
-hidraw node:
-
-```bash
-sudo cp udev/99-aula-f75.rules /etc/udev/rules.d/
-sudo udevadm control --reload-rules && sudo udevadm trigger
-```
-
-Unplug and replug the keyboard once after this. The rule grants read/write on
-the F75's `/dev/hidraw` devices (`MODE="0666"`); the file header shows a
-`GROUP="input"` variant if that's too wide for your taste.
-
-Run it:
+Use a Chromium-based browser and [Bun](https://bun.sh), or Node.js with npm.
 
 ```bash
 cd web
@@ -106,11 +123,9 @@ everything the app logged. Attach it when opening an issue.
 
 Things we've run into, in roughly the order people hit them:
 
-- **The keyboard isn't detected at all.** On Linux check `journalctl -k` for
-  a `258a:010c` line. Try a port on the computer itself rather than a hub,
+- **The keyboard isn't detected at all.** Try a port on the computer itself rather than a hub,
   make sure the side switch is set to Wired, and remember the cable matters.
-- **"Failed to open" on connect (browser).** The udev rule isn't loaded
-  (replug after installing it), or another tab/app is holding the keyboard —
+- **"Failed to open" on connect (browser).** Another tab/app may be holding the keyboard —
   WebHID allows one claimant at a time. The desktop app and a browser tab
   can't drive the board at the same time either.
 - **Connected but nothing applies (browser).** You probably picked the plain
@@ -137,20 +152,28 @@ Two protocols live inside this keyboard, selected by USB product ID:
 Full wire details, offsets, and framing are in
 [docs/PROTOCOL.md](docs/PROTOCOL.md).
 
-The effect engine is plain TypeScript with no DOM dependency
-(`web/src/lib/`), which is what makes the desktop app possible: Electron's
-main process runs the exact same reactive engine and animation functions,
-fed by a global key hook (uiohook) instead of browser events and writing to
-the keyboard through node-hid instead of WebHID. One Windows quirk worth
-knowing: the F75 spreads its vendor traffic across three HID collections,
-which Windows exposes as separate devices — the desktop transport opens all
-of them and learns which one accepts each report type.
+The effect engine lives in `packages/engine/src`. It takes a keyboard layout
+and key/audio input and returns frames of LED colors. Layout geometry, key
+mapping, neighbor relationships, and effect caches belong to each engine
+instance; no F75 LED numbering is assumed by the shared engine.
+
+The first bridge lives in `web/src/lib/bridges/f75` and handles wired/dongle
+RGB packets. Both the Windows desktop host and browser effects panels use the
+bridge contract. A virtual bridge runs the same effects without hardware.
+F75 remapping, onboard configuration, and games remain app-specific.
+
+See [the bridge guide](docs/KEYBOARD-BRIDGES.md) for the contract, a runnable
+virtual-keyboard example, host integration, and validation instructions.
+
+One Windows quirk: the F75 spreads vendor traffic across three HID
+collections. The desktop transport opens all of them and learns which one
+accepts each report type.
 
 ## Development
 
 ```bash
 cd web
-bun test            # 2,400+ unit tests (protocol, effects, layout, ...)
+bun run test        # Vitest: protocol, effects, layouts, bridges, games
 bunx tsc --noEmit   # typecheck
 
 cd ../desktop
@@ -185,6 +208,7 @@ This stands on prior reverse-engineering work — thank you:
 - Sleep timer is informational on wired mode — the OEM driver hides it there
   too (`KB.ini` `ShowPower=0`).
 - Profiles capture keybind layers only; lighting isn't saved into profiles.
-- Desktop builds are unsigned and Windows-only for now (nothing in the
-  architecture is Windows-specific — the hook and HID libraries both support
-  macOS/Linux).
+- The supported desktop app is Windows-only and builds are unsigned.
+- AULA F75 is the only hardware bridge supplied so far. The shared engine
+  supports other layouts, but a new board still needs a working RGB bridge
+  and integration into device discovery/UI.

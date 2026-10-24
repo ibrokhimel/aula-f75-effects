@@ -1,0 +1,90 @@
+{
+  "createdAt": "2026-10-22T20:48:31.805Z",
+  "browserURL": "http://127.0.0.1:3000/studio",
+  "workspaces": [
+    "Lighting",
+    "Key mapping",
+    "Macros",
+    "Profiles",
+    "Games",
+    "Settings",
+    "Advanced"
+  ],
+  "lightingModes": [
+    "Automatic",
+    "Typing",
+    "Audio",
+    "Screen",
+    "Per-key",
+    "Layers",
+    "System activity"
+  ],
+  "curatedCollection": {
+    "families": 72,
+    "renderers": 116,
+    "exactSampleDuplicates": 0,
+    "experimentalExpansionIncluded": false
+  },
+  "verification": {
+    "studioUnitTestsPassed": 280,
+    "studioUnitTestsFailed": 0,
+    "browserSuites": [
+      "Automatic catalog and controls",
+      "Six added lighting modes and capture cleanup",
+      "Six added workspaces, persistence and responsive layouts"
+    ],
+    "webTypecheck": true,
+    "desktopTypecheck": true,
+    "studioLint": true,
+    "productionExport": true,
+    "developmentElectronSmoke": true,
+    "packagedElectronSmoke": true,
+    "nativeGlobalHookStarted": true,
+    "nativeTelemetry": true,
+    "physicalHIDWritesDuringSmoke": 0,
+    "hardwareRegressionTestsPassed": 20,
+    "hardwareRegressionTestsFailed": 0
+  },
+  "artifacts": [
+    {
+      "path": "desktop/release/AULA-F75-Studio-0.2.1-x64.exe",
+      "bytes": 118079064,
+      "sha256": "cf7bf1faa8a2e225f1d26b4a6f435d9a071740003758ee5b01b2cd6fee6939d3"
+    },
+    {
+      "path": "desktop/release/AULA-F75-Studio-0.2.1-x64.zip",
+      "bytes": 114453640,
+      "sha256": "b3b047ccc45c0a7d1fbfe1733b9497ab06a05ed3de66853807cb294f38cffb85"
+    }
+  ],
+  "lastBroaderRepositoryRun": {
+    "passed": 4016,
+    "failed": 106,
+    "note": "Failures involve the separately developed experimental effect expansion; this is not a claim that the whole repository suite passes."
+  },
+  "limitations": [
+    "Firmware macro upload is unsupported; macros record, edit, import/export, and simulate locally.",
+    "Experimental expansion effects remain outside the curated studio until their separate validation and artistic review pass.",
+    "Key remapping, physical audio response, and selected-display capture still need conclusive hands-on verification."
+  ],
+  "screenshots": "web/test-results/studio/workspaces",
+  "nativeScreenshot": "web/test-results/studio/windows-studio.png",
+  "updatedAt": "2026-10-22T22:19:52.915Z",
+  "hardwareVerification": {
+    "date": "2026-10-23",
+    "transport": "wired",
+    "usb": "258A:010C",
+    "colors": "User confirmed red, green, blue, and WASD-only output looked correct.",
+    "automatic": "Aurora produced 64 changing frames in three seconds without output errors.",
+    "typing": "User confirmed ripples originate from the correct keys while typing in chat.",
+    "audio": "Windows loopback capture received 137 samples with nonzero level and no capture/output errors; physical response has not been confirmed by the user.",
+    "onboardLightingConfigurationUnchanged": true,
+    "onboardLightingSHA256": "22d6b5b8a1c24f4eeea36ec341027f861a80b5e958db7d45ad61ee2e61c16605",
+    "mapping": "Inconclusive: temporary End-to-Home writes were followed by factory End restore writes, but no Home event was confirmed during the active test window. This is not a verified keymap readback.",
+    "fixes": [
+      "Native typing press counter now follows runtime events, including paused frames.",
+      "Feature reads validate command/address/length headers and ignore stale RGB replies."
+    ],
+    "evidence": "web/test-results/studio/hardware"
+  }
+}

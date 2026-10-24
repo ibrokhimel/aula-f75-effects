@@ -1,0 +1,91 @@
+import assert from 'node:assert/strict';
+import { mkdir } from 'node:fs/promises';
+import { chromium } from 'playwright';
+
+const browser = await chromium.launch({ channel: process.env.STUDIO_BROWSER_CHANNEL || 'msedge' });
+const errors = [];
+try {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 960 } });
+  page.on('pageerror', e => errors.push(e.message));
+  await page.goto(process.env.STUDIO_URL || 'http://127.0.0.1:3000/studio', { waitUntil: 'domcontentloaded', timeout: 120000 });
+  await page.locator('.studio[data-ready=true]').waitFor();
+  await mkdir('test-results/studio/workspaces', { recursive: true });
+  const nav = name => page.getByRole('button', { name, exact: true });
+  const screenshot = name => page.screenshot({ path: `test-results/studio/workspaces/${name}.png`, fullPage: true });
+  await nav('Key mapping').click();
+  await nav('Key A').click();
+  await page.getByLabel('Assignment', { exact: true }).selectOption('2:205');
+  assert.equal(await page.getByText('1 assignment changed', { exact: true }).count(), 1);
+  assert.equal(await page.getByRole('button', { name: 'Apply to keyboard', exact: true }).isDisabled(), true);
+  await nav('Fn layer').click();
+  await nav('Key A').click();
+  await page.getByLabel('Assignment', { exact: true }).selectOption('0:5');
+  await screenshot('mapping');
+  await nav('Macros').click();
+  await nav('Create your first macro').click();
+  await page.getByLabel('Macro name', { exact: true }).fill('Quick AB');
+  await nav('Start recording').click();
+  await page.keyboard.press('KeyA');
+  await page.waitForTimeout(120);
+  await page.keyboard.press('KeyB');
+  await page.keyboard.press('Escape');
+  assert.equal(await page.getByLabel(/Step \d+ action/).count() >= 4, true);
+  assert.ok(await page.getByLabel(/Step \d+ delay/).count());
+  await page.getByLabel('Step 1 key', { exact: true }).selectOption('KeyC');
+  await nav('Test sequence').click();
+  await page.getByRole('button', { name: 'Test sequence', exact: true }).waitFor();
+  await screenshot('macros');
+  await nav('Profiles').click();
+  await nav('Save your first profile').click();
+  await page.getByLabel('Profile name', { exact: true }).fill('Evening setup');
+  await nav('Duplicate').click();
+  assert.equal(await page.locator('.studio-profile-grid article').count(), 2);
+  await page.getByLabel('Profile name', { exact: true }).fill('Work setup');
+  await nav('Apply profile').click();
+  await screenshot('profiles');
+  // A complete profile restores mapping and macros, rather than a lighting preset alone.
+  await nav('Key mapping').click();
+  await nav('Key A').click();
+  await page.getByLabel('Assignment', { exact: true }).selectOption('0:6');
+  await nav('Profiles').click();
+  await nav('Select profile Evening setup').click();
+  await nav('Apply profile').click();
+  await nav('Key mapping').click();
+  await nav('Key A').click();
+  assert.equal(await page.getByLabel('Assignment', { exact: true }).inputValue(), '2:205');
+  await nav('Games').click();
+  assert.equal(await page.locator('[data-page=games] .studio-effect-card').count(), 14);
+  await nav('Play game').click();
+  await page.keyboard.press('ArrowDown');
+  await page.waitForTimeout(150);
+  await nav('Pause game').click();
+  assert.equal(await nav('Play game').count(), 1, 'Pause must remain paused after focus moves to the transport button');
+  await nav('Preview Pong').click();
+  await screenshot('games');
+  await nav('Settings').click();
+  await page.getByLabel('Compact library', { exact: true }).check();
+  await page.getByLabel('Preview quality', { exact: true }).selectOption('20');
+  assert.equal(await page.getByLabel('Start with Windows', { exact: true }).isDisabled(), true);
+  assert.equal(await page.getByLabel('Keyboard lighting output', { exact: true }).isDisabled(), true);
+  await screenshot('settings');
+  await nav('Advanced').click();
+  const tester = page.getByRole('group', { name: 'Keyboard test area', exact: true });
+  await tester.focus(); await page.keyboard.press('KeyA'); await page.keyboard.press('KeyB');
+  assert.ok((await tester.innerText()).includes('2 keys detected'));
+  await screenshot('advanced');
+  await page.reload(); await page.locator('.studio[data-ready=true]').waitFor();
+  await nav('Macros').click();
+  assert.equal(await page.getByLabel('Macro name', { exact: true }).inputValue(), 'Quick AB');
+  await nav('Settings').click();
+  assert.equal(await page.getByLabel('Compact library', { exact: true }).isChecked(), true);
+  for (const viewport of [{ width: 1280, height: 800 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    for (const workspace of ['Key mapping', 'Macros', 'Profiles', 'Games', 'Settings', 'Advanced']) {
+      await nav(workspace).click();
+      const size = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
+      assert.ok(size[0] <= size[1] + 1, `${workspace} overflows ${viewport.width}: ${size}`);
+    }
+  }
+  assert.deepEqual(errors, []);
+  console.log('Workspace smoke passed: mapping layers, macro recording/editing/simulation, complete profile restore, 14 games, settings, key tests, persistence, and responsive layouts.');
+} finally { await browser.close(); }

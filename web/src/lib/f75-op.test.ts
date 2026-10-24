@@ -8,8 +8,11 @@ class FakeFeatureDevice {
   opened = true;
   region = new Uint8Array(128);
   writes: number[] = [];
+  // Firmware echoes the request header in its reply; readRegion rejects replies without it.
+  lastHeader = new Uint8Array(8);
   async sendFeatureReport(id: number, data: Uint8Array) {
     const frame = new Uint8Array(520); frame[0] = 0x06; frame.set(data, 1);
+    this.lastHeader = frame.slice(0, 8);
     if (frame[1] === 0x04) {
       this.region = frame.slice(8, 8 + 128);
       this.writes.push(frame[1]);
@@ -18,7 +21,7 @@ class FakeFeatureDevice {
     }
   }
   async receiveFeatureReport(): Promise<DataView> {
-    const f = new Uint8Array(520); f[0] = 0x06; f.set(this.region, 8);
+    const f = new Uint8Array(520); f.set(this.lastHeader); f.set(this.region, 8);
     return new DataView(f.buffer);
   }
 }

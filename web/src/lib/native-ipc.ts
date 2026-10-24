@@ -8,6 +8,13 @@
 
 /** Channels the renderer invokes (request/response). */
 export const CH = {
+  getStudio: 'f75:get-studio',
+  configureStudio: 'f75:configure-studio',
+  studioInput: 'f75:studio-input',
+  studioKey: 'f75:studio-key',
+  studioAudioCapture: 'f75:studio-audio-capture',
+  studioPreferences: 'f75:studio-preferences',
+  telemetry: 'f75:telemetry',
   /** () → NativeStatus */
   status: 'f75:status',
   /** (id: string) → void — start a reactive effect (stops any animation). */
@@ -41,6 +48,8 @@ export const CH = {
 
 /** Channels the main process pushes to the renderer. */
 export const EV = {
+  studioAudio: 'f75:ev-studio-audio',
+  studioAudioState: 'f75:ev-studio-audio-state',
   /**
    * NativeStatus — connection or engine state changed. Emitted on state
    * transitions only, never per keystroke; the fast-moving hits counter
@@ -64,6 +73,7 @@ export interface FramePayload {
 }
 
 export interface NativeStatus {
+  studio?: import('./studio/runtime').StudioConfiguration | null;
   connected: boolean;
   productName: string | null;
   vendorId: number | null;

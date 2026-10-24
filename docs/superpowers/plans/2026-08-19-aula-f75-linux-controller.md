@@ -1,3 +1,6 @@
+> Historical design record. The current app targets Windows; the Linux setup
+> files described below have been removed. See the root README for current setup.
+
 # AULA F75 Linux Controller — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

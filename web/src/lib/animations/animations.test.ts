@@ -114,8 +114,7 @@ describe('recolouring', () => {
     expect(tintFn(fn, null)).toBe(fn);
   });
 
-  it('emits well-formed RGB for every effect it wraps', () => {
-    for (const [key, anim] of entries) {
+  it.each(entries)('emits well-formed RGB when wrapping %s', (key, anim) => {
       for (const t of SAMPLES) {
         for (const [led, rgb] of tintFn(anim.fn, RED)(t)) {
           for (let c = 0; c < 3; c++) {
@@ -125,6 +124,5 @@ describe('recolouring', () => {
           }
         }
       }
-    }
   });
 });

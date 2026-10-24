@@ -1,5 +1,5 @@
 // Bundle the Electron main and preload processes with esbuild.
-// The web libs under ../web/src are compiled straight into the bundle;
+// The shared engine and host libraries are compiled straight into the bundle;
 // native modules stay external and load from node_modules at runtime.
 import { build } from 'esbuild';
 import { execSync } from 'node:child_process';

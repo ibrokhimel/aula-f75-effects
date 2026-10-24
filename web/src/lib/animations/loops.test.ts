@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ANIMATIONS, ALL_LEDS, type AnimationFn } from './index';
+import { EXPANSION_CATALOG, expansionRequirements } from '../../../../packages/engine/src';
 
 /**
  * Loop-quality checks.
@@ -24,6 +25,11 @@ const INTENTIONAL_CUTS: Record<string, string> = {
   heartbeat: 'the beat itself',
   arcade: 'attract-mode colour slams on the beat',
 };
+for (const spec of EXPANSION_CATALOG) {
+  if (expansionRequirements(spec.number).continuity === 'stepped') {
+    INTENTIONAL_CUTS[spec.id] = 'Discrete cell generations, graph events, or indexed mechanical motion';
+  }
+}
 
 const POP_LIMIT = 8;
 
@@ -63,17 +69,22 @@ function scan(fn: AnimationFn, t0: number, seconds: number) {
 }
 
 describe.each(Object.entries(ANIMATIONS))('%s', (key, anim) => {
-  const early = scan(anim.fn, 0, EARLY_SECONDS);
-  // Divisor floors at 0.5 so a nearly-still effect cannot produce a huge ratio
-  // out of numerical noise.
-  const pop = early.maxD / (early.p95 + 0.5);
+  // Run the scan inside a test, rather than blocking Vitest's collection RPC
+  // while all 224 generators render 1,800 frames each.
+  let cachedEarly: ReturnType<typeof scan> | undefined;
+  const earlyScan = () => cachedEarly ??= scan(anim.fn, 0, EARLY_SECONDS);
 
   if (INTENTIONAL_CUTS[key]) {
     it(`is allowed a hard cut: ${INTENTIONAL_CUTS[key]}`, () => {
+      const early = earlyScan();
+      const pop = early.maxD / (early.p95 + 0.5);
       expect(pop).toBeGreaterThan(0);
     });
   } else {
     it('loops without a visible cut', () => {
+      const early = earlyScan();
+      // Floor the divisor so quantization of nearly static fields stays bounded.
+      const pop = early.maxD / (early.p95 + 0.5);
       expect(
         pop,
         `${key} jumps ${early.maxD.toFixed(1)}/255 at t=${early.maxAt.toFixed(2)}s, ` +
@@ -86,6 +97,7 @@ describe.each(Object.entries(ANIMATIONS))('%s', (key, anim) => {
   }
 
   it('still runs correctly after a very long uptime', () => {
+    const early = earlyScan();
     const late = scan(anim.fn, LATE_T, 10);
     expect(Number.isFinite(late.meanBright)).toBe(true);
     // Catches an effect that fades out or blows up as float precision degrades.

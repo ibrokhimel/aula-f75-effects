@@ -272,7 +272,12 @@ describe('memory effects', () => {
     lone[0].release = 44.05;
     // Forty-odd seconds of typing on one key, against a single press at
     // the same instant. Only an effect with a real memory tells them apart.
-    const long = run(new Array(40).fill(led), 1.1);
+    const long = id === 'expansion.recurring-constellations'
+      // Co-activity needs groups, rather than forty isolated single keys.
+      ? Array.from({ length: 40 }, (_, i) => [led, VALID_LEDS[13], VALID_LEDS[14]].map((key, j) => {
+        const p = makePress(key, i * 1.1 + j * .12, i * 3 + j); p.release = p.t + .05; return p;
+      })).flat()
+      : run(new Array(40).fill(led), 1.1);
     const TIMES = [45, 46, 48];
     expect(fingerprint(def, long, TIMES), `${id} has no longer-lived state`)
       .not.toBe(fingerprint(def, lone, TIMES));

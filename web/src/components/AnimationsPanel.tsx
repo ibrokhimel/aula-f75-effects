@@ -6,8 +6,9 @@ import {
   type AnimationFn, type AnimationCategory, type RGB,
 } from '@/lib/animations';
 import { hexToRgb } from '@/lib/protocol';
-import { buildDirectFrame, sendDirectFrame, enableDirectMode, disableDirectMode, buildBlankFrame } from '@/lib/direct-mode';
-import { isWirelessDevice, sendWirelessAnimationFrame, sendWirelessIdle } from '@/lib/wireless-mode';
+import { BridgeSession } from '../../../packages/engine/src';
+import { createF75Bridge } from '@/lib/bridges/f75';
+import { isWirelessDevice } from '@/lib/wireless-mode';
 import { createTicker, startAudioKeepalive, stopAudioKeepalive, type Ticker } from '@/lib/keepalive';
 import {
   isNative, nativeStartAnimation, nativeStopEffects, nativeSetColor, nativeSetFps,
@@ -26,6 +27,7 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
   // window/tab throttling; this panel is then a remote control. The local
   // preview stays local either way — animations are pure functions of time.
   const native = isNative();
+  const bridgeRef = useRef<BridgeSession | null>(null);
   const [running, setRunning] = useState<string | null>(null);
   const [fps, setFps] = useState(20);
   const [category, setCategory] = useState<AnimationCategory | 'All'>('All');
@@ -56,16 +58,10 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
       await nativeStopEffects();
       return;
     }
-    if (device?.opened) {
-      try {
-        if (isWirelessDevice(device)) {
-          await sendWirelessIdle(device);
-        } else {
-          await sendDirectFrame(device, buildBlankFrame());
-          await disableDirectMode(device, log);
-        }
-      } catch { /* best effort */ }
-    }
+    const session = bridgeRef.current;
+    bridgeRef.current = null;
+    try { await session?.disconnect(); } catch { /* Device may have been unplugged. */ }
+
   }, [device, log, native]);
 
   useEffect(() => {
@@ -74,6 +70,8 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
       tickerRef.current?.stop();
       tickerRef.current = null;
       stopAudioKeepalive();
+      void bridgeRef.current?.disconnect().catch(() => {});
+      bridgeRef.current = null;
     };
   }, []);
 
@@ -110,9 +108,9 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
 
     const useWireless = isWirelessDevice(device);
     log(`Starting animation: ${name} (${useWireless ? '2.4GHz wireless' : 'USB-C direct'})`);
-    if (!useWireless) {
-      await enableDirectMode(device, log);
-    }
+    const session = new BridgeSession(createF75Bridge(device, log), () => performance.now());
+    bridgeRef.current = session;
+    await session.connect();
 
     runningRef.current = true;
     setRunning(name);
@@ -129,14 +127,12 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
     const t0 = performance.now();
     let inFlight = false;
 
-    tickerRef.current = createTicker(1000 / fps, () => {
+    tickerRef.current = createTicker(Math.ceil(1000 / fps), () => {
       if (!runningRef.current || inFlight) return; // HID writes must not overlap
       inFlight = true;
       // Wall-clock time, so a dropped tick skips ahead instead of slowing down.
       const colors = tintFrame(fn((performance.now() - t0) / 1000), targetRef.current);
-      const send = useWireless
-        ? sendWirelessAnimationFrame(device, colors)
-        : sendDirectFrame(device, buildDirectFrame(colors));
+      const send = session.sendFrame(colors);
       send
         .catch(async (err) => {
           log(`Animation error: ${err instanceof Error ? err.message : String(err)}`);
@@ -160,7 +156,7 @@ export function AnimationsPanel({ device, log }: AnimationsPanelProps) {
       const away = Date.now() - hiddenAt;
       if (hiddenAt === 0 || away < 2000) return;
       if (!runningRef.current || !device?.opened || isWirelessDevice(device)) return;
-      enableDirectMode(device, () => {}).catch(() => {});
+      void bridgeRef.current?.connect().catch(() => {});
     };
     document.addEventListener('visibilitychange', onChange);
     return () => document.removeEventListener('visibilitychange', onChange);

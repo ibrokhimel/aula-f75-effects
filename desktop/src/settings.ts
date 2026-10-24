@@ -6,6 +6,7 @@
 import { app } from 'electron';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import type { StudioConfiguration } from '../../web/src/lib/studio/runtime';
 
 export interface PersistedSettings {
   effect: { kind: 'reactive' | 'animation'; id: string } | null;
@@ -13,6 +14,8 @@ export interface PersistedSettings {
   color: string | null;
   fps: number;
   autostart: boolean;
+  studio?: StudioConfiguration | null;
+  closeToTray?: boolean;
 }
 
 const DEFAULTS: PersistedSettings = {

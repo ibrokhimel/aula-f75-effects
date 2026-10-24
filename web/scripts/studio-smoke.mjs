@@ -1,0 +1,177 @@
+import assert from 'node:assert/strict';
+import { mkdir } from 'node:fs/promises';
+import { chromium } from 'playwright';
+
+// Run against `npm run dev`. No HID access or native desktop process is used.
+const browser = await chromium.launch({ channel: process.env.STUDIO_BROWSER_CHANNEL || (process.platform === 'win32' ? 'msedge' : 'chromium') });
+const errors = [];
+try {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 960 } });
+  page.setDefaultTimeout(10000);
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto(process.env.STUDIO_URL || 'http://127.0.0.1:3000/studio', { waitUntil: 'domcontentloaded', timeout: 120000 });
+  await page.locator('.studio[data-ready="true"]').waitFor({ timeout: 30000 });
+  const stage = page.locator('.studio-preview-stage canvas');
+  const inspector = page.getByRole('complementary', { name: 'Effect controls' });
+  const pixelSnapshot = () => stage.evaluate((el) => el.toDataURL());
+  await page.getByRole('heading', { name: 'Lighting', exact: true }).waitFor();
+  await stage.waitFor();
+  assert.equal(await page.getByRole('tab').count(), 7);
+  const familyCount = await page.locator('.studio-effect-card').count();
+  assert.ok(familyCount > 70, 'The entire catalog must be available');
+  assert.equal(await page.locator('.studio-sidebar').innerText(), '', 'The sidebar must contain icons only');
+  assert.equal(await page.getByText('Live in your browser', { exact: true }).count(), 0);
+  assert.equal(await page.locator('.studio-dot').count(), 0);
+  assert.equal(await page.getByRole('tab', { name: 'Automatic', exact: true }).innerText(), '');
+  const catalog = page.getByRole('region', { name: 'Scrollable effect library' });
+  const stagePosition = await stage.boundingBox();
+  assert.ok(await catalog.evaluate(el => el.scrollHeight > el.clientHeight + 300));
+  await page.locator('.studio-effect-pick').last().scrollIntoViewIfNeeded();
+  assert.ok(await catalog.evaluate(el => el.scrollTop > 300), 'Last effects must be reachable by catalog scrolling');
+  assert.equal((await stage.boundingBox()).y, stagePosition.y, 'Catalog scrolling must keep the stage fixed');
+  await catalog.evaluate(el => { el.scrollTop = 0; });
+
+  const auroraTile = page.getByRole('button', { name: 'Preview Aurora', exact: true });
+  const auroraCanvas = auroraTile.locator('canvas');
+  const rainCanvas = page.getByRole('button', { name: 'Preview Rain', exact: true }).locator('canvas');
+  await page.waitForTimeout(150);
+  const rainStill = await rainCanvas.evaluate(el => el.toDataURL());
+  await auroraTile.hover();
+  const hoveredFrame = await auroraCanvas.evaluate(el => el.toDataURL());
+  await page.waitForTimeout(300);
+  assert.notEqual(await auroraCanvas.evaluate(el => el.toDataURL()), hoveredFrame, 'Hover must animate the real tile canvas');
+  assert.equal(await rainCanvas.evaluate(el => el.toDataURL()), rainStill, 'Unhovered previews must remain still');
+  await page.getByRole('heading', { name: 'Lighting', exact: true }).hover();
+  await page.waitForTimeout(100);
+  const tileStill = await auroraCanvas.evaluate(el => el.toDataURL());
+  await page.waitForTimeout(200);
+  assert.equal(await auroraCanvas.evaluate(el => el.toDataURL()), tileStill, 'Leaving the tile must stop its animation');
+  await auroraTile.focus();
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Shift+Tab');
+  const focusedFrame = await auroraCanvas.evaluate(el => el.toDataURL());
+  await page.waitForTimeout(250);
+  assert.notEqual(await auroraCanvas.evaluate(el => el.toDataURL()), focusedFrame, 'Keyboard focus must animate previews');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.waitForTimeout(100);
+  const reducedFrame = await auroraCanvas.evaluate(el => el.toDataURL());
+  await page.waitForTimeout(250);
+  assert.equal(await auroraCanvas.evaluate(el => el.toDataURL()), reducedFrame, 'Reduced motion must disable thumbnail autoplay');
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.getByRole('button', { name: 'Preview Fire', exact: true }).click();
+  await inspector.getByRole('heading', { name: 'Fire', exact: true }).waitFor();
+  assert.equal(await page.getByLabel('Version', { exact: true }).inputValue(), 'campfire');
+  assert.equal(await page.getByLabel('Travel', { exact: true }).count(), 0, 'Fire must not expose a direction control');
+
+  await page.getByRole('button', { name: 'Pause preview', exact: true }).click();
+  await page.waitForTimeout(100);
+  assert.equal(await stage.getAttribute('data-playback'), 'paused');
+  const frozen = await pixelSnapshot();
+  await page.waitForTimeout(250);
+  assert.equal(await pixelSnapshot(), frozen, 'Pause must freeze the actual canvas');
+  await page.getByLabel('Brightness', { exact: true }).focus();
+  await page.keyboard.press('Home');
+  await page.waitForTimeout(100);
+  assert.equal(await page.getByLabel('Brightness', { exact: true }).inputValue(), '0');
+  assert.notEqual(await pixelSnapshot(), frozen, 'Controls must repaint a paused frame');
+  await page.getByLabel('Brightness', { exact: true }).press('End');
+  await page.waitForTimeout(100);
+  const narrowFlame = await pixelSnapshot();
+  await page.getByLabel('Flame width', { exact: true }).press('End');
+  await page.waitForTimeout(100);
+  assert.equal(await page.getByLabel('Flame width', { exact: true }).inputValue(), '70');
+  assert.notEqual(await pixelSnapshot(), narrowFlame, 'Engine parameters must change the paused frame');
+  await page.getByLabel('Version', { exact: true }).selectOption('volcano');
+  assert.equal(await page.getByLabel('Flame width', { exact: true }).count(), 0);
+  assert.equal(await page.getByLabel('Eruption interval', { exact: true }).inputValue(), '4.2');
+  await page.getByRole('button', { name: 'Stop preview', exact: true }).click();
+  await page.waitForTimeout(100);
+  assert.equal(await stage.getAttribute('data-playback'), 'stopped');
+  await page.getByRole('button', { name: 'Play preview', exact: true }).click();
+  assert.equal(await stage.getAttribute('data-playback'), 'playing');
+
+  const search = page.getByRole('textbox', { name: 'Search effect families' });
+  await search.fill('Rain'); await search.press('Backspace');
+  assert.equal(await search.inputValue(), 'Rai', 'Search editing must keep native keyboard behavior');
+  await search.fill('matrix');
+  assert.equal(await page.locator('.studio-effect-card').count(), 1);
+  await page.getByRole('button', { name: 'Preview Rain', exact: true }).click();
+  await page.getByLabel('Version', { exact: true }).selectOption('matrixrain');
+  assert.equal(await page.getByRole('button', { name: 'Preview Rain', exact: true }).locator('canvas').getAttribute('aria-label'), 'matrixrain keyboard thumbnail');
+  assert.equal(await page.getByLabel('Drop count', { exact: true }).count(), 0);
+  await page.getByLabel('Trail decay', { exact: true }).press('End');
+  assert.equal(await stage.getAttribute('aria-label'), 'matrixrain keyboard preview');
+  await search.fill('nothing-matches');
+  await page.getByRole('heading', { name: 'No matching families' }).waitFor();
+  await page.getByRole('button', { name: 'Show all families', exact: true }).click();
+  const rainCard = page.locator('.studio-effect-card').filter({ has: page.getByRole('button', { name: 'Preview Rain', exact: true }) });
+  await rainCard.getByRole('button', { name: 'Add Rain to favorites', exact: true }).click();
+  await page.getByRole('button', { name: 'Favorites', exact: true }).click();
+  assert.equal(await page.locator('.studio-effect-card').count(), 1);
+
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
+  await page.getByRole('dialog', { name: 'Edit palette' }).waitFor();
+  await page.getByLabel('Palette color 1', { exact: true }).evaluate((el) => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, '#ff4400');
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  await page.getByRole('button', { name: 'Apply palette', exact: true }).click();
+  assert.equal(await page.locator('.studio-field-hint').innerText(), 'Custom');
+  await page.getByRole('button', { name: 'Save preset', exact: true }).click();
+  await page.getByLabel('Preset name', { exact: true }).fill('Test rain');
+  await page.getByRole('dialog').getByRole('button', { name: 'Save preset', exact: true }).click();
+  await page.getByRole('status').filter({ hasText: 'saved in this browser' }).waitFor();
+
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  const preset = page.getByLabel('Lighting preset', { exact: true });
+  await preset.locator('option', { hasText: 'Test rain' }).waitFor({ state: 'attached' });
+  const savedId = await preset.locator('option', { hasText: 'Test rain' }).getAttribute('value');
+  await preset.selectOption(savedId);
+  assert.equal(await page.getByLabel('Version', { exact: true }).inputValue(), 'matrixrain');
+  assert.equal(await page.getByLabel('Trail decay', { exact: true }).inputValue(), '1.2');
+  assert.equal(await page.locator('.studio-field-hint').innerText(), 'Custom');
+  await page.getByRole('button', { name: 'Favorites', exact: true }).click();
+  assert.equal(await page.locator('.studio-effect-card').count(), 1, 'Favorites must survive a reload');
+  await page.getByRole('button', { name: 'Favorites', exact: true }).click();
+  await page.getByRole('button', { name: 'Reset adjustments', exact: true }).click();
+  assert.equal(await page.getByLabel('Brightness', { exact: true }).inputValue(), '70');
+  assert.equal(await page.locator('.studio-field-hint').innerText(), 'Original');
+  assert.equal(await page.getByLabel('Version', { exact: true }).inputValue(), 'matrixrain', 'Reset must retain the chosen version');
+  assert.equal(await page.getByLabel('Trail decay', { exact: true }).inputValue(), '0.55');
+
+  await search.fill('spectrum');
+  await page.getByRole('button', { name: 'Preview Spectrum', exact: true }).click();
+  assert.equal(await page.getByLabel('Travel', { exact: true }).inputValue(), '1');
+  await page.getByLabel('Travel', { exact: true }).selectOption('-1');
+  await page.getByLabel('Version', { exact: true }).selectOption('slowgradient');
+  assert.equal(await page.getByLabel('Travel', { exact: true }).count(), 0, 'Travel must disappear on a renderer without directional controls');
+  await search.fill('');
+
+  await page.getByRole('tab', { name: 'System activity', exact: true }).click();
+  await page.getByRole('complementary', { name: 'System activity controls', exact: true }).waitFor();
+  assert.equal(await page.getByText('In the build plan', { exact: true }).count(), 0);
+  await page.getByRole('tab', { name: 'Automatic', exact: true }).click();
+  await page.getByRole('button', { name: 'Key mapping', exact: true }).click();
+  await page.getByRole('heading', { name: 'Key mapping', exact: true }).first().waitFor();
+  await page.getByRole('button', { name: 'Lighting', exact: true }).click();
+
+  await page.getByRole('button', { name: 'Preview Aurora', exact: true }).click();
+  await preset.selectOption('daily-driver');
+  const dismiss = page.getByRole('button', { name: 'Dismiss message', exact: true });
+  if (await dismiss.count()) await dismiss.click();
+  await mkdir('test-results/studio', { recursive: true });
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'test-results/studio/desktop.png', fullPage: true });
+  for (const viewport of [{ width: 1280, height: 800 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.waitForTimeout(150);
+    const sizes = await page.evaluate(() => ({ content: document.documentElement.scrollWidth, viewport: window.innerWidth }));
+    assert.ok(sizes.content <= sizes.viewport + 1, `Horizontal overflow at ${viewport.width}px: ${JSON.stringify(sizes)}`);
+    await page.screenshot({ path: `test-results/studio/${viewport.width}.png`, fullPage: true });
+  }
+  assert.deepEqual(errors, [], 'No browser runtime errors');
+  console.log(`Studio smoke passed: ${familyCount} families, catalog scrolling, fixed preview, icon navigation, hover/focus animation, playback, engine controls, renderer-specific inspectors, palettes, persistence, and four viewport sizes.`);
+} finally {
+  await browser.close();
+}

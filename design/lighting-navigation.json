@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "status": "approved",
+  "approvedOn": "2026-10-22",
+  "scope": "Lighting navigation for the AULA F75 redesign",
+  "designDirection": {
+    "conceptDirectory": "design/concepts/2026-10-22-graphite-studio",
+    "appearance": "Graphite studio with a restrained pale lime accent",
+    "retain": [
+      "Persistent app sidebar",
+      "Large keyboard previews",
+      "Readable effect-family browser",
+      "Contextual controls",
+      "Icons-only navigation with accessible names and tooltips",
+      "Compact playback controls without live-status badges"
+    ]
+  },
+  "tabs": [
+    {
+      "id": "automatic",
+      "label": "Automatic",
+      "purpose": "Self-running animations organized into effect families."
+    },
+    {
+      "id": "typing",
+      "label": "Typing",
+      "purpose": "Lighting driven by key presses, holds, releases and typing patterns."
+    },
+    {
+      "id": "audio",
+      "label": "Audio",
+      "purpose": "Lighting driven by system audio."
+    },
+    {
+      "id": "screen",
+      "label": "Screen",
+      "purpose": "Lighting driven by colors from a display or selected screen region."
+    },
+    {
+      "id": "per-key",
+      "label": "Per-key",
+      "purpose": "Static key colors and selected keyboard zones."
+    },
+    {
+      "id": "layers",
+      "label": "Layers",
+      "purpose": "Combine effects with separate controls for each layer."
+    },
+    {
+      "id": "system-activity",
+      "label": "System activity",
+      "purpose": "Visualize computer activity using supported system telemetry."
+    }
+  ],
+  "organizationRules": [
+    "Preserve this tab order.",
+    "Treat shapes, directions, palettes and similar variations as effect parameters rather than separate effect families.",
+    "Keep themes such as Nature, Space and Retro as collections within relevant modes.",
+    "Keep System activity as a first-class Lighting tab.",
+    "Determine which telemetry sources are available during implementation; this approval does not assert that a particular sensor is currently supported."
+  ],
+  "deferredIdeas": [
+    "Notifications",
+    "Focus timers"
+  ],
+  "implementationStatus": "All seven lighting modes and six application workspaces are implemented. Windows portable EXE and ZIP are packaged; packaged native smoke passes.",
+  "browserStudio": {
+    "route": "/studio",
+    "localUrl": "http://127.0.0.1:3000/studio",
+    "startCommand": "cd web && bun run dev:studio",
+    "implemented": [
+      "Icons-only app and lighting-mode navigation; all seven approved modes retained",
+      "Entire Automatic catalog: 72 families containing 116 renderers, with related versions grouped",
+      "Independent catalog scrolling with fixed preview and independently scrolling inspector on desktop",
+      "Hover and keyboard-focus thumbnail animation; offscreen suspension and reduced-motion support",
+      "Effect-specific engine parameter schemas, normalized presets, and runtime engine editing",
+      "Version-specific controls; only supported renderers expose travel settings",
+      "Brightness and palette adjustments, search, favorites, and browser-local presets",
+      "Play, pause, stop, paused edits, and motion-rate changes without phase jumps",
+      "Earlier studio presets migrate to the new family and parameter model",
+      "Typing: 8 families / 15 curated renderers with engine parameters, scoped test pad, clickable keyboard, and a demo sequence",
+      "Audio: spectrum, bass pulse, waveform, and frequency zones; generated sample input, shared/tab audio, and microphone capture",
+      "Screen: chosen display or labeled sample scene; spatial, average, and edge mapping with crop, saturation, and exposure",
+      "Per-key: selection, zones, paint, erase, undo/redo, palettes, and validated color import/export",
+      "Layers: up to 12 layers with 116 effect choices, contextual parameters, masks, blend modes, opacity, order, duplicate/delete, and continuous rate edits",
+      "System activity: real CPU and physical memory readings, history, meters/heat/zones, warning colors, and explicit manual sample inputs",
+      "All six added modes persist their settings locally; capture permissions and active streams never auto-restore",
+      "Capture cleanup covers stop, source changes, mode navigation, denied inputs, missing audio, and delayed picker results",
+      "Key mapping: both firmware layers, visual selection, local persistence, reset, and explicit flash writes",
+      "Macros: scoped recording, down/up/delay timeline, editing, visual simulation, import/export, and duplicate/delete",
+      "Profiles: complete seven-mode setups, mapping layers, macros and preferences; import/export, rename, duplicate, apply and update",
+      "Games: 14 existing engines with hover previews, focused controls, play/pause/restart, speed and persistent high scores",
+      "Settings and Advanced: connection, explicit lighting output, persistent quality/density, Windows startup/tray preferences, update checks, key tester, bounded logs and snapshots",
+      "Windows: shared StudioRuntime in main process, global key hook, native telemetry, system audio, chosen-screen capture, frame preview IPC, tray playback and restore"
+    ],
+    "hardwareStatus": "Wired F75 RGB colors and correct-key typing ripples confirmed by user. Automatic output and native system-audio capture exercised. Valid onboard lighting configuration matches before/after. Key mapping remains inconclusive; selected-display capture and physical audio response need user verification.",
+    "validation": [
+      "Web, shared engine, and desktop TypeScript checks",
+      "ESLint for studio components, library, and browser tests",
+      "Full unit suite, including per-parameter visible-change and valid-frame checks for all 116 renderers",
+      "Browser tests: full-catalog scrolling, fixed preview, icon navigation, hover/focus, reduced motion, playback, parameters, presets, and four viewport sizes",
+      "2867 unit tests passed, including curated typing parameters, audio silence/controls, pixel sampling, per-key colors, blend/mask/clock behavior, telemetry mapping, and persistence parsing",
+      "Automatic browser regression passed after the six new modes were added",
+      "Six-mode browser interaction suite passed at 1440, 1280, 768, and 390 pixel widths",
+      "Capture tests use actual Web Audio / MediaStream / canvas video fixtures, including microphone, missing audio, cancellation, and delayed navigation cleanup",
+      "280 scoped studio unit checks passed, plus Windows engine-host regression checks",
+      "New-workspace browser smoke passes: full profile restoration, mapping layers, macros, all 14 games, preferences and key testing at four viewport sizes",
+      "Electron smoke passes: all workspaces, painted keyboard canvas, global hook start, native CPU/memory, and virtual RGB frames; zero physical HID writes",
+      "The broader repository suite currently has failures in the separately developed expansion effects; see test-results/studio/unit-results.json",
+      "Curated collection audit: all 116 renderer signatures differ across six sampled times; related renderers stay grouped as variations",
+      "Packaged Windows smoke passes with all six additional workspaces, painted preview, actual global hook startup, telemetry, and virtual RGB output",
+      "Physical wired F75: user-confirmed RGB/WASD and correct-key typing; native loopback capture; validated unchanged lighting configuration. Twenty regression checks pass for native typing counters and feature-reply validation. Updated packaged Windows smoke passes."
+    ],
+    "revisedOn": "2026-10-23",
+    "selfReview": {
+      "previousProblems": [
+        "Six tiles did not demonstrate the full-library browsing experience.",
+        "Generic direction mirrored finished frames rather than controlling the renderer.",
+        "The inspector did not reflect the selected effect and version.",
+        "Live-status dots, repeated preview labels, and a wide text sidebar added clutter.",
+        "An oversized preview crowded the catalog on a small laptop."
+      ],
+      "remaining": [
+        "Firmware macro upload remains unsupported; macros record, edit, export, and simulate locally.",
+        "Experimental expansion effects are excluded from the studio until their separate engine validation and artistic review pass.",
+        "Key remapping, physical audio response, and selected-display capture still need conclusive hands-on verification."
+      ]
+    },
+    "systemTelemetry": {
+      "url": "http://127.0.0.1:3001/telemetry",
+      "start": "Automatically with web/scripts/dev-studio.mjs",
+      "metrics": [
+        "CPU utilization across logical processors",
+        "Used and total physical memory",
+        "System uptime"
+      ],
+      "sampling": "One sample per second, independent of HTTP request frequency"
+    },
+    "testCommands": [
+      "bun run test",
+      "bun run test:studio",
+      "bun run test:studio:modes",
+      "node scripts/studio-workspaces-smoke.mjs"
+    ],
+    "nativeBuild": {
+      "ui": "web/studio-out",
+      "buildUI": "cd desktop && node scripts/build-studio-web.mjs",
+      "bundle": "node scripts/build.mjs",
+      "smoke": "electron . --smoke",
+      "package": "electron-builder --win portable zip --x64 --config.portable.useZip=true"
+    }
+  },
+  "approval": "User requested adding System activity to the proposed six-tab navigation and locking the set."
+}
