@@ -3,15 +3,18 @@ import { createEffectLibrary, LayerMixer, renderAudio, renderScreen, renderKeyCo
 import { F75_LAYOUT } from '../bridges/f75/layout';
 import { defaultsFor, generatorFor, LIGHTING_MODES, type StudioSettings, type LightingMode, type Playback } from './catalog';
 import { parseSettings } from './storage';
-import { defaultModes, parseModes, requirementsFor, type ModeSettings } from './modes';
+import { defaultModes, parseModes, requirementsFor, withSystemAudio, type ModeSettings } from './modes';
 import { adjustFrame } from './frame';
 
 /** enabled streams to the keyboard; outputChosen records that the person set it, rather than a default. */
 export interface StudioConfiguration { mode: LightingMode; automatic: StudioSettings; modes: ModeSettings; playback: Playback; epoch: number; fps: number; enabled: boolean; outputChosen: boolean }
 export function defaultStudioConfiguration(): StudioConfiguration { return { mode: 'automatic', automatic: defaultsFor(), modes: defaultModes(), playback: 'playing', epoch: 0, fps: 30, enabled: false, outputChosen: false }; }
-/** The Windows app streams by default. Only an explicit choice keeps output off, so v0.3.0's saved default no longer does. */
-export function withDefaultOutput(config: StudioConfiguration): StudioConfiguration {
-  return config.outputChosen ? config : { ...config, enabled: true };
+/**
+ * Windows app defaults: stream to the keyboard and listen to system audio. Only an explicit
+ * choice overrides either, so the off/sample-signal values v0.3.0 saved by default no longer do.
+ */
+export function withWindowsDefaults(config: StudioConfiguration): StudioConfiguration {
+  return { ...config, enabled: config.outputChosen ? config.enabled : true, modes: { ...config.modes, audio: withSystemAudio(config.modes.audio) } };
 }
 export function parseStudioConfiguration(value: unknown): StudioConfiguration {
   const v = value && typeof value === 'object' ? value as Record<string, unknown> : {};

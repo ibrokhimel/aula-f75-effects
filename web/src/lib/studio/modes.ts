@@ -28,6 +28,11 @@ export const TYPING_FAMILIES: TypingFamily[] = [
 export const EXPANSION_AUDIO_EFFECTS = EXPANSION_CATALOG.filter(spec => spec.family === 'Music and sound')
   .map(spec => ({ id: spec.id, name: spec.name, description: sentence(spec.description) }));
 
+/** The Windows app hears what the PC plays by default; only a picked input overrides that. */
+export function withSystemAudio(audio: ModeSettings['audio']): ModeSettings['audio'] {
+  return audio.sourceChosen ? audio : { ...audio, source: 'system' };
+}
+
 /** What an effect needs from the host. Classic effects only need key presses. */
 export function requirementsFor(effect: string | null): EffectRequirements | null {
   const spec = effect ? EXPANSION_CATALOG.find(item => item.id === effect) : undefined;
@@ -42,7 +47,7 @@ export const AUDIO_STYLES: { id: AudioStyle; name: string; description: string }
 export interface ModeSettings {
   typing: { family: string; effect: string; parameters: AnimationValues; color: string | null; brightness: number };
   /** effect is an expansion music effect; null renders the classic `style`. */
-  audio: { style: AudioStyle; effect: string | null; parameters: AnimationValues; gain: number; floor: number; smoothing: number; source: 'sample' | 'system' | 'microphone'; brightness: number };
+  audio: { style: AudioStyle; effect: string | null; parameters: AnimationValues; gain: number; floor: number; smoothing: number; source: 'sample' | 'system' | 'microphone'; sourceChosen: boolean; brightness: number };
   screen: ScreenControls & { scene: 'coast' | 'ember' | 'neon'; brightness: number };
   perKey: { colors: KeyColors; brightness: number };
   layers: { items: LightingLayer[]; brightness: number };
@@ -53,7 +58,7 @@ const initialColors = Object.fromEntries(F75_LAYOUT.leds.map(led => [led.id, zon
 export function defaultModes(): ModeSettings {
   return {
     typing: { family: 'ripples', effect: 'ripple', parameters: resolveReactiveParameters('ripple'), color: null, brightness: 85 },
-    audio: { style: 'spectrum', effect: null, parameters: normalizeControls(AUDIO_PARAMETERS.spectrum), gain: 1.5, floor: 0.02, smoothing: 0.55, source: 'sample', brightness: 85 },
+    audio: { style: 'spectrum', effect: null, parameters: normalizeControls(AUDIO_PARAMETERS.spectrum), gain: 1.5, floor: 0.02, smoothing: 0.55, source: 'sample', sourceChosen: false, brightness: 85 },
     screen: { mapping: 'spatial', crop: 'full', scene: 'coast', saturation: 1, exposure: 1, brightness: 85 },
     perKey: { colors: { ...initialColors }, brightness: 85 },
     layers: { brightness: 80, items: [
@@ -87,7 +92,7 @@ export function parseModes(text: string | null): ModeSettings {
     }
     return {
       typing: { family: family.id, effect, parameters: resolveReactiveParameters(effect, record(t.parameters) as AnimationValues), color: t.color === null ? null : typeof t.color === 'string' && /^#[0-9a-f]{6}$/i.test(t.color) ? t.color : null, brightness: number(t.brightness, 85, 0, 100) },
-      audio: { style, effect: audioEffect, parameters: audioEffect ? resolveReactiveParameters(audioEffect, record(a.parameters) as AnimationValues) : normalizeControls(AUDIO_PARAMETERS[style], record(a.parameters) as AnimationValues), gain: number(a.gain, 1.5, 0.2, 4), floor: number(a.floor, 0.02, 0, 0.3), smoothing: number(a.smoothing, 0.55, 0, 0.95), source: choice(a.source, ['sample', 'system', 'microphone'], 'sample'), brightness: number(a.brightness, 85, 0, 100) },
+      audio: { style, effect: audioEffect, parameters: audioEffect ? resolveReactiveParameters(audioEffect, record(a.parameters) as AnimationValues) : normalizeControls(AUDIO_PARAMETERS[style], record(a.parameters) as AnimationValues), gain: number(a.gain, 1.5, 0.2, 4), floor: number(a.floor, 0.02, 0, 0.3), smoothing: number(a.smoothing, 0.55, 0, 0.95), source: choice(a.source, ['sample', 'system', 'microphone'], 'sample'), sourceChosen: a.sourceChosen === true, brightness: number(a.brightness, 85, 0, 100) },
       screen: { mapping: choice(s.mapping, ['spatial', 'average', 'edges'], 'spatial'), crop: choice(s.crop, ['full', 'center', 'top', 'bottom'], 'full'), scene: choice(s.scene, ['coast', 'ember', 'neon'], 'coast'), saturation: number(s.saturation, 1, 0, 2), exposure: number(s.exposure, 1, 0.2, 2), brightness: number(s.brightness, 85, 0, 100) },
       perKey: { colors: Object.hasOwn(k, 'colors') ? sanitizeKeyColors(F75_LAYOUT, k.colors) : defaults.perKey.colors, brightness: number(k.brightness, 85, 0, 100) },
       layers: { items: Array.isArray(l.items) ? items : defaults.layers.items, brightness: number(l.brightness, 80, 0, 100) },

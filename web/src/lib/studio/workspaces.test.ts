@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { defaultSetup, parseSetup, parseWorkspaces, parseMacros, defaultMappings } from './workspaces';
 import { getSlot, setSlot, validateBlob } from '../keybind';
-import { defaultStudioConfiguration, parseStudioConfiguration, StudioRuntime, studioNeedsAudio, withDefaultOutput } from './runtime';
+import { defaultStudioConfiguration, parseStudioConfiguration, StudioRuntime, studioNeedsAudio, withWindowsDefaults } from './runtime';
 import { EXPANSION_AUDIO_EFFECTS, requirementsFor } from './modes';
 import { createEffectLibrary } from '../../../../packages/engine/src';
 import { F75_LAYOUT } from '../bridges/f75/layout';
@@ -34,12 +34,21 @@ describe('complete studio setups', () => {
   });
   it('streams to the keyboard by default unless the person switched output off', () => {
     // v0.3.0 saved enabled: false without anyone choosing it.
-    expect(withDefaultOutput(parseStudioConfiguration({ enabled: false })).enabled).toBe(true);
-    expect(withDefaultOutput(parseStudioConfiguration({})).enabled).toBe(true);
-    expect(withDefaultOutput(parseStudioConfiguration({ enabled: false, outputChosen: true })).enabled).toBe(false);
-    expect(withDefaultOutput(parseStudioConfiguration({ enabled: true, outputChosen: true })).enabled).toBe(true);
+    expect(withWindowsDefaults(parseStudioConfiguration({ enabled: false })).enabled).toBe(true);
+    expect(withWindowsDefaults(parseStudioConfiguration({})).enabled).toBe(true);
+    expect(withWindowsDefaults(parseStudioConfiguration({ enabled: false, outputChosen: true })).enabled).toBe(false);
+    expect(withWindowsDefaults(parseStudioConfiguration({ enabled: true, outputChosen: true })).enabled).toBe(true);
     expect(parseStudioConfiguration(JSON.parse(JSON.stringify({ ...defaultStudioConfiguration(), outputChosen: true }))).outputChosen).toBe(true);
     expect(parseStudioConfiguration({ outputChosen: 'yes' }).outputChosen).toBe(false);
+  });
+  it('listens to system audio by default unless the person picked an input', () => {
+    const audio = (value: object) => withWindowsDefaults(parseStudioConfiguration({ modes: { audio: value } })).modes.audio.source;
+    // v0.3.0 saved the sample signal without anyone choosing it.
+    expect(audio({ source: 'sample' })).toBe('system');
+    expect(audio({})).toBe('system');
+    expect(audio({ source: 'sample', sourceChosen: true })).toBe('sample');
+    expect(audio({ source: 'microphone', sourceChosen: true })).toBe('microphone');
+    expect(parseStudioConfiguration({ modes: { audio: { sourceChosen: 'yes' } } }).modes.audio.sourceChosen).toBe(false);
   });
 });
 

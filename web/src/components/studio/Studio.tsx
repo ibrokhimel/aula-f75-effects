@@ -29,7 +29,7 @@ import { useModeSettings, replaceModeSettings } from './useModeSettings';
 import { useWorkspaceData } from './useWorkspaceData';
 import { useStudioOutput } from './useStudioOutput';
 import { type Setup } from '@/lib/studio/workspaces';
-import { parseStudioConfiguration, withDefaultOutput } from '@/lib/studio/runtime';
+import { defaultStudioConfiguration, parseStudioConfiguration, withWindowsDefaults } from '@/lib/studio/runtime';
 import { isNative, nativeGetStudio, onNativeStatus, nativeSetStudioPreferences } from '@/lib/native';
 
 type Workspace = 'lighting' | 'mapping' | 'macros' | 'profiles' | 'games' | 'settings' | 'advanced';
@@ -108,8 +108,8 @@ export function Studio() {
       if (saved) {
         const c = parseStudioConfiguration(saved);
         setSettings(c.automatic); setMode(c.mode); setPlayback(c.playback); setEpoch(c.epoch);
-        if (isNative()) { replaceModeSettings(c.modes); setOutput(withDefaultOutput(c).enabled); setOutputChosen(c.outputChosen); }
-      } else if (isNative()) setOutput(true); // The Windows app lights the keyboard unless told not to.
+        if (isNative()) { const d = withWindowsDefaults(c); replaceModeSettings(d.modes); setOutput(d.enabled); setOutputChosen(c.outputChosen); }
+      } else if (isNative()) { const d = withWindowsDefaults(defaultStudioConfiguration()); replaceModeSettings(d.modes); setOutput(d.enabled); }
       setSessionLoaded(true);
     }
     void restore(); return () => { alive = false; };
