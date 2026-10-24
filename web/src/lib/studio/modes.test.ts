@@ -20,7 +20,7 @@ const presses = ['KeyF', 'KeyJ', 'KeyD', 'KeyL'].map((code, i) => {
   press.release = i * 0.13 + 0.8;
   return press;
 });
-describe.each(TYPING_FAMILIES.flatMap(family => [...family.variants]))('%s typing controls', id => {
+describe.each(TYPING_FAMILIES.filter(family => family.group === 'Classic').flatMap(family => [...family.variants]))('%s typing controls', id => {
   it('makes every exposed control affect the renderer and emits valid frames at its limits', () => {
     const definition = library.reactive[id];
     expect(definition.parameters?.length).toBeGreaterThan(0);
@@ -31,6 +31,68 @@ describe.each(TYPING_FAMILIES.flatMap(family => [...family.variants]))('%s typin
         const frame = definition.fn(time, presses, { [parameter.id]: value }); valid(frame);
         if (serialize(frame) !== serialize(definition.fn(time, presses))) changed = true;
       }
+      expect(changed, `${id}.${parameter.id} has no effect`).toBe(true);
+    }
+  });
+});
+// Expansion entries respond to chords, long histories, live audio and app events, so the
+// four-press fixture above can't exercise them. Each case gets a fresh library fed all of these.
+function expansionScenario(id: string, values: Record<string, number>) {
+  const l = createEffectLibrary(F75_LAYOUT);
+  let now = 0;
+  l.audio.setSoundClock(() => now); l.events.setClock(() => now);
+  l.events.register({ id: 'probe', types: ['build', 'test', 'download', 'mute', 'timer', 'battery', 'application', 'shortcut', 'notification', 'resource', 'canvas'], ttlMs: 600000 });
+  l.events.setApplicationRules({ editor: 'aurora', terminal: 'expansion.life-colony' });
+  l.events.setShortcutGuides([{ process: 'editor', mods: 2, keys: ['KeyS', 'KeyF'] }]);
+  const codes = ['KeyF', 'KeyJ', 'KeyD', 'KeyK', 'KeyS', 'KeyL', 'KeyA', 'Space', 'KeyE', 'KeyI'];
+  const all = Array.from({ length: 60 }, (_, i) => {
+    const t = i * 0.11 + (i % 5 === 0 ? 0 : 0.02), press = l.reactiveCore.makePress(l.reactiveCore.LED_FOR_CODE.get(codes[(i * 7) % codes.length])!, t, i, codes[(i * 7) % codes.length], i % 4 === 0 ? 2 : 0);
+    press.release = i % 6 === 5 ? null : t + 0.08 + (i % 3) * 0.3;
+    return press;
+  });
+  const frames: string[] = [];
+  let seq = 0;
+  for (let step = 0; step <= 160; step++) {
+    const t = step / 20; now = t * 1000;
+    const audio = sampleAudio(t);
+    l.audio.pushAudioSample({ ...audio, left: audio.level * (0.5 + 0.5 * Math.sin(t)), right: audio.level * (0.5 - 0.5 * Math.sin(t)), pitch: { hz: 220 * 2 ** ((step >> 3) % 12 / 12), confidence: 0.9, pitchClass: (9 + (step >> 3)) % 12 } });
+    if (step % 10 === 0) {
+      const e = (type: string, data: unknown) => l.events.push({ version: 1, id: `${type}-${seq++}`, source: 'probe', at: now, type, data });
+      const p = (step / 160);
+      e('build', { runId: 'r', progress: p, result: p < 1 ? 'running' : 'success' });
+      e('test', { runId: 'r', group: ['unit', 'e2e', 'lint'][step % 3], progress: p, result: step % 30 === 0 ? 'failure' : 'running' });
+      e('download', { transferId: 'd', completed: p * 100, total: 100 });
+      e('mute', { state: step % 20 === 0 ? 'muted' : 'unmuted' });
+      e('timer', { timerId: 't', phase: 'work', remaining: 60 - p * 50, duration: 60, paused: false });
+      e('battery', { percent: 80 - p * 60, charging: false });
+      e('application', { process: step % 40 < 20 ? 'editor' : 'terminal' });
+      e('shortcut', { process: 'editor', keys: ['KeyS'], mods: 2, token: `s${step}` });
+      e('notification', { notificationId: `n${step}`, state: 'unread', severity: 'warning' });
+      e('resource', { cpu: 30 + 50 * p, memory: 40 + 30 * p });
+      e('canvas', { overlay: 'ripple', value: p, hue: p, keys: ['KeyA'] });
+    }
+    if (step % 8 === 0) { const frame = l.reactive[id].fn(t, all.filter(press => press.t <= t), values); valid(frame); frames.push(serialize(frame)); }
+  }
+  return frames.join('|');
+}
+// Controls that only act in a moment the busy scenario never reaches.
+const SITUATIONAL = new Set([
+  'expansion.release-compass.reach', 'expansion.release-compass.speed', // after every key is released
+  'expansion.download-channel.width', // downloads of unknown size
+  'expansion.afterwork-rain.capacity', 'expansion.quiet-reading-room.idle', // after typing goes idle
+  'expansion.recurring-constellations.window', // repeated multi-key sequences
+  'expansion.build-runner.resultHold', 'expansion.timer-landing.resultHold', 'expansion.download-channel.hold', // after a run finishes
+  'expansion.meeting-mute.stale', // after mute events stop arriving
+  'expansion.focus-arc.breakMix', // during a timer break
+  'expansion.notification-inbox.expiry', 'expansion.local-event-canvas.capacity', // when events age out or overflow
+]);
+describe.each(TYPING_FAMILIES.filter(family => family.group !== 'Classic').map(family => family.variants[0]))('%s expansion controls', id => {
+  it('changes the picture at a control limit when fed presses, audio and app events', () => {
+    const definition = library.reactive[id];
+    for (const parameter of definition.parameters ?? []) {
+      if (parameter.kind !== 'range' || parameter.id === 'seed' || SITUATIONAL.has(`${id}.${parameter.id}`)) continue;
+      const baseline = expansionScenario(id, {});
+      const changed = [parameter.min, parameter.max].some(value => expansionScenario(id, { [parameter.id]: value }) !== baseline);
       expect(changed, `${id}.${parameter.id} has no effect`).toBe(true);
     }
   });

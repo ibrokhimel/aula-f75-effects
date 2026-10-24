@@ -23,7 +23,7 @@ import { checkForUpdates, RELEASES_URL } from './updater';
 import { buildTrayIcon } from './tray-icon';
 import { createTelemetrySampler } from './telemetry';
 import { VirtualKeyboardBridge, SILENCE, type AudioInput, type PixelSource } from '../../packages/engine/src';
-import { parseStudioConfiguration, defaultStudioConfiguration } from '../../web/src/lib/studio/runtime';
+import { parseStudioConfiguration, defaultStudioConfiguration, studioNeedsAudio } from '../../web/src/lib/studio/runtime';
 
 const SMOKE = process.argv.includes('--smoke');
 const START_HIDDEN = process.argv.includes('--hidden');
@@ -92,14 +92,14 @@ async function bootstrap(): Promise<void> {
   });
 
   const hook = new KeyHook();
-  const audio = new AudioCapture(log, engine.audio, sample => { engine.pushStudioAudio(sample); if (win && !win.isDestroyed() && win.isVisible()) win.webContents.send(EV.studioAudio, sample); }, state => { if (state.error) studioCaptureAudio = false; win?.webContents.send(EV.studioAudioState, state); });
+  const audio = new AudioCapture(log, engine.audio, sample => { engine.pushStudioAudio(sample, false); if (win && !win.isDestroyed() && win.isVisible()) win.webContents.send(EV.studioAudio, sample); }, state => { if (state.error) studioCaptureAudio = false; win?.webContents.send(EV.studioAudioState, state); });
 
   // Sound effects need system audio flowing; nothing else should keep the
   // hidden capture window (and its WASAPI stream) alive.
   function syncAudioCapture(): void {
     const studio = engine.studioConfiguration;
-    if (studio?.mode !== 'audio') studioCaptureAudio = false;
-    const wantsAudio = !engine.paused && ((engine.reactive !== null && REACTIVE[engine.reactive]?.category === 'Sound') || (studioCaptureAudio && studio?.mode === 'audio' && studio.modes.audio.source === 'system'));
+    if (!studio || !studioNeedsAudio(studio)) studioCaptureAudio = false;
+    const wantsAudio = !engine.paused && ((engine.reactive !== null && REACTIVE[engine.reactive]?.category === 'Sound') || (studioCaptureAudio && studio !== null && studioNeedsAudio(studio) && studio.modes.audio.source === 'system'));
     if (wantsAudio) audio.start();
     else audio.stop();
   }
@@ -159,7 +159,7 @@ async function bootstrap(): Promise<void> {
   ipcMain.handle(CH.configureStudio, (_e, value: unknown) => engine.configureStudio(parseStudioConfiguration(value)));
   ipcMain.handle(CH.telemetry, () => sampleSystem());
   ipcMain.handle(CH.studioPreferences, (_e, value: { closeToTray?: boolean }) => { settings = { ...settings, closeToTray: value?.closeToTray !== false }; if (!SMOKE) saveSettings(settings); });
-  ipcMain.handle(CH.studioAudioCapture, (_e, on: boolean) => { studioCaptureAudio = on === true; syncAudioCapture(); if (!studioCaptureAudio) engine.pushStudioAudio(SILENCE); });
+  ipcMain.handle(CH.studioAudioCapture, (_e, on: boolean) => { studioCaptureAudio = on === true; syncAudioCapture(); if (!studioCaptureAudio) engine.pushStudioAudio(SILENCE, false); });
   ipcMain.handle(CH.studioKey, (_e, code: string, down: boolean) => { if (typeof code === 'string' && F75_LAYOUT.leds.some(l => l.keyCode === code)) { if (down) engine.keyDown(code, 0); else engine.keyUp(code); } });
   ipcMain.handle(CH.studioInput, (_e, kind: string, value: unknown) => {
     if (kind === 'audio') {

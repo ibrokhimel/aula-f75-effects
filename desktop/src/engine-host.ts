@@ -49,7 +49,8 @@ export class EngineHost {
 
   configureStudio(config: StudioConfiguration): Promise<void> {
     return this.enqueue(async () => {
-      if (!this.studio) { await this.stopInternal(); this.studio = new StudioRuntime(); }
+      // Sharing the library routes desktop audio capture and app events into studio effects.
+      if (!this.studio) { await this.stopInternal(); this.studio = new StudioRuntime(this.engine.library); }
       this.studio.configure(config);
       this.fps = clampFps(this.studio.config.fps);
       this.paused = this.studio.config.playback === 'paused';
@@ -62,7 +63,8 @@ export class EngineHost {
       this.runLoop(); this.deps.onStateChange();
     });
   }
-  pushStudioAudio(sample: AudioInput): void { this.studio?.pushAudio(sample); }
+  /** feedLibrary is false when the sample already went into the shared library (desktop capture). */
+  pushStudioAudio(sample: AudioInput, feedLibrary = true): void { this.studio?.pushAudio(sample, feedLibrary); }
   pushStudioScreen(pixels: PixelSource | null): void { this.studio?.pushScreen(pixels); }
   pushStudioGame(frame: Frame | null): void { this.studio?.pushGame(frame); }
 

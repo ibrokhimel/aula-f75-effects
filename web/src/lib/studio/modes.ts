@@ -1,12 +1,13 @@
 import { ANIMATIONS, resolveAnimationParameters, type AnimationValues } from '../animations';
 import {
-  AUDIO_PARAMETERS, normalizeControls, resolveReactiveParameters, sanitizeKeyColors, zoneKeys,
-  type ActivityControls, type AudioStyle, type KeyColors, type LightingLayer, type ScreenControls,
+  AUDIO_PARAMETERS, EXPANSION_CATALOG, expansionRequirements, normalizeControls, resolveReactiveParameters, sanitizeKeyColors, zoneKeys,
+  type ActivityControls, type AudioStyle, type EffectRequirements, type KeyColors, type LightingLayer, type ScreenControls,
 } from '../../../../packages/engine/src';
 import { F75_LAYOUT } from '../bridges/f75/layout';
 import { STUDIO_RENDERER_IDS } from './catalog';
 
-export const TYPING_FAMILIES = [
+export interface TypingFamily { id: string; name: string; description: string; variants: readonly string[]; group: string }
+const CLASSIC_TYPING: Omit<TypingFamily, 'group'>[] = [
   { id: 'glow', name: 'Key glow', description: 'Light under your fingers. Choose a release fade, a cooling flash, or a soft pulse.', variants: ['fade', 'whitehot', 'pulse'] },
   { id: 'ripples', name: 'Ripples', description: 'A wave starts exactly where you press. Geometry and timing belong to each version.', variants: ['ripple', 'rippletriple', 'ripplesquare'] },
   { id: 'rows', name: 'Rows & columns', description: 'Send light along the pressed row, column, or both.', variants: ['rowflash', 'colflash', 'crossflash'] },
@@ -15,7 +16,23 @@ export const TYPING_FAMILIES = [
   { id: 'heat', name: 'Heat map', description: 'Busy keys warm up. Quiet keys cool back down.', variants: ['heatmap'] },
   { id: 'links', name: 'Linked keys', description: 'Draw a path between the keys you press in order.', variants: ['link'] },
   { id: 'trail', name: 'Typing trail', description: 'Your last few keystrokes become a fading ribbon of color.', variants: ['trail'] },
-] as const;
+];
+// Expansion packs whose effects run on the reactive (press-driven) path. Music and sound lives in Audio.
+export const TYPING_GROUPS = ['Classic', 'Typing as physics', 'Chords and relationships', 'Memory and adaptation', 'Layered scene recipes', 'Useful event lighting'] as const;
+const sentence = (text: string) => /[.!?]$/.test(text) ? text : `${text}.`;
+export const TYPING_FAMILIES: TypingFamily[] = [
+  ...CLASSIC_TYPING.map(family => ({ ...family, group: 'Classic' })),
+  ...EXPANSION_CATALOG.filter(spec => (TYPING_GROUPS as readonly string[]).includes(spec.family))
+    .map(spec => ({ id: spec.id, name: spec.name, description: sentence(spec.description), variants: [spec.id], group: spec.family })),
+];
+export const EXPANSION_AUDIO_EFFECTS = EXPANSION_CATALOG.filter(spec => spec.family === 'Music and sound')
+  .map(spec => ({ id: spec.id, name: spec.name, description: sentence(spec.description) }));
+
+/** What an effect needs from the host. Classic effects only need key presses. */
+export function requirementsFor(effect: string | null): EffectRequirements | null {
+  const spec = effect ? EXPANSION_CATALOG.find(item => item.id === effect) : undefined;
+  return spec ? expansionRequirements(spec.number) : null;
+}
 export const AUDIO_STYLES: { id: AudioStyle; name: string; description: string }[] = [
   { id: 'spectrum', name: 'Spectrum', description: 'Frequency bands rise from the bottom row.' },
   { id: 'pulse', name: 'Bass pulse', description: 'Low frequencies push a warm glow out from the center.' },
@@ -24,7 +41,8 @@ export const AUDIO_STYLES: { id: AudioStyle; name: string; description: string }
 ];
 export interface ModeSettings {
   typing: { family: string; effect: string; parameters: AnimationValues; color: string | null; brightness: number };
-  audio: { style: AudioStyle; parameters: AnimationValues; gain: number; floor: number; smoothing: number; source: 'sample' | 'system' | 'microphone'; brightness: number };
+  /** effect is an expansion music effect; null renders the classic `style`. */
+  audio: { style: AudioStyle; effect: string | null; parameters: AnimationValues; gain: number; floor: number; smoothing: number; source: 'sample' | 'system' | 'microphone'; brightness: number };
   screen: ScreenControls & { scene: 'coast' | 'ember' | 'neon'; brightness: number };
   perKey: { colors: KeyColors; brightness: number };
   layers: { items: LightingLayer[]; brightness: number };
@@ -35,7 +53,7 @@ const initialColors = Object.fromEntries(F75_LAYOUT.leds.map(led => [led.id, zon
 export function defaultModes(): ModeSettings {
   return {
     typing: { family: 'ripples', effect: 'ripple', parameters: resolveReactiveParameters('ripple'), color: null, brightness: 85 },
-    audio: { style: 'spectrum', parameters: normalizeControls(AUDIO_PARAMETERS.spectrum), gain: 1.5, floor: 0.02, smoothing: 0.55, source: 'sample', brightness: 85 },
+    audio: { style: 'spectrum', effect: null, parameters: normalizeControls(AUDIO_PARAMETERS.spectrum), gain: 1.5, floor: 0.02, smoothing: 0.55, source: 'sample', brightness: 85 },
     screen: { mapping: 'spatial', crop: 'full', scene: 'coast', saturation: 1, exposure: 1, brightness: 85 },
     perKey: { colors: { ...initialColors }, brightness: 85 },
     layers: { brightness: 80, items: [
@@ -59,6 +77,7 @@ export function parseModes(text: string | null): ModeSettings {
     const family = TYPING_FAMILIES.find(f => f.id === t.family) ?? TYPING_FAMILIES[1];
     const effect = (family.variants as readonly string[]).includes(t.effect as string) ? t.effect as string : family.variants[0];
     const style = choice(a.style, AUDIO_STYLES.map(item => item.id), 'spectrum');
+    const audioEffect = EXPANSION_AUDIO_EFFECTS.some(item => item.id === a.effect) ? a.effect as string : null;
     const items: LightingLayer[] = [], seen = new Set<string>();
     if (Array.isArray(l.items)) for (const raw of l.items.slice(0, 12)) {
       const layer = record(raw);
@@ -68,7 +87,7 @@ export function parseModes(text: string | null): ModeSettings {
     }
     return {
       typing: { family: family.id, effect, parameters: resolveReactiveParameters(effect, record(t.parameters) as AnimationValues), color: t.color === null ? null : typeof t.color === 'string' && /^#[0-9a-f]{6}$/i.test(t.color) ? t.color : null, brightness: number(t.brightness, 85, 0, 100) },
-      audio: { style, parameters: normalizeControls(AUDIO_PARAMETERS[style], record(a.parameters) as AnimationValues), gain: number(a.gain, 1.5, 0.2, 4), floor: number(a.floor, 0.02, 0, 0.3), smoothing: number(a.smoothing, 0.55, 0, 0.95), source: choice(a.source, ['sample', 'system', 'microphone'], 'sample'), brightness: number(a.brightness, 85, 0, 100) },
+      audio: { style, effect: audioEffect, parameters: audioEffect ? resolveReactiveParameters(audioEffect, record(a.parameters) as AnimationValues) : normalizeControls(AUDIO_PARAMETERS[style], record(a.parameters) as AnimationValues), gain: number(a.gain, 1.5, 0.2, 4), floor: number(a.floor, 0.02, 0, 0.3), smoothing: number(a.smoothing, 0.55, 0, 0.95), source: choice(a.source, ['sample', 'system', 'microphone'], 'sample'), brightness: number(a.brightness, 85, 0, 100) },
       screen: { mapping: choice(s.mapping, ['spatial', 'average', 'edges'], 'spatial'), crop: choice(s.crop, ['full', 'center', 'top', 'bottom'], 'full'), scene: choice(s.scene, ['coast', 'ember', 'neon'], 'coast'), saturation: number(s.saturation, 1, 0, 2), exposure: number(s.exposure, 1, 0.2, 2), brightness: number(s.brightness, 85, 0, 100) },
       perKey: { colors: Object.hasOwn(k, 'colors') ? sanitizeKeyColors(F75_LAYOUT, k.colors) : defaults.perKey.colors, brightness: number(k.brightness, 85, 0, 100) },
       layers: { items: Array.isArray(l.items) ? items : defaults.layers.items, brightness: number(l.brightness, 80, 0, 100) },

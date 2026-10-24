@@ -1,4 +1,5 @@
 import { ANIMATIONS, resolveAnimationParameters, type AnimationValues } from '../animations';
+import { EXPANSION_CATALOG } from '../../../../packages/engine/src';
 
 export interface EffectFamily {
   id: string;
@@ -91,12 +92,16 @@ function fromGenerators(id: string, name: string, ids: readonly string[]): Effec
 }
 const grouped = [...FEATURED_FAMILIES, ...GROUPS.map(([id,name,ids]) => fromGenerators(id,name,ids))];
 const assigned = new Set(grouped.flatMap(family => family.variations.map(variation => variation.id)));
-// The separately developed expansion is still undergoing engine validation.
-// Keep the approved studio collection stable until those renderers pass review.
-export const STUDIO_RENDERER_IDS = Object.keys(ANIMATIONS).filter(id => !id.startsWith('expansion.'));
+// Expansion renderers are distinct mechanisms, so each gets its own tile, filed under its pack.
+const EXPANSION_PACKS = new Map(EXPANSION_CATALOG.map(spec => [spec.id, spec.family]));
+function fromExpansion(id: string): EffectFamily {
+  const family = fromGenerators(id, ANIMATIONS[id].name, [id]);
+  return { ...family, category: EXPANSION_PACKS.get(id)!, description: /[.!?]$/.test(family.description) ? family.description : `${family.description}.` };
+}
+export const STUDIO_RENDERER_IDS = Object.keys(ANIMATIONS);
 export const EFFECT_FAMILIES: EffectFamily[] = [
   ...grouped,
-  ...STUDIO_RENDERER_IDS.filter(id => !assigned.has(id)).map(id => fromGenerators(id, ANIMATIONS[id].name, [id])),
+  ...STUDIO_RENDERER_IDS.filter(id => !assigned.has(id)).map(id => EXPANSION_PACKS.has(id) ? fromExpansion(id) : fromGenerators(id, ANIMATIONS[id].name, [id])),
 ];
 export const RENDERER_COUNT = STUDIO_RENDERER_IDS.length;
 

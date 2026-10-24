@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { defaultSetup, parseSetup, parseWorkspaces, parseMacros, defaultMappings } from './workspaces';
 import { getSlot, setSlot, validateBlob } from '../keybind';
-import { defaultStudioConfiguration, parseStudioConfiguration, StudioRuntime } from './runtime';
+import { defaultStudioConfiguration, parseStudioConfiguration, StudioRuntime, studioNeedsAudio } from './runtime';
+import { EXPANSION_AUDIO_EFFECTS, requirementsFor } from './modes';
+import { createEffectLibrary } from '../../../../packages/engine/src';
+import { F75_LAYOUT } from '../bridges/f75/layout';
 
 describe('complete studio setups', () => {
   it('round trips mappings, all lighting modes, macros, and preferences', () => {
@@ -54,5 +57,39 @@ describe('Windows studio runtime', () => {
     runtime.configure(config); expect([...runtime.render(1000).values()].every(rgb => rgb.every(c => c === 0))).toBe(true);
     runtime.pushGame(new Map([[0, [10, 20, 30]]])); expect(runtime.render(performance.now()).get(0)).toEqual([10, 20, 30]);
     runtime.pushGame(null); expect(runtime.render(performance.now()).get(0)).toEqual([0, 0, 0]);
+  });
+  const lit = (frame: Map<number, number[]>) => [...frame.values()].some(rgb => Math.max(...rgb) > 0);
+  // Runtimes on a library whose audio/event clock advances with each 30 Hz frame, like a real host.
+  function clocked() { let now = 1000; const library = createEffectLibrary(F75_LAYOUT); library.audio.setSoundClock(() => now); library.events.setClock(() => now); return { library, runtime: new StudioRuntime(library), tick: (ms: number) => { now = ms; } }; }
+  function play(host: ReturnType<typeof clocked>, frames = 90) { let frame = new Map(); for (let i = 0; i <= frames; i++) { const now = 1000 + i * 33; host.tick(now); frame = host.runtime.render(now); } return frame; }
+  const typing = (c: ReturnType<typeof defaultStudioConfiguration>, effect: string) => ({ ...c, enabled: true, mode: 'typing' as const, modes: { ...c.modes, typing: { ...c.modes.typing, family: effect, effect } } });
+  it('knows which selections need audio capture', () => {
+    const c = defaultStudioConfiguration();
+    expect(studioNeedsAudio({ ...c, mode: 'audio' })).toBe(true);
+    expect(studioNeedsAudio({ ...c, mode: 'typing' })).toBe(false);
+    expect(studioNeedsAudio(typing(c, 'expansion.glass-ocean'))).toBe(true);
+    expect(studioNeedsAudio(typing(c, 'expansion.foam-puncture'))).toBe(false);
+  });
+  // The looping sample never goes quiet, and never builds then drops.
+  const LOOP_SILENT = new Set(['expansion.quiet-bloom', 'expansion.build-and-drop']);
+  it('drives expansion music effects from the selected sample signal, and keeps them dark without input', () => {
+    for (const { id } of EXPANSION_AUDIO_EFFECTS) {
+      const needs = requirementsFor(id)!, c = defaultStudioConfiguration();
+      const config = { ...c, enabled: true, mode: 'audio' as const, modes: { ...c.modes, audio: { ...c.modes.audio, effect: id } } };
+      const sampled = clocked(); sampled.runtime.configure(config);
+      if (!needs.stereo && !needs.pitch && !LOOP_SILENT.has(id)) expect(lit(play(sampled)), id).toBe(true);
+      const silent = clocked(); silent.runtime.configure({ ...config, modes: { ...config.modes, audio: { ...config.modes.audio, source: 'system' } } });
+      expect(lit(play(silent)), `${id} lit with no capture`).toBe(false);
+    }
+  });
+  it('feeds typing scenes with an audio layer and routes a shared library\'s app events into the studio', () => {
+    const c = defaultStudioConfiguration();
+    const scene = clocked(); scene.runtime.configure(typing(c, 'expansion.glass-ocean'));
+    expect(lit(play(scene))).toBe(true);
+    const host = clocked(); host.runtime.configure(typing(c, 'expansion.build-runner'));
+    expect(lit(play(host, 3))).toBe(false);
+    host.library.events.register({ id: 'ci', types: ['build'] });
+    expect(host.library.events.push({ version: 1, id: 'b1', source: 'ci', at: 1099, type: 'build', data: { runId: 'r', progress: 0.5, result: 'running' } })).toBe(true);
+    expect(lit(play(host, 3))).toBe(true);
   });
 });
